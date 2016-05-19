@@ -42,7 +42,11 @@ public class ChordPlayer {
 		this.ss = ss;
 		monitor = new Object();
 		quit = false;
-		start();
+		//start();
+	}
+
+	public void process() {
+
 	}
 
 //    public void setPaused(boolean paused) {
@@ -56,11 +60,13 @@ public class ChordPlayer {
 		if(k < 20 && k > -20) {
 			k+=rel_bpm_factor;
 			int bpm = (int) (60.0f*Math.pow(1.05, k));
-			synchronized(this) {
+			//synchronized(this) {
 			interval = 60*1000/bpm;
-			}
+			//}
 		}
 	}
+
+
 	private void start() {
 		thread = new Thread() {
 			public void run() {
@@ -97,17 +103,17 @@ public class ChordPlayer {
 	}
 
 	public void setPitch(int pitch) {
-		if(!on) {
-			on= true;
-			synchronized (monitor) {
-				monitor.notify();
-			}
-		}
-		else if(this.pitch == pitch) {
-			on = false;
-		}
-		this.pitch = pitch;
-		updateChord();
+//		if(!on) {
+//			on= true;
+//			synchronized (monitor) {
+//				monitor.notify();
+//			}
+//		}
+//		else if(this.pitch == pitch) {
+//			on = false;
+//		}
+//		this.pitch = pitch;
+//		updateChord();
 
 	}
 

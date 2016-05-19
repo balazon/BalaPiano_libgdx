@@ -53,7 +53,6 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
 		bc.setDimension(this.w, this.h);
-		ss.start();
 
 	}
 
@@ -67,6 +66,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		ss.process();
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.setProjectionMatrix(camera.projection.translate(-w / 2.0f, -h / 2.0f, 0));
@@ -119,6 +120,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		@Override
 		public boolean touchDown(int x, int y, int pointer, int button) {
+			System.out.println("click at thread  " + Thread.currentThread().getId());
+
 			int x2 = x;
 			int y2 = h - y;
 			//System.out.println("touchdown x "+x+"   y "+(h-y));

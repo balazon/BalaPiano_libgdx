@@ -1,11 +1,12 @@
 package com.balacraft.balapiano.soundengine;
 
+import java.util.LinkedList;
 import java.util.TreeSet;
 
 import com.badlogic.gdx.utils.Disposable;
 
 public class SoundSystem implements Disposable{
-	Fifo fifo;
+
 	TreeSet<Note> startedNotes = new TreeSet<Note>();
 	SoundPlayer sp;
 	long currentTime;
@@ -14,13 +15,15 @@ public class SoundSystem implements Disposable{
 	long relTime;
 	boolean stop= false;
 	ChordPlayer cp;
-	
+	LinkedList<Note> queue = new LinkedList<Note>();
+
 	public SoundSystem() {
-		fifo = new Fifo();
+
 		currentTime = System.currentTimeMillis();
 		prevTime = currentTime;
 		relTime = 0;
 		cp = new ChordPlayer(this);
+
 	}
 	public void setSoundPlayer(String[] C) {
 		sp = new SoundPlayer();
@@ -30,67 +33,35 @@ public class SoundSystem implements Disposable{
 	public void addNote(Note n) {
 		long ctime = System.currentTimeMillis();
 		n.start += ctime;
-		synchronized(fifo) {
-		fifo.add(n);
-		fifo.notify();
-		}
+		queue.add(n);
 	}
-	public void start() {
-		//first thread : taking a note out of fifo, playing it, and adding it to startednotes
-		new Thread() {
-			@Override
-			public void run() {
-				while(!stop) {
-					Note n;
-					synchronized(fifo) {
-						if(fifo.todoList.isEmpty()) {
-							try {
-								fifo.wait();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						n = fifo.getNote();
-					}
-					sp.playNote(n);
-					synchronized(startedNotes) {
-						startedNotes.add(n);
-						startedNotes.notify();
-					}
-				}
-			}	
-		}.start();
 
-		//second thread : stopping and removing first note of startedNotes if necessary (startedNotes ordered by finish times)
-		new Thread() {
-			public void run() {
-				while(!stop) {
-					prevTime = currentTime;
-					currentTime = System.currentTimeMillis();
-					relTime += currentTime - prevTime;
-					Note first;
-					synchronized(startedNotes) {
-						if(startedNotes.isEmpty())  {
-							try {
-								startedNotes.wait();
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						first =startedNotes.first();
-					}
-					if(first.start+first.dur < currentTime) {
-						sp.stopNote(first);
-						synchronized(startedNotes) {
-							startedNotes.remove(first);
-						}
-					}
-				}
+	public void process() {
+		//play notes in the queue
+		while(!queue.isEmpty()) {
+			Note n = queue.removeFirst();
+			sp.playNote(n);
+			startedNotes.add(n);
+		}
+
+		//stop notes that should be finished
+		prevTime = currentTime;
+		currentTime = System.currentTimeMillis();
+		relTime += currentTime - prevTime;
+        //System.out.println("Time: " + currentTime);
+        while(true) {
+			Note first = null;
+			if(!startedNotes.isEmpty()) {
+				first = startedNotes.first();
 			}
-		}.start();
-	}
-	public void stop() {
-		stop = true;
+
+			if(first != null && (first.start + first.dur) < currentTime) {
+				sp.stopNote(first);
+				startedNotes.remove(first);
+			} else {
+				break;
+			}
+		}
 	}
 	
 	public void setFlat() { cp.modPressed(false); }
