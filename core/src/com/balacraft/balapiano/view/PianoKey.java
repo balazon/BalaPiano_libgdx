@@ -13,14 +13,18 @@ public abstract class PianoKey extends Button{
 	protected SoundSystem ss;
 	protected boolean isPressed=false;
 	Rectangle rect;
+
 	private static int relOct = 0;
 	
 	
 	public PianoKey(Note n,SoundSystem ss) {
+        int octave = ss.getSoundPlayer().getDefaultOctave();
+        n.setAbsoluteOctave(octave);
 		this.note = n;
 		this.ss = ss;
 		rect = new Rectangle();
-	}
+
+    }
 	
 	public static void addRelOct(int rel) {
 		if(rel > 0 && relOct +rel <=4) relOct+=rel;
@@ -44,7 +48,8 @@ public abstract class PianoKey extends Button{
 	public void pressed(int x, int y) {
 		if(contains(x,y) && !isPressed) {
 			isPressed=true;
-			play();
+            System.out.println("pianokey press");
+            play();
 		}
 	}
 	public void released(int x, int y) {

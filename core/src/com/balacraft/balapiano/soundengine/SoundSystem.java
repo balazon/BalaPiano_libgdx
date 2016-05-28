@@ -25,19 +25,25 @@ public class SoundSystem implements Disposable{
 		cp = new ChordPlayer(this);
 
 	}
-	public void setSoundPlayer(String[] C) {
+	public void initSoundPlayer() {
 		sp = new SoundPlayer();
-		sp.setSounds(C);
+		sp.loadSounds();
 	}
+
+    public SoundPlayer getSoundPlayer() {
+        return sp;
+    }
 	
 	public void addNote(Note n) {
-		long ctime = System.currentTimeMillis();
+        System.out.println("soundsys addnote");
+        long ctime = System.currentTimeMillis();
 		n.start += ctime;
 		queue.add(n);
 	}
 
 	public void process() {
-		//play notes in the queue
+
+        //play notes in the queue
 		while(!queue.isEmpty()) {
 			Note n = queue.removeFirst();
 			sp.playNote(n);
@@ -49,18 +55,26 @@ public class SoundSystem implements Disposable{
 		currentTime = System.currentTimeMillis();
 		relTime += currentTime - prevTime;
         //System.out.println("Time: " + currentTime);
+        int loopcount = 0;
         while(true) {
-			Note first = null;
+            if(loopcount > 5) {
+                System.out.println("problem?");
+            }
+            Note first = null;
 			if(!startedNotes.isEmpty()) {
 				first = startedNotes.first();
 			}
 
 			if(first != null && (first.start + first.dur) < currentTime) {
 				sp.stopNote(first);
-				startedNotes.remove(first);
-			} else {
+                startedNotes.pollFirst();
+                //TODO .remove(first) isn't working : why?
+//                boolean contained = startedNotes.remove(first);
+//                System.out.println("contained: " + contained);
+            } else {
 				break;
 			}
+            loopcount++;
 		}
 	}
 	

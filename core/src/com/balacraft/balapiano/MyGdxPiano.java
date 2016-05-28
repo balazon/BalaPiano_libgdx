@@ -48,8 +48,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(impx);
 
 		ss = new SoundSystem();
-		String[] C = {"data/c1.mp3", "data/c2.mp3", "data/c3.mp3", "data/c4.mp3", "data/c5.mp3", "data/c6.mp3", "data/c7.mp3", "data/c8.mp3"};
-		ss.setSoundPlayer(C);
+		ss.initSoundPlayer();
+
 
 		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
 		bc.setDimension(this.w, this.h);
@@ -125,8 +125,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 			int x2 = x;
 			int y2 = h - y;
 			//System.out.println("touchdown x "+x+"   y "+(h-y));
-
-			bc.pressed(x2, y2);
+            System.out.println("press");
+            bc.pressed(x2, y2);
 			x1[pointer] = x2;
 			y1[pointer] = y2;
 			return false;
