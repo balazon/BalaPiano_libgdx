@@ -9,7 +9,7 @@
 //syntax for manual filling: f 201 200+1  or f 209 300-3
 // this means c# in 2nd octave should be played by playing c in 2nd
 // octave with a semi-tone pitch increase
-range : 100 - 700
+range : 100 - 701
 default_octave : 3
 
 notesounds:

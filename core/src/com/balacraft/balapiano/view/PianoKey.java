@@ -25,9 +25,10 @@ public abstract class PianoKey extends Button{
 		rect = new Rectangle();
 
     }
-	
+
+	//TODO make this dependent on soundplayer's range
 	public static void addRelOct(int rel) {
-		if(rel > 0 && relOct +rel <=4) relOct+=rel;
+		if(rel > 0 && relOct +rel <=3) relOct+=rel;
 		else if(rel <0 && relOct+rel >= -2) relOct+=rel;
 	}
 	

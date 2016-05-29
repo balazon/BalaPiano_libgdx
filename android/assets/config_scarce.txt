@@ -1,0 +1,29 @@
+//CONFIG file for setting up sound files and pitches in between them
+//note syntax:[1-9]0[0-9] + [1-9]1[01]
+// (this is to maintain order among notes)
+// where first number is octave, second two numbers represent the semi_tone (value between [0,11] with two numbers always : 00, 01, .., 11)
+// examples: 100: c1, 307: g3
+//range: note_low - note_high
+//fill : for whatever sound you don't provide a fill,
+// it will be filled automatically by the nearest sound
+//syntax for manual filling: f 201 200+1  or f 209 300-3
+// the fills should be after the sound list
+// (or at least a fill must be after the sound it refers to as replacement)
+// this means c# in 2nd octave should be played by playing c in 2nd
+// octave with a semi-tone pitch increase
+range : 100 - 701
+default_octave : 3
+
+notesounds:
+
+100_c1.mp3
+//f 101 100+1
+200_c2_0.mp3
+300_c3_0.mp3
+//f 309 300+9
+
+400_c4_0.mp3
+//f 304 400-8
+500_c5_0.mp3
+600_c6_0.mp3
+700_c7_0.mp3

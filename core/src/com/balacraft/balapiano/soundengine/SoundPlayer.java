@@ -41,7 +41,7 @@ public class SoundPlayer implements Disposable{
     //read settings from config file
 	void loadSounds() {
         actualSounds = new TreeMap<Integer, Sound>();
-        FileHandle confFile = Gdx.files.internal("config.txt");
+        FileHandle confFile = Gdx.files.internal("config_scarce.txt");
         if(!confFile.exists() || confFile.isDirectory()) {
             System.out.println("Error : config.txt not found");
             return;
@@ -69,7 +69,7 @@ public class SoundPlayer implements Disposable{
             }
             if(row.matches("[0-9]{3,3}.*")) {
                 int notePitch = Integer.parseInt(row.substring(0,3));
-                FileHandle noteFile = Gdx.files.internal("sounds/" + row);
+                FileHandle noteFile = Gdx.files.internal("sounds_scarce/" + row);
                 if(!noteFile.exists()) {
                     continue;
                 }
@@ -80,7 +80,7 @@ public class SoundPlayer implements Disposable{
                 sounds[index] = new TransformedSound(s, 0);
             }
             if(row.matches("f\\s*.*")) {
-                String[] fill = row.split("\\s*.*|[\\+-]");
+                String[] fill = row.split("\\s+|[\\+-]");
                 int fillNote = Integer.parseInt(fill[1]);
                 int fillWithNote = Integer.parseInt(fill[2]);
                 int fillAndPitch = Integer.parseInt(fill[3]);
@@ -93,9 +93,16 @@ public class SoundPlayer implements Disposable{
             }
         }
 
-        //TODO test this
+
         Integer[] keys = new Integer[actualSounds.size()];
         actualSounds.keySet().toArray(keys);
+
+        for(int j = 0; j < getIndex(keys[0]); j++) {
+            if(sounds[j] != null) {
+                continue;
+            }
+            sounds[j] = new TransformedSound(actualSounds.get(keys[0]), j - getIndex(keys[0]));
+        }
         for(int i = 0; i < keys.length - 1; i++) {
             int keyA = keys[i];
             int keyB = keys[i + 1];
@@ -131,7 +138,13 @@ public class SoundPlayer implements Disposable{
                 }
             }
         }
-
+        int lastActualSoundIndex = getIndex(keys[keys.length - 1]);
+        for(int j = sounds.length - 1; j > lastActualSoundIndex; j--) {
+            if(sounds[j] != null) {
+                continue;
+            }
+            sounds[j] = new TransformedSound(actualSounds.get(keys[keys.length - 1]), j - lastActualSoundIndex);
+        }
 
 
     }
