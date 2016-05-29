@@ -35,6 +35,6 @@ public class Note implements Comparable<Note>{
 	}
 	@Override
 	public int compareTo(Note o) {
-		return Long.compare(start+dur, o.start+dur);
+		return Long.valueOf(start+dur).compareTo(Long.valueOf(o.start+o.dur));
 	}
 }

@@ -10,15 +10,14 @@ import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class SoundPlayer implements Disposable{
 
-
-    private Map<Integer, Sound> sounds;
-    //stores keys usable on Map<> sounds for any note in the range_min -> range_max  e.g: if there is a sound for 301, then soundKeys[getIndex(301)] == 301 will be true
-    private int[] soundKeys;
-    //stores relative pitches to be used for notes
-    private int[] soundPitches;
+    // the actual sounds that you have in the assets folder and also list it in config.txt
+    private TreeMap<Integer, Sound> actualSounds;
+    // one for every sound inside the range specified in config.txt
+    private TransformedSound[] sounds;
     int range_min;
     int range_max;
     int default_octave;
@@ -27,20 +26,21 @@ public class SoundPlayer implements Disposable{
         return default_octave;
     }
 
+
     int getIndex(int absolutePitch) {
         int minOctave = (int)(range_min / 100);
         int absoluteOctave = (int)(absolutePitch / 100);
         int index = 12 - (range_min % 100) + (absoluteOctave - minOctave - 1) * 12 + (absolutePitch % 100);
         return index;
     }
-    //TODO create all transformedSounds in loadSounds to eliminate dynamic alloc
+
     TransformedSound getSound(int absolutePitch) {
         int index = getIndex(absolutePitch);
-        return new TransformedSound(sounds.get(soundKeys[index]), soundPitches[index]);
+        return sounds[index];
     }
     //read settings from config file
 	void loadSounds() {
-        sounds = new HashMap<Integer, Sound>();
+        actualSounds = new TreeMap<Integer, Sound>();
         FileHandle confFile = Gdx.files.internal("config.txt");
         if(!confFile.exists() || confFile.isDirectory()) {
             System.out.println("Error : config.txt not found");
@@ -56,12 +56,8 @@ public class SoundPlayer implements Disposable{
                 String[] range = row.split(":\\s*|\\s*-\\s*");
                 range_min = Integer.parseInt(range[1]);
                 range_max = Integer.parseInt(range[2]);
-                soundKeys = new int[getIndex(range_max) + 1];
-                soundPitches = new int[soundKeys.length];
-//                for(int i = 0; i < soundKeys.length; i++) {
-//                    soundKeys[i] = 0;
-//                    soundPitches[i] = 0;
-//                }
+                sounds = new TransformedSound[getIndex(range_max) + 1];
+
                 continue;
             }
             if(row.startsWith("default_octave")) {
@@ -78,10 +74,10 @@ public class SoundPlayer implements Disposable{
                     continue;
                 }
                 Sound s = Gdx.audio.newSound(noteFile);
+                actualSounds.put(notePitch, s);
+
                 int index = getIndex(notePitch);
-                soundKeys[index] = notePitch;
-                soundPitches[index] = 0;
-                sounds.put(notePitch, s);
+                sounds[index] = new TransformedSound(s, 0);
             }
             if(row.matches("f\\s*.*")) {
                 String[] fill = row.split("\\s*.*|[\\+-]");
@@ -92,12 +88,50 @@ public class SoundPlayer implements Disposable{
                     fillAndPitch = -fillAndPitch;
                 }
                 int index = getIndex(fillNote);
-                soundKeys[index] = fillWithNote;
-                soundPitches[index] = fillAndPitch;
+                sounds[index] = new TransformedSound(actualSounds.get(fillWithNote), fillAndPitch );
+
             }
         }
 
-        //TODO fill missing keys and pitches
+        //TODO test this
+        Integer[] keys = new Integer[actualSounds.size()];
+        actualSounds.keySet().toArray(keys);
+        for(int i = 0; i < keys.length - 1; i++) {
+            int keyA = keys[i];
+            int keyB = keys[i + 1];
+            int indexA = getIndex(keyA);
+            int indexB = getIndex(keyB);
+            int half = (indexA + indexB) / 2;
+            boolean foundFill = false;
+            for(int j = indexA + 1; j < half; j++) {
+                if(sounds[j] != null) {
+                    if(sounds[j].sound == actualSounds.get(keyB)) {
+                        foundFill = true;
+                    }
+                    continue;
+                }
+                if(!foundFill) {
+                    sounds[j] = new TransformedSound(actualSounds.get(keyA), j - indexA);
+                } else {
+                    sounds[j] = new TransformedSound(actualSounds.get(keyB), j - indexB);
+                }
+            }
+            foundFill = false;
+            for(int j = indexB - 1; j >= half; j--) {
+                if(sounds[j] != null) {
+                    if(sounds[j].sound == actualSounds.get(keyA)) {
+                        foundFill = true;
+                    }
+                    continue;
+                }
+                if(!foundFill) {
+                    sounds[j] = new TransformedSound(actualSounds.get(keyB), j - indexB);
+                } else {
+                    sounds[j] = new TransformedSound(actualSounds.get(keyA), j - indexA);
+                }
+            }
+        }
+
 
 
     }
@@ -127,8 +161,7 @@ public class SoundPlayer implements Disposable{
 	}
 	@Override
 	public void dispose() {
-
-        for(Sound s : sounds.values()) {
+        for(Sound s : actualSounds.values()) {
             s.dispose();
         }
 	}
