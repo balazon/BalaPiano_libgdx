@@ -28,7 +28,7 @@ public class ChordPitchButton extends Button{
 	}
 	@Override
 	public void draggedFromTo(int x1, int y1, int x2, int y2) {
-		// TODO Auto-generated method stub
+
 		
 	}
 

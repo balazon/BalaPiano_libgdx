@@ -90,6 +90,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void pause() {
+
 	}
 
 	@Override

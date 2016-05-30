@@ -1,13 +1,15 @@
 package com.balacraft.balapiano.soundengine;
 
 import java.util.LinkedList;
-import java.util.TreeSet;
+import java.util.PriorityQueue;
+
 
 import com.badlogic.gdx.utils.Disposable;
 
 public class SoundSystem implements Disposable{
 
-	TreeSet<Note> startedNotes = new TreeSet<Note>();
+    PriorityQueue<Note> comingupNotes = new PriorityQueue<Note>(20, Note.StartComparator());
+    PriorityQueue<Note> startedNotes = new PriorityQueue<Note>(60, Note.EndComparator());
 	SoundPlayer sp;
 
 
@@ -18,7 +20,7 @@ public class SoundSystem implements Disposable{
 	public SoundSystem() {
 		cp = new ChordPlayer(this);
 
-	}
+    }
 	public void initSoundPlayer() {
 		sp = new SoundPlayer();
 		sp.loadSounds();
@@ -31,40 +33,42 @@ public class SoundSystem implements Disposable{
 	public void addNote(Note n) {
         System.out.println("soundsys addnote");
 
-		n.start += Time.current();
-		queue.add(n);
+        //copying note n, so that we don't overwrite anything already in the queues (like their start value)
+        Note copy = new Note(n);
+        copy.start += Time.current();
+		queue.add(copy);
 	}
 
 	public void process() {
 		cp.process();
-        //play notes in the queue
+
+        //add notes from input queue to the notes that will be played
 		while(!queue.isEmpty()) {
 			Note n = queue.removeFirst();
-			sp.playNote(n);
-			startedNotes.add(n);
+            comingupNotes.add(n);
 		}
 
-		//stop notes that should be finished
-        int loopcount = 0;
+        //play notes that are due
         while(true) {
-            if(loopcount > 5) {
-                System.out.println("problem?");
+            Note first = comingupNotes.peek();
+            if(first != null && first.start <= Time.current()) {
+                comingupNotes.poll();
+                sp.playNote(first);
+                startedNotes.add(first);
+            } else {
+                break;
             }
-            Note first = null;
-			if(!startedNotes.isEmpty()) {
-				first = startedNotes.first();
-			}
+        }
 
+		//stop notes that should be finished
+        while(true) {
+            Note first = startedNotes.peek();
 			if(first != null && (first.start + first.dur) < Time.current()) {
 				sp.stopNote(first);
-                startedNotes.pollFirst();
-                //TODO .remove(first) isn't working : why?
-//                boolean contained = startedNotes.remove(first);
-//                System.out.println("contained: " + contained);
+                startedNotes.poll();
             } else {
 				break;
 			}
-            loopcount++;
 		}
 	}
 	

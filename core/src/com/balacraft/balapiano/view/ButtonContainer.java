@@ -133,7 +133,6 @@ public class ButtonContainer implements Drawable{
 	}
 
 	public void draggedFromTo(int x, int y, int u, int v) {
-		// TODO Auto-generated method stub
 		for(int i = 0; i< buttons.size(); i++) {
 			buttons.get(i).btn.draggedFromTo(x, y, u,v);
 		}
@@ -145,7 +144,7 @@ public class ButtonContainer implements Drawable{
 	}
 	
 	private void createButtons() {
-		// TODO Auto-generated method stub
+
 		
 		// create the buttons
 		
@@ -228,7 +227,7 @@ public class ButtonContainer implements Drawable{
 	
 
 	private void updateButtons() {
-		// TODO setting buttons' sizes
+		//setting buttons' sizes
 		if(w!=0 && h!=0){
 			float cw = (float) (w/10.0);
 			float ch = (float) (h/5.0);
