@@ -94,6 +94,7 @@ public class SoundPlayer implements Disposable{
         }
 
 
+        //filling missing notes here (with closest)
         Integer[] keys = new Integer[actualSounds.size()];
         actualSounds.keySet().toArray(keys);
 

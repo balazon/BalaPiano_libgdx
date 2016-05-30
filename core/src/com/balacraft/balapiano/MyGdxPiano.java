@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.Vector2;
 
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
+import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonContainer;
 
 public class MyGdxPiano extends ApplicationAdapter {
@@ -66,6 +67,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void render() {
+		Time.update();
 		ss.process();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);

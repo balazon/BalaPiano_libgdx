@@ -9,19 +9,13 @@ public class SoundSystem implements Disposable{
 
 	TreeSet<Note> startedNotes = new TreeSet<Note>();
 	SoundPlayer sp;
-	long currentTime;
-	long prevTime;
-	// reltime is the time that elapsed since the start of the app
-	long relTime;
+
+
 	boolean stop= false;
 	ChordPlayer cp;
 	LinkedList<Note> queue = new LinkedList<Note>();
 
 	public SoundSystem() {
-
-		currentTime = System.currentTimeMillis();
-		prevTime = currentTime;
-		relTime = 0;
 		cp = new ChordPlayer(this);
 
 	}
@@ -36,13 +30,13 @@ public class SoundSystem implements Disposable{
 	
 	public void addNote(Note n) {
         System.out.println("soundsys addnote");
-        long ctime = System.currentTimeMillis();
-		n.start += ctime;
+
+		n.start += Time.current();
 		queue.add(n);
 	}
 
 	public void process() {
-
+		cp.process();
         //play notes in the queue
 		while(!queue.isEmpty()) {
 			Note n = queue.removeFirst();
@@ -51,10 +45,6 @@ public class SoundSystem implements Disposable{
 		}
 
 		//stop notes that should be finished
-		prevTime = currentTime;
-		currentTime = System.currentTimeMillis();
-		relTime += currentTime - prevTime;
-        //System.out.println("Time: " + currentTime);
         int loopcount = 0;
         while(true) {
             if(loopcount > 5) {
@@ -65,7 +55,7 @@ public class SoundSystem implements Disposable{
 				first = startedNotes.first();
 			}
 
-			if(first != null && (first.start + first.dur) < currentTime) {
+			if(first != null && (first.start + first.dur) < Time.current()) {
 				sp.stopNote(first);
                 startedNotes.pollFirst();
                 //TODO .remove(first) isn't working : why?

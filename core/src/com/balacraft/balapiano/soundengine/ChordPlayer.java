@@ -18,8 +18,8 @@ public class ChordPlayer {
 	public static final int MINOR=1;
 	public static final int MAJOR7=2;
 	public static final int MINOR7=3;
-	//public static final int SHARP = 100;
-	//public static final int FLAT = 101;
+
+
 	
 	private int chord_mode=DEFAULT;
 	
@@ -29,23 +29,32 @@ public class ChordPlayer {
 	private static final int[] MINOR7_PITCH={0,3,7,10};
 	
 	private int[] pitches_tmp=MAJOR_PITCH;
-	
+
+    //k for how many times the bpm faster button was pressed
 	private int k = 0;
 
-	Thread thread;
-	Object monitor;
+    long timer;
+
 	boolean quit;
 
     //boolean paused;
 
 	public ChordPlayer(SoundSystem ss) {
 		this.ss = ss;
-		monitor = new Object();
 		quit = false;
-		//start();
+        timer = 0;
 	}
 
 	public void process() {
+		if(!on) {
+			return;
+		}
+        timer -= Time.delta();
+        if(timer < 0) {
+            ss.addNote(new Note(pitches, 0, interval, false));
+            timer = interval;
+        }
+
 
 	}
 
@@ -67,53 +76,16 @@ public class ChordPlayer {
 	}
 
 
-	private void start() {
-		thread = new Thread() {
-			public void run() {
-
-				while(!quit) {
-					if(on) {
-						//System.out.println("ChordPlayer " + Thread.currentThread().getId() + "playing");
-						ss.addNote(new Note(pitches, 0, interval, false));
-						try {
-							Thread.sleep(interval);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					if(!on) {
-						try {
-							synchronized (monitor) {
-								//System.out.println("ChordPlayer " + Thread.currentThread().getId() +  "wait");
-								monitor.wait();
-							}
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-
-				//if(quit) System.out.println("ChordPlayer "  + Thread.currentThread().getId() +  "ending!");
-			}
-		};
-		//System.out.println("ChordPlayer " + thread.getId() +  "start!");
-		thread.start();
-
-		
-	}
-
 	public void setPitch(int pitch) {
-//		if(!on) {
-//			on= true;
-//			synchronized (monitor) {
-//				monitor.notify();
-//			}
-//		}
-//		else if(this.pitch == pitch) {
-//			on = false;
-//		}
-//		this.pitch = pitch;
-//		updateChord();
+		if(!on) {
+			on= true;
+		}
+		else if(this.pitch == pitch) {
+			on = false;
+		}
+        timer = 0;
+		this.pitch = pitch;
+		updateChord();
 
 	}
 
@@ -123,7 +95,7 @@ public class ChordPlayer {
 		else if (sharp) mod=+1;
 		else mod=0;
 		pitches = new int[pitches_tmp.length];
-		for(int i=0;i<pitches_tmp.length;i++) pitches[i]=pitch+mod+pitches_tmp[i]+ 12 * octave;
+		for(int i=0;i<pitches_tmp.length;i++) pitches[i]=pitch+mod+pitches_tmp[i]+ 12 * (octave + ss.getSoundPlayer().getDefaultOctave());
 	}
 
 	public void addOctave(int relOct) {
