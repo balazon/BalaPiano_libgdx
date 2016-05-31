@@ -1,29 +1,25 @@
 //CONFIG file for setting up sound files and pitches in between them
-//note syntax:[1-9]0[0-9] + [1-9]1[01]
-// (this is to maintain order among notes)
-// where first number is octave, second two numbers represent the semi_tone (value between [0,11] with two numbers always : 00, 01, .., 11)
-// examples: 100: c1, 307: g3
-//range: note_low - note_high
+//note syntax: an integer number for the semitone used
+
+//range: note_low - note_high (inclusive at both ends)
 //fill : for whatever sound you don't provide a fill,
 // it will be filled automatically by the nearest sound
-//syntax for manual filling: f 201 200+1  or f 209 300-3
-// the fills should be after the sound list
-// (or at least a fill must be after the sound it refers to as replacement)
+//syntax for manual filling: f 61 60+1  or f 67 70-3
 // this means c# in 2nd octave should be played by playing c in 2nd
 // octave with a semi-tone pitch increase
-range : 100 - 701
-default_octave : 3
+// !the fills should be after the sound list (or at least after the note they are referring to)
+range : 24 - 97
+default_octave : 0
+//default octave is relative to middle c
+middle_c : 60
+// middle C is represented by the pitch value 60
 
-notesounds:
-
-100_c1.mp3
-//f 101 100+1
-200_c2_0.mp3
-300_c3_0.mp3
-//f 309 300+9
-
-400_c4_0.mp3
-//f 304 400-8
-500_c5_0.mp3
-600_c6_0.mp3
-700_c7_0.mp3
+notesounds_folder : piano_scarce
+//these filenames should start with the note semitone value they should be associated with
+024-c0.mp3
+036-c1.mp3
+048-c2.mp3
+060-c3.mp3
+072-c4.mp3
+084-c5.mp3
+096-c6.mp3

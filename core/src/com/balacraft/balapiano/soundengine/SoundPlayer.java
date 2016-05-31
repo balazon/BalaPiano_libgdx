@@ -21,9 +21,19 @@ public class SoundPlayer implements Disposable{
     int range_min;
     int range_max;
     int default_octave;
+    int middle_c;
 
     public int getDefaultOctave() {
         return default_octave;
+    }
+    public int getMiddleC() {
+        return middle_c;
+    }
+    public int getRangeMin() {
+        return range_min;
+    }
+    public int getRangeMax() {
+        return range_max;
     }
 
 
@@ -38,7 +48,7 @@ public class SoundPlayer implements Disposable{
     //read settings from config file
 	void loadSounds() {
         actualSounds = new TreeMap<Integer, Sound>();
-        FileHandle confFile = Gdx.files.internal("config_scarce.txt");
+        FileHandle confFile = Gdx.files.internal("config.txt");
         if(!confFile.exists() || confFile.isDirectory()) {
             System.out.println("Error : config.txt not found");
             return;
@@ -62,22 +72,30 @@ public class SoundPlayer implements Disposable{
                 default_octave = Integer.parseInt(row.split(":\\s*")[1]);
                 continue;
             }
+            if(row.startsWith("middle_c")) {
+                middle_c = Integer.parseInt(row.split(":\\s*")[1]);
+                continue;
+            }
             if(row.startsWith("notesounds_folder")) {
                 soundsFolder = row.split(":\\s*")[1];
-
                 continue;
             }
             if(row.matches("[0-9]+-.*")) {
                 int notePitch = Integer.parseInt(row.split("-")[0]);
+                if(notePitch < range_min || notePitch > range_max) {
+                    continue;
+                }
                 FileHandle noteFile = Gdx.files.internal(soundsFolder + "/" + row);
                 if(!noteFile.exists()) {
                     continue;
                 }
+
                 Sound s = Gdx.audio.newSound(noteFile);
                 actualSounds.put(notePitch, s);
 
                 int index = getIndex(notePitch);
                 sounds[index] = new TransformedSound(s, 0);
+                continue;
             }
             if(row.matches("f\\s*.*")) {
                 String[] fill = row.split("\\s+|[\\+-]");
@@ -89,7 +107,7 @@ public class SoundPlayer implements Disposable{
                 }
                 int index = getIndex(fillNote);
                 sounds[index] = new TransformedSound(actualSounds.get(fillWithNote), fillAndPitch );
-
+                continue;
             }
         }
 

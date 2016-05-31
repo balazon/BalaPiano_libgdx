@@ -37,13 +37,13 @@ public class Note {
 	public int count() {
         return absolutePitches.length;
     }
-    public void setAbsoluteOctave(int octave) {
-        for(int i = 0; i < absolutePitches.length; i++) {
-            int p = absolutePitches[i];
-            int plusOctave = (p % 100) / 12;
-            absolutePitches[i] = (p % 100) % 12 + (octave + plusOctave) * 100;
-        }
-    }
+
+	public void addtMiddleCAndDefaultOctave(int middle_c, int defaultOctave) {
+		for(int i = 0; i < absolutePitches.length; i++) {
+			absolutePitches[i] = absolutePitches[i] + middle_c + defaultOctave * 12;
+		}
+	}
+
 	public void setRelOct(int relOct) {
 		this.relOct = relOct;
 	}
@@ -70,8 +70,6 @@ public class Note {
 		public int compare(Note o1, Note o2) {
 			return Long.valueOf(o1.start).compareTo(Long.valueOf(o2.start));
 		}
-
-
 	}
 
 	private static class NoteEndComparator implements Comparator<Note> {
@@ -80,7 +78,6 @@ public class Note {
 		public int compare(Note o1, Note o2) {
 			return Long.valueOf(o1.start+o1.dur).compareTo(Long.valueOf(o2.start+o2.dur));
 		}
-
 	}
 }
 

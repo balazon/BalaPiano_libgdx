@@ -40,7 +40,7 @@ public class SoundSystem implements Disposable{
 	}
 
 	public void process() {
-		//cp.process();
+		cp.process();
 
         //add notes from input queue to the notes that will be played
 		while(!queue.isEmpty()) {

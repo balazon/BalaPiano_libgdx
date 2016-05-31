@@ -1,6 +1,7 @@
 package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.Note;
+import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 import com.badlogic.gdx.math.Rectangle;
@@ -10,7 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public abstract class PianoKey extends Button{
 	protected Note note;
-	protected SoundSystem ss;
+	protected static SoundSystem ss;
 	protected boolean isPressed=false;
 	Rectangle rect;
 
@@ -18,18 +19,25 @@ public abstract class PianoKey extends Button{
 	
 	
 	public PianoKey(Note n,SoundSystem ss) {
+		int middle_c = ss.getSoundPlayer().getMiddleC();
         int octave = ss.getSoundPlayer().getDefaultOctave();
-        n.setAbsoluteOctave(octave);
+        n.addtMiddleCAndDefaultOctave(middle_c, octave);
 		this.note = n;
 		this.ss = ss;
 		rect = new Rectangle();
 
     }
 
-	//TODO make this dependent on soundplayer's range
+
 	public static void addRelOct(int rel) {
-		if(rel > 0 && relOct +rel <=3) relOct+=rel;
-		else if(rel <0 && relOct+rel >= -2) relOct+=rel;
+		SoundPlayer sp = ss.getSoundPlayer();
+		int range_min = sp.getRangeMin();
+		int range_max = sp.getRangeMax();
+		int middle_c = sp.getMiddleC();
+		int minRelOct = -(middle_c - range_min) / 12;
+		int maxRelOct = (range_max - middle_c - 13) / 12;
+		if(rel > 0 && relOct +rel <= maxRelOct) relOct+=rel;
+		else if(rel <0 && relOct+rel >= minRelOct) relOct+=rel;
 	}
 	
 	public void draggedFromTo(int x1, int y1, int x2, int y2) {

@@ -1,5 +1,8 @@
 package com.balacraft.balapiano.soundengine;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChordPlayer {
 	boolean on = false;
 	SoundSystem ss;
@@ -32,6 +35,9 @@ public class ChordPlayer {
 
     //k for how many times the bpm faster button was pressed
 	private int k = 0;
+
+
+
 
     long timer;
 
@@ -93,7 +99,7 @@ public class ChordPlayer {
 		else if (sharp) mod=+1;
 		else mod=0;
 		pitches = new int[pitches_tmp.length];
-		for(int i=0;i<pitches_tmp.length;i++) pitches[i]=pitch+mod+pitches_tmp[i]+ 12 * (octave + ss.getSoundPlayer().getDefaultOctave());
+		for(int i=0;i<pitches_tmp.length;i++) pitches[i]=pitch+mod+pitches_tmp[i]+ ss.getSoundPlayer().getMiddleC() +  12 * (octave + ss.getSoundPlayer().getDefaultOctave());
 	}
 
 	public void addOctave(int relOct) {
