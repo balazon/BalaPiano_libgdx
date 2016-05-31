@@ -6,25 +6,47 @@ public class Time {
 
     long startTime;
     long currentTime;
-    long lastTime;
+
     long deltaTime;
-    long elapsedTime;
+
+	boolean paused;
+	long pausedTimeSum;
+	long timeAtPause;
+
+
     private Time() {
         startTime = System.currentTimeMillis();
-        currentTime = startTime;
-        lastTime = startTime;
+        currentTime = 0;
+
         deltaTime = 0;
-        elapsedTime = 0;
+	    pausedTimeSum = 0;
     }
+
     private void updateTime() {
-        lastTime = currentTime;
-        currentTime = System.currentTimeMillis();
+	    if(paused) {
+		    return;
+	    }
+        long lastTime = currentTime;
+        currentTime = System.currentTimeMillis() - startTime - pausedTimeSum;
         deltaTime = currentTime - lastTime;
-        elapsedTime = currentTime - startTime;
     }
     public static void update() {
         instance.updateTime();
     }
+
+	private void pauseTime(boolean value) {
+		paused = value;
+		if(value) {
+			timeAtPause = System.currentTimeMillis();
+			deltaTime = 0;
+		} else {
+			pausedTimeSum += System.currentTimeMillis() - timeAtPause;
+		}
+	}
+    public static void paused(boolean value) {
+		instance.pauseTime(value);
+    }
+
     static long current() {
         return instance.currentTime;
     }

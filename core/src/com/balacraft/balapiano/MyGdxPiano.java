@@ -90,11 +90,12 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void pause() {
-
+		Time.paused(true);
 	}
 
 	@Override
 	public void resume() {
+		Time.paused(false);
 	}
 
 

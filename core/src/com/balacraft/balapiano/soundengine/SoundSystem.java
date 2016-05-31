@@ -19,7 +19,6 @@ public class SoundSystem implements Disposable{
 
 	public SoundSystem() {
 		cp = new ChordPlayer(this);
-
     }
 	public void initSoundPlayer() {
 		sp = new SoundPlayer();

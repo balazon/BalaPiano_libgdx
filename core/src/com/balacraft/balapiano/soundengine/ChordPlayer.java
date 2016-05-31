@@ -72,7 +72,7 @@ public class ChordPlayer {
 //		this.on = on;
 //	}
 	public void setBPM(int rel_bpm_factor) {
-		if(k < 20 && k > -20) {
+		if(k < 20 && rel_bpm_factor > 0 || k > -20 && rel_bpm_factor < 0) {
 			k+=rel_bpm_factor;
 			int bpm = (int) (60.0f*Math.pow(1.05, k));
 			interval = 60*1000/bpm;
