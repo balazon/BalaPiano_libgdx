@@ -28,10 +28,7 @@ public class SoundPlayer implements Disposable{
 
 
     int getIndex(int absolutePitch) {
-        int minOctave = (int)(range_min / 100);
-        int absoluteOctave = (int)(absolutePitch / 100);
-        int index = 12 - (range_min % 100) + (absoluteOctave - minOctave - 1) * 12 + (absolutePitch % 100);
-        return index;
+        return absolutePitch - range_min;
     }
 
     TransformedSound getSound(int absolutePitch) {
@@ -47,6 +44,7 @@ public class SoundPlayer implements Disposable{
             return;
         }
         String config = confFile.readString();
+        String soundsFolder = "";
         String[] rows = config.split("\\r?\\n");
         for(String row : rows) {
             if(row.startsWith("//") || row.equals("")) {
@@ -64,12 +62,14 @@ public class SoundPlayer implements Disposable{
                 default_octave = Integer.parseInt(row.split(":\\s*")[1]);
                 continue;
             }
-            if(row.startsWith("notesounds")) {
+            if(row.startsWith("notesounds_folder")) {
+                soundsFolder = row.split(":\\s*")[1];
+
                 continue;
             }
-            if(row.matches("[0-9]{3,3}.*")) {
-                int notePitch = Integer.parseInt(row.substring(0,3));
-                FileHandle noteFile = Gdx.files.internal("sounds_scarce/" + row);
+            if(row.matches("[0-9]+-.*")) {
+                int notePitch = Integer.parseInt(row.split("-")[0]);
+                FileHandle noteFile = Gdx.files.internal(soundsFolder + "/" + row);
                 if(!noteFile.exists()) {
                     continue;
                 }
@@ -154,7 +154,7 @@ public class SoundPlayer implements Disposable{
         long[] sound_instance_id = new long[n.count()];
 
         for(int i = 0; i < sound_instance_id.length; i++) {
-            TransformedSound ts = getSound(n.absolutePitches[i] + 100 * n.relOct);
+            TransformedSound ts = getSound(n.absolutePitches[i] + 12 * n.relOct);
             Sound s = ts.sound;
             int p = ts.pitchTransform;
             if(p == 0) {

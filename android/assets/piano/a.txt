@@ -1,18 +1,3 @@
-//CONFIG file for setting up sound files and pitches in between them
-//note syntax: an integer number for the semitone used
-// 60 means middle C
-//range: note_low - note_high (inclusive at both ends)
-//fill : for whatever sound you don't provide a fill,
-// it will be filled automatically by the nearest sound
-//syntax for manual filling: f 61 60+1  or f 67 70-3
-// this means c# in 2nd octave should be played by playing c in 2nd
-// octave with a semi-tone pitch increase
-// !the fills should be after the sound list (or at least after the note they are referring to)
-range : 24 - 96
-default_octave : 3
-
-notesounds_folder : piano
-//these filenames should start with the note semitone value they should be associated with
 021-a-1.mp3
 022-a-1.mp3
 023-b-1.mp3
@@ -100,3 +85,4 @@ notesounds_folder : piano
 105-a6.mp3
 106-a-6.mp3
 107-b6.mp3
+a.txt

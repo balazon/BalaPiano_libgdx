@@ -69,9 +69,7 @@ public class ChordPlayer {
 		if(k < 20 && k > -20) {
 			k+=rel_bpm_factor;
 			int bpm = (int) (60.0f*Math.pow(1.05, k));
-			//synchronized(this) {
 			interval = 60*1000/bpm;
-			//}
 		}
 	}
 
