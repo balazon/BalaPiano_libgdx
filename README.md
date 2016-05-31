@@ -9,4 +9,4 @@ https://libgdx.badlogicgames.com/
 Snapshot about the app on android:
 ![alt tag](https://cloud.githubusercontent.com/assets/3685997/15273337/8031af7a-1a95-11e6-9d90-78c2e8906b10.png)
 
-Made at: 2012
+Originally made at 2012, updated at 2016
