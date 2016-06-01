@@ -4,12 +4,14 @@ package com.balacraft.balapiano.view;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-public /*abstract*/ class ButtonView implements Drawable{
+public class ButtonView implements Drawable{
 
 	protected Texture texture_unpressed;
 	protected Texture texture_pressed;
+	//rectangles for the parts of the texture that will be drawn
 	protected Rectangle srcu;
 	protected Rectangle srcp;
+
 	
 	protected Button btn;
 	
@@ -19,23 +21,27 @@ public /*abstract*/ class ButtonView implements Drawable{
 		this.texture_pressed=pressed;
 	}
 	
-	public void setTextRegion(Texture tex1, Texture tex2) {
+	public void setTexes(Texture tex1, Texture tex2) {
 		texture_unpressed = tex1;
 		texture_pressed = tex2;
 	}
+
+	public void set
+
+
 	@Override
-	public void draw(SpriteBatch batch) {	
+	public void draw(SpriteBatch batch) {
 		if(btn.isPressed()) {
-			batch.draw(texture_pressed,btn.r1.x,btn.r1.y,btn.r1.width,btn.r1.height,
-					(int)srcp.x,(int)srcp.y,(int)srcp.width,(int)srcp.height,false,false);
-		}else {
-			batch.draw(texture_unpressed,btn.r1.x,btn.r1.y,btn.r1.width,btn.r1.height,
-				(int)srcu.x,(int)srcu.y,(int)srcu.width,(int)srcu.height,false,false);
+			for(Rectangle r : btn.clickArea) {
+				batch.draw(texture_pressed,r.x,r.y,r.width,r.height,
+						(int)srcp.x,(int)srcp.y,(int)srcp.width,(int)srcp.height,false,false);
+			}
+		} else {
+			for(Rectangle r : btn.clickArea) {
+				batch.draw(texture_unpressed,r.x,r.y,r.width,r.height,
+						(int)srcp.x,(int)srcp.y,(int)srcp.width,(int)srcp.height,false,false);
+			}
 		}
-		//batch.draw(texture_unpressed, 0, 0);
-		//batch.draw(texture_pressed,0,0);
-		//batch.draw(texture_unpressed, 0, 0, 1000, 500);
-		
 	}
 
 }

@@ -2,20 +2,36 @@ package com.balacraft.balapiano.view;
 
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Button {
-	Rectangle r1;
-	
+	List<Rectangle> clickArea;
+
+	public Button() {
+		clickArea = new ArrayList<Rectangle>(2);
+	}
 	public abstract boolean isPressed();
-	public Rectangle[] getRects() {
-		Rectangle[] res = new Rectangle[1];
-		res[0] = r1;
-		return res;
+//	public Rectangle[] getRectsASD() {
+//		Rectan
+//		return (Rectangle[]) clickArea.toArray();
+//	}
+	public void addClickRectangle(Rectangle r) {
+		clickArea.add(r);
 	}
 	public void resize(Rectangle[] r) {
-		r1.set(r[0]);
+		int min = Math.min(clickArea.size(), r.length);
+		for(int i = 0; i < min; i++) {
+			clickArea.get(0).set(r[i]);
+		}
 	}
 	public boolean contains(int x, int y) {
-		return r1.contains(x, y);
+		for(Rectangle r : clickArea) {
+			if(r.contains(x, y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	//empty methods for stuff (hooks)

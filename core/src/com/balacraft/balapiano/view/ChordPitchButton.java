@@ -17,7 +17,7 @@ public class ChordPitchButton extends Button{
 
 	@Override
 	public void pressed(int x, int y) {
-		if (this.r1.contains(x, y)) {
+		if (this.contains(x, y)) {
 			ss.setChordPitch(pitch);
 		}
 	}

@@ -12,17 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class ButtonContainer implements Drawable{
 	
-//	private TextureRegion whbot;
-//	private TextureRegion whup;
-//	private TextureRegion bl;
-//	private TextureRegion whbotp;
-//	private TextureRegion whupp;
-//	private TextureRegion blp;
-//	private TextureRegion wh2p;
-//	private TextureRegion wh3p;
-//	private TextureRegion bl1p;
-	Texture tru;
-	Texture trp;
+
 	private ArrayList<ButtonView> buttons;
 	private ArrayList<WhiteButtonView> whitebtns;
 	
@@ -39,24 +29,24 @@ public class ButtonContainer implements Drawable{
 	float c = 1.0f;
 	private SoundSystem ss;
 	
-	public ButtonContainer(SoundSystem ss, Texture tex1, Texture tex2, int tw, int th){
+	public ButtonContainer(SoundSystem ss, Texture tex_up, Texture tex_down, int tw, int th){
 		//super()
 		this.ss = ss;
 		createButtons();
 		texW = tw;
 		texH = th;
-		setTexts(tex1,tex2);
+		setTexts(tex_up, tex_down);
 		
 		
 	}
-	public void setTexts(Texture tex1, Texture tex2) {
-		tru = tex1;
-		trp = tex2;
+	public void setTexts(Texture tex_up, Texture tex_down) {
+
+
 		for(ButtonView bv: buttons) {
-			bv.setTextRegion(tru, trp);
+			bv.setTexes(tex_up, tex_down);
 		}
-		Rectangle r1 = new Rectangle(0,0,texW*(2.0f/19.0f),texH*(8.0f/12.0f));
-		Rectangle r2 =  new Rectangle(texW*(2.0f/19.0f),0,texW*(3.0f/19.0f),texH*(4.0f/12.0f));
+		Rectangle r1 = new Rectangle(1,0, 82,345);
+		Rectangle r2 =  new Rectangle(85,0,124, 167);
 		for(int i = 0; i< 8; i++) {
 			whitebtns.get(i).srcu = r1;
 			whitebtns.get(i).srcp = r1;
@@ -228,68 +218,71 @@ public class ButtonContainer implements Drawable{
 
 	private void updateButtons() {
 		//setting buttons' sizes
-		if(w!=0 && h!=0){
-			float cw = (float) (w/10.0);
-			float ch = (float) (h/5.0);
-			float l = (float) (cw * 2.0/3.0) * c; // c between 0.8 and 1.2 for say
-			float t = (float) (3.0f*ch * 8.0 / 9.0);//h*8/15
-			float wh1y = (float) (ch*7.0/3.0);
-			float wh1h = (float) (ch*8.0/3.0);
-			//float nw = (float) (cw /3.0);
-			whiteys[0].r1 = new Rectangle(0,wh1y,cw-l/2.0f, wh1h);
-			whiteys[0].r2 = new Rectangle(0,ch,cw,t/2.0f);
-			
-			whiteys[1].r1 = new Rectangle(l/2.0f+cw*1.0f,wh1y,cw-l, wh1h);
-			whiteys[1].r2 = new Rectangle(cw*1.0f,ch,cw,t/2.0f);
-			
-			whiteys[2].r1 = new Rectangle(l/2.0f+cw*2.0f,wh1y,cw-l/2.0f, wh1h);
-			whiteys[2].r2 = new Rectangle(cw*2.0f,ch,cw,t/2.0f);
-			
-			whiteys[3].r1 = new Rectangle(cw*3.0f,wh1y,cw-l/2.0f, wh1h);
-			whiteys[3].r2 = new Rectangle(cw*3.0f,ch,cw,t/2.0f);
-			
-			whiteys[4].r1 = new Rectangle(l/2.0f+cw*4.0f,wh1y,cw-l, wh1h);
-			whiteys[4].r2 = new Rectangle(cw*4.0f,ch,cw,t/2.0f);
-			
-			whiteys[5].r1 = new Rectangle(l/2.0f+cw*5.0f,wh1y,cw-l, wh1h);
-			whiteys[5].r2 = new Rectangle(cw*5.0f,ch,cw,t/2.0f);
-			
-			whiteys[6].r1 = new Rectangle(l/2.0f+cw*6.0f,wh1y,cw-l/2.0f, wh1h);
-			whiteys[6].r2 = new Rectangle(cw*6.0f,ch,cw,t/2.0f);
-			
-			whiteys[7].r1 = new Rectangle(cw*7.0f,wh1y,cw-l/2.0f, t);
-			whiteys[7].r2 = new Rectangle(cw*7.0f,ch,cw,t/2.0f);
-			
-			blacks[0].r1 = new Rectangle(cw-l/2.0f,wh1y,l,wh1h);
-			blacks[1].r1 = new Rectangle(2.0f*cw-l/2.0f,wh1y,l,wh1h);
-			blacks[2].r1 = new Rectangle(4.0f*cw-l/2.0f,wh1y,l,wh1h);
-			blacks[3].r1 = new Rectangle(5.0f*cw-l/2.0f,wh1y,l,wh1h);
-			blacks[4].r1 = new Rectangle(6.0f*cw-l/2.0f,wh1y,l,wh1h);
-			blacks[5].r1 = new Rectangle(8.0f*cw-l/2.0f,wh1y,l/2.0f,wh1h);
-			
-			chordpitches[0].r1 = new Rectangle(0,0,cw,ch);
-			chordpitches[1].r1 = new Rectangle(1.0f*cw,0,cw,ch);
-			chordpitches[2].r1 = new Rectangle(2.0f*cw,0,cw,ch);
-			chordpitches[3].r1 = new Rectangle(3.0f*cw,0,cw,ch);
-			chordpitches[4].r1 = new Rectangle(4.0f*cw,0,cw,ch);
-			chordpitches[5].r1 = new Rectangle(5.0f*cw,0,cw,ch);
-			chordpitches[6].r1 = new Rectangle(6.0f*cw,0,cw,ch);
-			chordpitches[7].r1 = new Rectangle(7.0f*cw,0,cw,ch);
-			
-			mods[0].r1 = new Rectangle(8.0f*cw,0,cw,ch);
-			mods[1].r1 = new Rectangle(9.0f*cw,0,cw,ch);
-			
-			vars[0].r1 = new Rectangle(8.0f*cw,3*ch,cw,ch);
-			vars[1].r1 = new Rectangle(9.0f*cw,3*ch,cw,ch);
-			vars[2].r1 = new Rectangle(8.0f*cw,2*ch,cw,ch);
-			vars[3].r1 = new Rectangle(9.0f*cw,2*ch,cw,ch);
-			
-			octs[0].r1 =new Rectangle(8.0f*cw,4*ch,cw,ch);
-			octs[1].r1 =new Rectangle(9.0f*cw,4*ch,cw,ch);
-			
-			bpms[0].r1 = new Rectangle(8.0f*cw,1.0f*ch,cw,ch);
-			bpms[1].r1 = new Rectangle(9.0f*cw,1.0f*ch,cw,ch);
+		if(w == 0 || h == 0) {
+			return;
 		}
+
+		float cw = (float) (w/10.0);
+		float ch = (float) (h/5.0);
+		float l = (float) (cw * 2.0/3.0) * c; // c between 0.8 and 1.2 for say
+		float t = (float) (3.0f*ch * 8.0 / 9.0);//h*8/15
+		float wh1y = (float) (ch*7.0/3.0);
+		float wh1h = (float) (ch*8.0/3.0);
+		//float nw = (float) (cw /3.0);
+		whiteys[0].r1 = new Rectangle(0,wh1y,cw-l/2.0f, wh1h);
+		whiteys[0].r2 = new Rectangle(0,ch,cw,t/2.0f);
+
+		whiteys[1].r1 = new Rectangle(l/2.0f+cw*1.0f,wh1y,cw-l, wh1h);
+		whiteys[1].r2 = new Rectangle(cw*1.0f,ch,cw,t/2.0f);
+
+		whiteys[2].r1 = new Rectangle(l/2.0f+cw*2.0f,wh1y,cw-l/2.0f, wh1h);
+		whiteys[2].r2 = new Rectangle(cw*2.0f,ch,cw,t/2.0f);
+
+		whiteys[3].r1 = new Rectangle(cw*3.0f,wh1y,cw-l/2.0f, wh1h);
+		whiteys[3].r2 = new Rectangle(cw*3.0f,ch,cw,t/2.0f);
+
+		whiteys[4].r1 = new Rectangle(l/2.0f+cw*4.0f,wh1y,cw-l, wh1h);
+		whiteys[4].r2 = new Rectangle(cw*4.0f,ch,cw,t/2.0f);
+
+		whiteys[5].r1 = new Rectangle(l/2.0f+cw*5.0f,wh1y,cw-l, wh1h);
+		whiteys[5].r2 = new Rectangle(cw*5.0f,ch,cw,t/2.0f);
+
+		whiteys[6].r1 = new Rectangle(l/2.0f+cw*6.0f,wh1y,cw-l/2.0f, wh1h);
+		whiteys[6].r2 = new Rectangle(cw*6.0f,ch,cw,t/2.0f);
+
+		whiteys[7].r1 = new Rectangle(cw*7.0f,wh1y,cw-l/2.0f, t);
+		whiteys[7].r2 = new Rectangle(cw*7.0f,ch,cw,t/2.0f);
+
+		blacks[0].r1 = new Rectangle(cw-l/2.0f,wh1y,l,wh1h);
+		blacks[1].r1 = new Rectangle(2.0f*cw-l/2.0f,wh1y,l,wh1h);
+		blacks[2].r1 = new Rectangle(4.0f*cw-l/2.0f,wh1y,l,wh1h);
+		blacks[3].r1 = new Rectangle(5.0f*cw-l/2.0f,wh1y,l,wh1h);
+		blacks[4].r1 = new Rectangle(6.0f*cw-l/2.0f,wh1y,l,wh1h);
+		blacks[5].r1 = new Rectangle(8.0f*cw-l/2.0f,wh1y,l/2.0f,wh1h);
+
+		chordpitches[0].r1 = new Rectangle(0,0,cw,ch);
+		chordpitches[1].r1 = new Rectangle(1.0f*cw,0,cw,ch);
+		chordpitches[2].r1 = new Rectangle(2.0f*cw,0,cw,ch);
+		chordpitches[3].r1 = new Rectangle(3.0f*cw,0,cw,ch);
+		chordpitches[4].r1 = new Rectangle(4.0f*cw,0,cw,ch);
+		chordpitches[5].r1 = new Rectangle(5.0f*cw,0,cw,ch);
+		chordpitches[6].r1 = new Rectangle(6.0f*cw,0,cw,ch);
+		chordpitches[7].r1 = new Rectangle(7.0f*cw,0,cw,ch);
+
+		mods[0].r1 = new Rectangle(8.0f*cw,0,cw,ch);
+		mods[1].r1 = new Rectangle(9.0f*cw,0,cw,ch);
+
+		vars[0].r1 = new Rectangle(8.0f*cw,3*ch,cw,ch);
+		vars[1].r1 = new Rectangle(9.0f*cw,3*ch,cw,ch);
+		vars[2].r1 = new Rectangle(8.0f*cw,2*ch,cw,ch);
+		vars[3].r1 = new Rectangle(9.0f*cw,2*ch,cw,ch);
+
+		octs[0].r1 =new Rectangle(8.0f*cw,4*ch,cw,ch);
+		octs[1].r1 =new Rectangle(9.0f*cw,4*ch,cw,ch);
+
+		bpms[0].r1 = new Rectangle(8.0f*cw,1.0f*ch,cw,ch);
+		bpms[1].r1 = new Rectangle(9.0f*cw,1.0f*ch,cw,ch);
+
 		
 	}
 

@@ -47,11 +47,11 @@ public class Time {
 		instance.pauseTime(value);
     }
 
-    static long current() {
+    public static long current() {
         return instance.currentTime;
     }
 
-    static long delta() {
+    public static long delta() {
         return instance.deltaTime;
     }
 

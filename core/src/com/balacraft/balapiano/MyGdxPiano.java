@@ -15,7 +15,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 
 
-
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonContainer;
@@ -30,6 +30,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 	private Texture tex1;
 	private Texture tex2;
 
+
 	@Override
 	public void create() {
 		float w = Gdx.graphics.getWidth();
@@ -38,8 +39,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 		camera = new OrthographicCamera(1, h / w);
 		batch = new SpriteBatch();
 
-		tex1 = new Texture(Gdx.files.internal("data/tex01ps.png"));
-		tex2 = new Texture(Gdx.files.internal("data/tex02ps.png"));
+		tex1 = new Texture(Gdx.files.internal("data/tex_unpressed.png"));
+		tex2 = new Texture(Gdx.files.internal("data/tex_pressed.png"));
 		tex1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		tex2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
@@ -54,6 +55,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
 		bc.setDimension(this.w, this.h);
+
 
 	}
 

@@ -5,7 +5,7 @@ import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.badlogic.gdx.math.Rectangle;
 
 public class ChordVariationButton  extends Button {
-	//maj, min, stb-re
+	//maj, min, etc
 	private int chord_variation;
 	private SoundSystem ss;
 	
