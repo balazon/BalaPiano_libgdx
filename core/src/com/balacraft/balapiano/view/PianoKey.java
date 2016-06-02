@@ -1,5 +1,6 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -12,8 +13,8 @@ import com.badlogic.gdx.math.Rectangle;
 public abstract class PianoKey extends Button{
 	protected Note note;
 	protected static SoundSystem ss;
-	protected boolean isPressed=false;
-	Rectangle rect;
+
+
 
 	private static int relOct = 0;
 	
@@ -21,10 +22,10 @@ public abstract class PianoKey extends Button{
 	public PianoKey(Note n,SoundSystem ss) {
 		int middle_c = ss.getSoundPlayer().getMiddleC();
         int octave = ss.getSoundPlayer().getDefaultOctave();
-        n.addtMiddleCAndDefaultOctave(middle_c, octave);
+        n.addMiddleCAndDefaultOctave(middle_c, octave);
 		this.note = n;
 		this.ss = ss;
-		rect = new Rectangle();
+
 
     }
 
@@ -46,28 +47,32 @@ public abstract class PianoKey extends Button{
 		}
 		else if(contains(x2,y2)) {
 			isPressed=true;
-			play();
+			fire();
 		}else {
-			rect.set(r1.x, r1.y, r1.width, r1.height);
-			if( Algorithms.lineSegmentIntersectsRect(rect, x1,y1,x2,y2)) {
-				play();
+			for(Sprite s : sprites_up) {
+			Rectangle rect = s.getBoundingRectangle();
+				if( Algorithms.lineSegmentIntersectsRect(rect, x1,y1,x2,y2)) {
+					fire();
+					break;
+				}
 			}
 		}
 	}
-	public void pressed(int x, int y) {
-		if(contains(x,y) && !isPressed) {
-			isPressed=true;
-            System.out.println("pianokey press");
-            play();
-		}
-	}
-	public void released(int x, int y) {
-		if(contains(x,y)) isPressed=false;
-	}
+//	public void pressed(int x, int y) {
+//		if(contains(x,y) && !isPressed) {
+//			isPressed=true;
+//            System.out.println("pianokey press");
+//            play();
+//		}
+//	}
+//	public void released(int x, int y) {
+//		if(contains(x,y)) isPressed=false;
+//	}
 
-	public void play() {
+	@Override
+	public void fire() {
 		note.setRelOct(relOct);
 		ss.addNote(note);
 	}
-	public boolean isPressed() { return isPressed;}
+	//public boolean isPressed() { return isPressed;}
 }

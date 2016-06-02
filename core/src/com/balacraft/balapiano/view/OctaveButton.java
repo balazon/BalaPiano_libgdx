@@ -11,20 +11,11 @@ public class OctaveButton extends Button{
 		this.ss = ss;
 		this.relOct = relOct;
 	}
-	
-	public void pressed(int x, int y) {
-		if(contains(x,y) && !isPressed) {
-			isPressed=true;
-			play();
-		}
-	}
-	public void released(int x, int y) {
-		if(contains(x,y)) isPressed=false;
-	}
 
-	public void play() {
+	@Override
+	public void fire() {
 		PianoKey.addRelOct(relOct);
 	}
-	public boolean isPressed() { return isPressed;}
+
 }
 

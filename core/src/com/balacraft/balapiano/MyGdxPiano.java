@@ -15,7 +15,7 @@ import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
 
 
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonContainer;
@@ -80,6 +80,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 		batch.begin();
 		bc.draw(batch);
 		batch.end();
+
+
+		//camera.
+
 	}
 
 	@Override

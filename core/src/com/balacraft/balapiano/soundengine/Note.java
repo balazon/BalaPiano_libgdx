@@ -38,7 +38,7 @@ public class Note {
         return absolutePitches.length;
     }
 
-	public void addtMiddleCAndDefaultOctave(int middle_c, int defaultOctave) {
+	public void addMiddleCAndDefaultOctave(int middle_c, int defaultOctave) {
 		for(int i = 0; i < absolutePitches.length; i++) {
 			absolutePitches[i] = absolutePitches[i] + middle_c + defaultOctave * 12;
 		}

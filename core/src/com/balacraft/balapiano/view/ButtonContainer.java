@@ -1,10 +1,13 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.Gdx;
 import com.balacraft.balapiano.soundengine.ChordPlayer;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -13,11 +16,13 @@ import com.badlogic.gdx.math.Rectangle;
 public class ButtonContainer implements Drawable{
 	
 
-	private ArrayList<ButtonView> buttons;
-	private ArrayList<WhiteButtonView> whitebtns;
+	List<Button> buttons;
+
+
+	private ArrayList<Button> whites;
+	private ArrayList<Button> blacks;
 	
-	private WhiteKey[] whiteys;
-	private BlackKey[] blacks;
+
 	private ChordPitchButton[] chordpitches;
 	private ModifierButton[] mods;
 	private ChordVariationButton[] vars;
@@ -29,8 +34,7 @@ public class ButtonContainer implements Drawable{
 	float c = 1.0f;
 	private SoundSystem ss;
 	
-	public ButtonContainer(SoundSystem ss, Texture tex_up, Texture tex_down, int tw, int th){
-		//super()
+	public ButtonContainer(SoundSystem ss, Texture tex_up, Texture tex_down, int tw, int th) {
 		this.ss = ss;
 		createButtons();
 		texW = tw;
@@ -41,70 +45,68 @@ public class ButtonContainer implements Drawable{
 	}
 	public void setTexts(Texture tex_up, Texture tex_down) {
 
-
-		for(ButtonView bv: buttons) {
-			bv.setTexes(tex_up, tex_down);
-		}
-		Rectangle r1 = new Rectangle(1,0, 82,345);
-		Rectangle r2 =  new Rectangle(85,0,124, 167);
-		for(int i = 0; i< 8; i++) {
-			whitebtns.get(i).srcu = r1;
-			whitebtns.get(i).srcp = r1;
-			whitebtns.get(i).srcu2 = r2;
-			whitebtns.get(i).srcp2 = r2;
-		}
-		Rectangle r3 =new Rectangle(texW*(5.0f/19.0f),0,texW*(2.0f/19.0f),texH*(8.0f/12.0f));
-		for(int i = 8; i< 14; i++) {
-			buttons.get(i).srcu = r3;
-			buttons.get(i).srcp = r3;
-		}
-		
-		//CDEF
-		for(int i = 0; i< 4; i++) {
-			Rectangle r4 =new Rectangle(texW*(7.0f/19.0f),i*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-			buttons.get(i+14).srcu = r4;
-			buttons.get(i+14).srcp = r4;
-		}
-		//GAHC
-		for(int i = 0; i< 4; i++) {
-			Rectangle r5 =new Rectangle(texW*(10.0f/19.0f),i*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-			buttons.get(i+18).srcu = r5;
-			buttons.get(i+18).srcp = r5;
-		}
-		//vars
-		Rectangle r6 =new Rectangle(texW*(13.0f/19.0f),1*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r7 =new Rectangle(texW*(16.0f/19.0f),1*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r8 =new Rectangle(texW*(13.0f/19.0f),2*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r9 =new Rectangle(texW*(16.0f/19.0f),2*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		//mods
-		Rectangle r10 =new Rectangle(texW*(13.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r11 =new Rectangle(texW*(16.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		//octs
-		Rectangle r12 =new Rectangle(texW*(13.0f/19.0f),0,texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r13 =new Rectangle(texW*(16.0f/19.0f),0,texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		//bpms
-		Rectangle r14 =new Rectangle(texW*(1.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		Rectangle r15 =new Rectangle(texW*(4.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
-		buttons.get(22).srcu = r10;
-		buttons.get(22).srcp = r10;
-		buttons.get(23).srcu = r11;
-		buttons.get(23).srcp = r11;
-		buttons.get(24).srcu = r6;
-		buttons.get(24).srcp = r6;
-		buttons.get(25).srcu = r7;
-		buttons.get(25).srcp = r7;
-		buttons.get(26).srcu = r8;
-		buttons.get(26).srcp = r8;
-		buttons.get(27).srcu = r9;
-		buttons.get(27).srcp = r9;
-		buttons.get(28).srcu = r12;
-		buttons.get(28).srcp = r12;
-		buttons.get(29).srcu = r13;
-		buttons.get(29).srcp = r13;
-		buttons.get(30).srcu = r14;
-		buttons.get(30).srcp = r14;
-		buttons.get(31).srcu = r15;
-		buttons.get(31).srcp = r15;
+		Rectangle rw1 = new Rectangle(1,0, 82,345);
+		Rectangle rw2 =  new Rectangle(85,0,124, 167);
+//		Button b = new Button(tex_up, tex_down).srcUp(r1, r2).srcDown(r1, r2);
+//
+//
+//		Rectangle rb =new Rectangle(texW*(5.0f/19.0f),0,texW*(2.0f/19.0f),texH*(8.0f/12.0f));
+//
+//
+//		for(int i = 0; i < whites.size(); i++) {
+//			whites.get(i).srcUp(rw1, rw2).srcDown(rw1, rw2);
+//		}
+//
+//		for(int i = 0; i < blacks.size(); i++) {
+//			blacks.get(i).srcUp(rb).srcDown(rb);
+//		}
+//
+//		//CDEF
+//		for(int i = 0; i< 4; i++) {
+//			Rectangle r4 =new Rectangle(texW*(7.0f/19.0f),i*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//			buttons.get(i+14).srcu = r4;
+//			buttons.get(i+14).srcp = r4;
+//		}
+//		//GAHC
+//		for(int i = 0; i< 4; i++) {
+//			Rectangle r5 =new Rectangle(texW*(10.0f/19.0f),i*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//			buttons.get(i+18).srcu = r5;
+//			buttons.get(i+18).srcp = r5;
+//		}
+//		//vars
+//		Rectangle r6 =new Rectangle(texW*(13.0f/19.0f),1*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r7 =new Rectangle(texW*(16.0f/19.0f),1*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r8 =new Rectangle(texW*(13.0f/19.0f),2*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r9 =new Rectangle(texW*(16.0f/19.0f),2*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		//mods
+//		Rectangle r10 =new Rectangle(texW*(13.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r11 =new Rectangle(texW*(16.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		//octs
+//		Rectangle r12 =new Rectangle(texW*(13.0f/19.0f),0,texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r13 =new Rectangle(texW*(16.0f/19.0f),0,texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		//bpms
+//		Rectangle r14 =new Rectangle(texW*(1.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		Rectangle r15 =new Rectangle(texW*(4.0f/19.0f),3*texH*(1.0f/4.0f),texW*(3.0f/19.0f),texH*(1.0f/4.0f));
+//		buttons.get(22).srcu = r10;
+//		buttons.get(22).srcp = r10;
+//		buttons.get(23).srcu = r11;
+//		buttons.get(23).srcp = r11;
+//		buttons.get(24).srcu = r6;
+//		buttons.get(24).srcp = r6;
+//		buttons.get(25).srcu = r7;
+//		buttons.get(25).srcp = r7;
+//		buttons.get(26).srcu = r8;
+//		buttons.get(26).srcp = r8;
+//		buttons.get(27).srcu = r9;
+//		buttons.get(27).srcp = r9;
+//		buttons.get(28).srcu = r12;
+//		buttons.get(28).srcp = r12;
+//		buttons.get(29).srcu = r13;
+//		buttons.get(29).srcp = r13;
+//		buttons.get(30).srcu = r14;
+//		buttons.get(30).srcp = r14;
+//		buttons.get(31).srcu = r15;
+//		buttons.get(31).srcp = r15;
 		
 		
 	}
@@ -130,7 +132,7 @@ public class ButtonContainer implements Drawable{
 	
 	public void setDimension(int w, int h) {
 		this.w=w; this.h=h;
-		updateButtons();
+		resizeButtons();
 	}
 	
 	private void createButtons() {
@@ -216,7 +218,8 @@ public class ButtonContainer implements Drawable{
 	}
 	
 
-	private void updateButtons() {
+	private void resizeButtons() {
+		Gdx.graphics.getDensity()
 		//setting buttons' sizes
 		if(w == 0 || h == 0) {
 			return;

@@ -15,10 +15,8 @@ public class ChordVariationButton  extends Button {
 	}
 
 	@Override
-	public void pressed(int x, int y) {
-		if (this.r1.contains(x, y)) {
-			ss.setChordVariation(chord_variation);
-		}
+	public void fire() {
+		ss.setChordVariation(chord_variation);
 	}
 
 	@Override
