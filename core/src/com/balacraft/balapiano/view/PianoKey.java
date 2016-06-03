@@ -1,6 +1,7 @@
 package com.balacraft.balapiano.view;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -10,14 +11,14 @@ import com.badlogic.gdx.math.Rectangle;
 
 
 
-public abstract class PianoKey extends Button{
+public class PianoKey extends Button{
 	protected Note note;
 	protected static SoundSystem ss;
 
 
 
 	private static int relOct = 0;
-	
+
 	
 	public PianoKey(Note n,SoundSystem ss) {
 		int middle_c = ss.getSoundPlayer().getMiddleC();
@@ -28,6 +29,7 @@ public abstract class PianoKey extends Button{
 
 
     }
+
 
 
 	public static void addRelOct(int rel) {

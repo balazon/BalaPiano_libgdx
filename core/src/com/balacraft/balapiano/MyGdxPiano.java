@@ -19,6 +19,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonContainer;
+import com.balacraft.balapiano.view.KeyboardView;
 
 public class MyGdxPiano extends ApplicationAdapter {
 	private OrthographicCamera camera;
@@ -31,10 +32,12 @@ public class MyGdxPiano extends ApplicationAdapter {
 	private Texture tex2;
 
 
+	KeyboardView kv;
+
 	@Override
 	public void create() {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+		w = Gdx.graphics.getWidth();
+		h = Gdx.graphics.getHeight();
 
 		camera = new OrthographicCamera(1, h / w);
 		batch = new SpriteBatch();
@@ -52,9 +55,12 @@ public class MyGdxPiano extends ApplicationAdapter {
 		ss = new SoundSystem();
 		ss.initSoundPlayer();
 
+		kv = new KeyboardView(ss, tex1, tex2);
+		kv.init();
+		kv.resize(w, h);
 
-		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
-		bc.setDimension(this.w, this.h);
+//		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
+//		bc.setDimension(this.w, this.h);
 
 
 	}
@@ -78,7 +84,9 @@ public class MyGdxPiano extends ApplicationAdapter {
 		camera.update();
 		batch.disableBlending();
 		batch.begin();
-		bc.draw(batch);
+
+		kv.draw(batch);
+		//bc.draw(batch);
 		batch.end();
 
 
@@ -91,7 +99,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 		w = width;
 		h = height;
 		camera.setToOrtho(true, w, h);
-		bc.setDimension(w, h);
+		kv.resize(w, h);
+		//bc.setDimension(w, h);
 	}
 
 	@Override
@@ -136,7 +145,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 			int y2 = h - y;
 			//System.out.println("touchdown x "+x+"   y "+(h-y));
             System.out.println("press");
-            bc.pressed(x2, y2);
+            //bc.pressed(x2, y2);
 			x1[pointer] = x2;
 			y1[pointer] = y2;
 			return false;
@@ -144,7 +153,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		@Override
 		public boolean touchUp(int x, int y, int pointer, int button) {
-			bc.released(x, h - y);
+			//bc.released(x, h - y);
 			return false;
 		}
 
@@ -153,7 +162,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 			int x2 = x;
 			int y2 = h - y;
 			//System.out.println("drag x "+x2+"   y "+y2);
-			bc.draggedFromTo(x1[pointer], y1[pointer], x2, y2);
+			//bc.draggedFromTo(x1[pointer], y1[pointer], x2, y2);
 			x1[pointer] = x2;
 			y1[pointer] = y2;
 			return false;

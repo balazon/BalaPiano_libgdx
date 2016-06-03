@@ -20,36 +20,35 @@ public class Button implements Drawable {
 	boolean isPressed = false;
 
 	public Button() {
+
 		//this(null, null, null, null, null);
 	}
-	//TODO do it with sprites!
 
 	public Button(Sprite up, Sprite down) {
-		setSpritesUp(up).setSpritesUp(down);
+		setSpritesUp(up);
+		setSpritesUp(down);
 	}
 
-	public Button setSpritesUp(Sprite... up) {
+
+	public void setSpritesUp(Sprite... up) {
 		sprites_up = new Sprite[up.length];
 		for(int i = 0; i < up.length; i++) {
 			sprites_up[i] = new Sprite(up[i]);
 		}
-		return this;
 	}
-	public Button setSpritesDown(Sprite... down) {
+	public void setSpritesDown(Sprite... down) {
 		sprites_down = new Sprite[down.length];
 		for(int i = 0; i < down.length; i++) {
 			sprites_down[i] = new Sprite(down[i]);
 		}
-		return this;
 	}
 
-	public Button setTransform(Rectangle... tr) {
+	public void setTransform(Rectangle... tr) {
 		for(int i = 0; i < sprites_up.length; i++) {
 			Rectangle r = tr[i];
 			sprites_up[i].setBounds(r.x, r.y, r.width, r.height);
 			sprites_down[i].setBounds(r.x, r.y, r.width, r.height);
 		}
-		return this;
 	}
 
 //	public Button(Texture unpressed, Texture pressed, Rectangle tr, Rectangle src_up, Rectangle src_down) {
