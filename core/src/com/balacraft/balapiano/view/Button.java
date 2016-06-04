@@ -1,5 +1,6 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -26,7 +27,7 @@ public class Button implements Drawable {
 
 	public Button(Sprite up, Sprite down) {
 		setSpritesUp(up);
-		setSpritesUp(down);
+		setSpritesDown(down);
 	}
 
 
@@ -51,59 +52,12 @@ public class Button implements Drawable {
 		}
 	}
 
-//	public Button(Texture unpressed, Texture pressed, Rectangle tr, Rectangle src_up, Rectangle src_down) {
-//		this.texture_unpressed = unpressed;
-//		this.texture_pressed = pressed;
-//		setTransform(tr);
-//		setSrcUp(src_up);
-//		setSrcDown(src_down);
-//	}
-//
-//	public Button setTex(Texture up, Texture down) {
-//		texture_unpressed = up;
-//		texture_pressed = down;
-//		return this;
-//	}
-//
-//	public Button setTransform(Rectangle... tr) {
-//		transform = tr;
-//		return this;
-//	}
-//
-//	public Button setSrcUp(Rectangle... src_up) {
-//		src_unpressed = src_up;
-//		return this;
-//	}
-//
-//	public Button setSrcDown(Rectangle... src_down) {
-//		src_pressed = src_down;
-//		return this;
-//	}
 
-
-
-//	public Button(Rectangle clickArea, Texture unpressed, Texture pressed, Rectangle texRegion_unpressed, Rectangle texRegion_pressed) {
-//		this.clickArea = new ArrayList<Rectangle>();
-//		this.clickArea.add(clickArea);
-//		this.texture_unpressed = unpressed;
-//		this.texture_pressed = pressed;
-//		texAre
-//	}
 	public boolean isPressed() {
 		return isPressed;
 	}
 
 
-//	public void addClickRectangle(Rectangle r) {
-//		clickArea.add(r);
-//	}
-
-//	public void resize(Rectangle[] r) {
-//		int min = Math.min(transform.length, r.length);
-//		for(int i = 0; i < min; i++) {
-//			transform[0].set(r[i]);
-//		}
-//	}
 	public boolean contains(int x, int y) {
 		for(Sprite s : sprites_up) {
 			Rectangle r = s.getBoundingRectangle();
@@ -112,13 +66,6 @@ public class Button implements Drawable {
 			}
 		}
 		return false;
-//
-//		for(Rectangle r : transform) {
-//			if(r.contains(x, y)) {
-//				return true;
-//			}
-//		}
-//		return false;
 	}
 	
 
@@ -137,23 +84,12 @@ public class Button implements Drawable {
 	public void fire() { }
 
 
-	public void draw(SpriteBatch batch) {
+	public void draw(SpriteBatch batch, Camera cam) {
 
 		Sprite[] sprites = isPressed() ? sprites_down : sprites_up;
 		for(Sprite s : sprites) {
 			s.draw(batch);
 		}
-
-//		int min = Math.min(transform.length, Math.min(src_unpressed.length, src_pressed.length));
-//		boolean pressed = isPressed();
-//		Texture tex = pressed ? texture_pressed : texture_unpressed;
-//		Rectangle[] texSources = pressed ? src_pressed : src_unpressed;
-//		for(int i = 0; i < min; i++) {
-//			Rectangle r = transform[i];
-//			Rectangle src = texSources[i];
-//			batch.draw(tex,r.x,r.y,r.width,r.height,
-//					(int)src.x,(int)src.y,(int)src.width,(int)src.height,false,false);
-//		}
 
 	}
 

@@ -11,10 +11,9 @@ import com.badlogic.gdx.math.Rectangle;
 
 
 
-public class PianoKey extends Button{
+public class PianoKey extends ButtonActor{
 	protected Note note;
 	protected static SoundSystem ss;
-
 
 
 	private static int relOct = 0;
@@ -30,8 +29,6 @@ public class PianoKey extends Button{
 
     }
 
-
-
 	public static void addRelOct(int rel) {
 		SoundPlayer sp = ss.getSoundPlayer();
 		int range_min = sp.getRangeMin();
@@ -42,8 +39,9 @@ public class PianoKey extends Button{
 		if(rel > 0 && relOct +rel <= maxRelOct) relOct+=rel;
 		else if(rel <0 && relOct+rel >= minRelOct) relOct+=rel;
 	}
-	
-	public void draggedFromTo(int x1, int y1, int x2, int y2) {
+
+
+	public void draggedFromTo(float x1, float y1, float x2, float y2) {
 		if(isPressed) {
 			if(contains(x1,y1) && !contains(x2,y2)) isPressed=false;
 		}
@@ -60,21 +58,11 @@ public class PianoKey extends Button{
 			}
 		}
 	}
-//	public void pressed(int x, int y) {
-//		if(contains(x,y) && !isPressed) {
-//			isPressed=true;
-//            System.out.println("pianokey press");
-//            play();
-//		}
-//	}
-//	public void released(int x, int y) {
-//		if(contains(x,y)) isPressed=false;
-//	}
 
 	@Override
 	public void fire() {
 		note.setRelOct(relOct);
 		ss.addNote(note);
 	}
-	//public boolean isPressed() { return isPressed;}
+
 }

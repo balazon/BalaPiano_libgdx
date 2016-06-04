@@ -1,18 +1,14 @@
 package com.balacraft.balapiano.view;
 
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -21,9 +17,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KeyboardView implements Drawable {//extends Group {
 
-	List<Button> buttons;
+public class KeyboardTable extends Table {
+
+	List<PianoKey> buttons;
 
 	Rectangle clip;
 
@@ -43,14 +40,14 @@ public class KeyboardView implements Drawable {//extends Group {
 	//float[] botSpaces = {23.0f, 24.0f, 23.0f, 24.0f, 23.0f, 23.0f, 24.0f};
 	float[] botSpaces = {23.0f, 0.f, 24.0f, 0.f, 23.0f, 24.0f, 0.f, 23.0f, 0.f, 23.0f, 0.f, 24.0f};
 
-	public KeyboardView(SoundSystem ss, Texture tex_up, Texture tex_down) {
+	public KeyboardTable(SoundSystem ss, Texture tex_up, Texture tex_down) {
 		this.ss = ss;
 		this.tex_up = tex_up;
 		this.tex_down = tex_down;
 	}
 
 	//TODO set textures for a button with a pitch
-	void setTex(int pitch, Button btn) {
+	void setTex(int pitch, ButtonActor btn) {
 
 		int middle_c = ss.getSoundPlayer().getMiddleC();
 		int relPitch = (pitch - middle_c) % 12;
@@ -71,7 +68,7 @@ public class KeyboardView implements Drawable {//extends Group {
 	}
 
 	public void init() {
-		buttons = new ArrayList<Button>();
+		buttons = new ArrayList<PianoKey>();
 
 		SoundPlayer sp = ss.getSoundPlayer();
 
@@ -113,18 +110,30 @@ public class KeyboardView implements Drawable {//extends Group {
 
 		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
 
-			PianoKey pk = new PianoKey(new Note(i, 0, 1000, false), ss);
-			//setTex(i, pk);
 
-			//buttons.add(pk);
+			PianoKey pk = new PianoKey(new Note(i, 0, 1000, false), ss);
+			setTex(i, pk);
+
+			buttons.add(pk);
+
+			this.add(pk);
 		}
 
+
+
 		s = new Sprite(tex_up, 0, 0, 820, 512);
+
+		setClip(true);
 
 
 	}
 
 	public void resize(Rectangle bounds, float xmin, float xmax) {
+		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
+		pad(clip.x, clip.y, 0, 0);
+		setWidth(clip.width);
+		setHeight(clip.height);
+
 		//Gdx.graphics.getDensity()
 		SoundPlayer sp = ss.getSoundPlayer();
 		int middle_c = ss.getSoundPlayer().getMiddleC();
@@ -144,7 +153,7 @@ public class KeyboardView implements Drawable {//extends Group {
 			rtop.width = topSpaces[relPitch] * unit;
 			rbot.width = botSpaces[relPitch] * unit;
 
-			Button b = buttons.get(i - sp.getRangeMin());
+			ButtonActor b = buttons.get(i - sp.getRangeMin());
 			b.setTransform(rtop, rbot);
 
 
@@ -160,45 +169,5 @@ public class KeyboardView implements Drawable {//extends Group {
 
 	Sprite s;
 
-	@Override
-	public void draw(SpriteBatch batch, Camera cam) {
-		//com.badlogic.gdx.scenes.scene2d.utils.Drawable
-		//DrawableSprite
-		//SpriteDrawable
 
-		//s.draw(batch);
-		com.badlogic.gdx.scenes.scene2d.ui.Button bb;
-
-		bb.hit(0, 0, true);
-		Rectangle scissors = new Rectangle();
-		Actor a;
-
-		Image
-
-
-		ScissorStack.calculateScissors(cam, batch.getTransformMatrix(), clip, scissors);
-		ScissorStack.pushScissors(scissors);
-
-		Group g;
-		//g.
-
-		//batch.draw(...);
-		s.draw(batch);
-		batch.flush();
-		ScissorStack.popScissors();
-//
-//		Group g;
-//		Actor a;
-//		a.clipBegin()
-
-//		//TODO investigate this function
-//		g.clipBegin()
-//		s.
-//		//s.draw(batch);
-//		for(Button b : buttons) {
-//			//batch.draw();
-//			b.draw(batch);
-//		}
-
-	}
 }
