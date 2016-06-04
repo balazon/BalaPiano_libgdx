@@ -121,18 +121,19 @@ public class KeyboardTable extends Table {
 
 
 
-		s = new Sprite(tex_up, 0, 0, 820, 512);
+		//s = new Sprite(tex_up, 0, 0, 820, 512);
 
-		setClip(true);
+		//setClip(true);
 
 
 	}
 
 	public void resize(Rectangle bounds, float xmin, float xmax) {
+		setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
-		pad(clip.x, clip.y, 0, 0);
-		setWidth(clip.width);
-		setHeight(clip.height);
+		//pad(clip.x, clip.y, 0, 0);
+		//setWidth(clip.width);
+		//setHeight(clip.height);
 
 		//Gdx.graphics.getDensity()
 		SoundPlayer sp = ss.getSoundPlayer();
@@ -154,14 +155,16 @@ public class KeyboardTable extends Table {
 			rbot.width = botSpaces[relPitch] * unit;
 
 			ButtonActor b = buttons.get(i - sp.getRangeMin());
-			b.setTransform(rtop, rbot);
+
+			//b.setTransform(rtop, rbot);
 
 
 			rtop.x += rtop.width;
 			rbot.x += rbot.width;
 
 		}
-		s.setBounds(0, 0, 800, 500);
+		this.setBounds(0, 0, 800, 500);
+		//s.setBounds(0, 0, 800, 500);
 		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
 		//clip = new Rectangle(10, 10, 800, 500);
 	}

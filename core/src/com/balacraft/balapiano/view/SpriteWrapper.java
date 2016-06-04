@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.*;
 public class SpriteWrapper implements com.badlogic.gdx.scenes.scene2d.utils.Drawable {
 	@Override
 	public void draw(Batch batch, float x, float y, float width, float height) {
-		Sprite s;
-		s.text
+
+
 	}
 
 	@Override

@@ -169,11 +169,11 @@ public class KeyboardView implements Drawable {//extends Group {
 		//s.draw(batch);
 		com.badlogic.gdx.scenes.scene2d.ui.Button bb;
 
-		bb.hit(0, 0, true);
+		//bb.hit(0, 0, true);
 		Rectangle scissors = new Rectangle();
 		Actor a;
 
-		Image
+		//Image
 
 
 		ScissorStack.calculateScissors(cam, batch.getTransformMatrix(), clip, scissors);

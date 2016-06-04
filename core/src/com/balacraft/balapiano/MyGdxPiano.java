@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
@@ -16,11 +17,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
+import com.balacraft.balapiano.view.ButtonActor;
 import com.balacraft.balapiano.view.ButtonContainer;
 import com.balacraft.balapiano.view.KeyboardTable;
 import com.balacraft.balapiano.view.KeyboardView;
@@ -41,6 +45,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	KeyboardTable kt;
 
+	Actor a1, a2;
+
+	Group g;
+
 	public static MyGdxPiano instance;
 
 	@Override
@@ -56,12 +64,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 		tex1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		tex2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-		InputMultiplexer impx = new InputMultiplexer();
-		impx.addProcessor(new GestureDetector(new MyGestureListener()));
-		impx.addProcessor(stage);
-		impx.addProcessor(new MyInputProcessor());
 
-		Gdx.input.setInputProcessor(impx);
 
 		stage = new Stage(new ScreenViewport());
 
@@ -70,10 +73,56 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		kt = new KeyboardTable(ss, tex1, tex2);
 
-		kt.init();
-		kt.resize(new Rectangle(), 0, 0);
+		//stage.addActor(kt);
 
-		stage.addActor(kt);
+		kt.init();
+		kt.resize(new Rectangle(0, 0, w, h), 0, 0);
+
+//		kt.resize(new Rectangle(), 0, 0);
+
+		Texture tex = new Texture(Gdx.files.internal("badlogic.jpg"));
+		Sprite s = new Sprite(tex);
+		//s.setBounds(0, 0, 100, 100);
+		//s.setBounds(100,100,100,100);
+		ButtonActor test = new ButtonActor();
+
+		test.setSpritesUp(s, s);
+		test.setSpritesDown(s, s);
+
+
+		test.setSpriteTransform(new Rectangle(0, 100, 100, 100), new Rectangle(100, 0, 100, 100));
+
+
+		test.setBounds(100, 0, 200, 200);
+		test.setRotation(30.0f);
+
+
+
+
+		//test.setTransform(new Rectangle(100, 100, 100, 100));
+		stage.addActor(test);
+
+
+
+		InputMultiplexer impx = new InputMultiplexer();
+		impx.addProcessor(new GestureDetector(new MyGestureListener()));
+		impx.addProcessor(stage);
+		impx.addProcessor(new MyInputProcessor());
+
+		Gdx.input.setInputProcessor(impx);
+
+
+//		g = new Group();
+//		stage.addActor(g);
+//
+//		a1 = new Actor();
+//		a2 = new Actor();
+//
+//		g.addActor(a1);
+//		g.addActor(a2);
+
+
+
 //		bc = new ButtonContainer(ss, tex1, tex2, 798, 504);
 //		bc.setDimension(this.w, this.h);
 
@@ -126,7 +175,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		stage.getViewport().update(width, height, true);
 
-		kt.resize(new Rectangle(), 0, 0);
+		kt.resize(new Rectangle(0, 0, w, h), 0, 0);
 		//kv.resize(w, h);
 		//bc.setDimension(w, h);
 	}
