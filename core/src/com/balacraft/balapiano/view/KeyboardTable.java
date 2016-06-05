@@ -65,6 +65,7 @@ public class KeyboardTable extends Table {
 		}
 
 
+
 	}
 
 	public void init() {
@@ -75,17 +76,21 @@ public class KeyboardTable extends Table {
 
 		List<Integer> wholeTones = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
 
-		float h = 512.0f;
-		//ratio of h for top rect
+		//source height
+		float sh = 512.0f;
+		//ratio of sh for top rect
 		float p = 0.6f;
 
-		float w = 820;
-		float unit = w / 164.0f;
+		//source width
+		float sw = 820;
+		float unit = sw / 164.0f;
 
+		//top height, x, width
 		float th = 340.0f;
 		float tx = 0;
 		float tw = 0;
 
+		//bottom x, width
 		float bx = 0;
 		float bw = 0;
 
@@ -100,25 +105,70 @@ public class KeyboardTable extends Table {
 			topSpritesUp[i] = new Sprite(tex_up, (int)tx, 0, (int)tw, (int)th);
 			topSpritesDown[i] = new Sprite(tex_down, (int)tx, 0, (int)tw, (int)th);
 
-			botSpritesUp[i] = wholeTones.contains(i) ? new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(h - th)) : null;
-			botSpritesDown[i] = wholeTones.contains(i) ? new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(h - th)) : null;
+			botSpritesUp[i] = wholeTones.contains(i) ? new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(sh - th)) : null;
+			botSpritesDown[i] = wholeTones.contains(i) ? new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(sh - th)) : null;
+
 
 			tx += tw;
 			bx += bw;
 		}
 
 
+
+		int middle_c = sp.getMiddleC();
+		float kh = 100;
+		float kw = 0;
+		float ph = 0.6f;
+		unit = 1.0f;
+		//absolute positions
+		Rectangle rtop = new Rectangle(0, kh * (1.0f - ph), 0, kh * ph);
+		Rectangle rbot = new Rectangle(0, 0, 0, kh * (1.0f - ph));
 		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
-
-
 			PianoKey pk = new PianoKey(new Note(i, 0, 1000, false), ss);
 			setTex(i, pk);
 
 			buttons.add(pk);
+			this.addActor(pk);
 
-			this.add(pk);
+
+
+			int relPitch = (i - middle_c) % 12;
+			if(relPitch < 0) {
+				relPitch += 12;
+			}
+			pk.setName("PianoKey " + i);
+			rtop.width = topSpaces[relPitch] * unit;
+			rbot.width = botSpaces[relPitch] * unit;
+
+			Rectangle bounds = new Rectangle(rtop);
+			if(wholeTones.contains(relPitch)) {
+				bounds.merge(rbot);
+			}
+			rtop.x -= bounds.x;
+			rtop.y -= bounds.y;
+			rbot.x -= bounds.x;
+			rbot.y -= bounds.y;
+
+			if(wholeTones.contains(relPitch)) {
+				pk.setSpriteLocalTransform(rtop, rbot);
+			} else {
+				pk.setSpriteLocalTransform(rtop);
+			}
+
+			pk.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+
+			rtop.x += bounds.x;
+			rtop.y += bounds.y;
+			rbot.x += bounds.x;
+			rbot.y += bounds.y;
+			kw = bounds.x + bounds.width;
+			rtop.x += rtop.width;
+			rbot.x += rbot.width;
 		}
 
+
+
+		//setSpriteLocalTransform
 
 
 		//s = new Sprite(tex_up, 0, 0, 820, 512);
@@ -128,45 +178,49 @@ public class KeyboardTable extends Table {
 
 	}
 
+	public void setMaskBounds(Rectangle maskBounds) {
+
+	}
+
 	public void resize(Rectangle bounds, float xmin, float xmax) {
 		setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
-		//pad(clip.x, clip.y, 0, 0);
-		//setWidth(clip.width);
-		//setHeight(clip.height);
-
-		//Gdx.graphics.getDensity()
-		SoundPlayer sp = ss.getSoundPlayer();
-		int middle_c = ss.getSoundPlayer().getMiddleC();
-
-		float unit = 820.0f / 164.0f;
-
-		float h = 600.0f;
-		float p = 0.6f;
-
-		Rectangle rtop = new Rectangle(0, h * (1.0f - p), 0, h * p);
-		Rectangle rbot = new Rectangle(0, 0, 0, h * (1.0f - p));
-		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
-			int relPitch = (i - middle_c) % 12;
-			if(relPitch < 0) {
-				relPitch += 12;
-			}
-			rtop.width = topSpaces[relPitch] * unit;
-			rbot.width = botSpaces[relPitch] * unit;
-
-			ButtonActor b = buttons.get(i - sp.getRangeMin());
-
-			//b.setTransform(rtop, rbot);
-
-
-			rtop.x += rtop.width;
-			rbot.x += rbot.width;
-
-		}
-		this.setBounds(0, 0, 800, 500);
-		//s.setBounds(0, 0, 800, 500);
-		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
-		//clip = new Rectangle(10, 10, 800, 500);
+//		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
+//		//pad(clip.x, clip.y, 0, 0);
+//		//setWidth(clip.width);
+//		//setHeight(clip.height);
+//
+//		//Gdx.graphics.getDensity()
+//		SoundPlayer sp = ss.getSoundPlayer();
+//		int middle_c = ss.getSoundPlayer().getMiddleC();
+//
+//		float unit = 820.0f / 164.0f;
+//
+//		float h = 600.0f;
+//		float p = 0.6f;
+//
+//		Rectangle rtop = new Rectangle(0, h * (1.0f - p), 0, h * p);
+//		Rectangle rbot = new Rectangle(0, 0, 0, h * (1.0f - p));
+//		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
+//			int relPitch = (i - middle_c) % 12;
+//			if(relPitch < 0) {
+//				relPitch += 12;
+//			}
+//			rtop.width = topSpaces[relPitch] * unit;
+//			rbot.width = botSpaces[relPitch] * unit;
+//
+//			ButtonActor b = buttons.get(i - sp.getRangeMin());
+//
+//			//b.setTransform(rtop, rbot);
+//
+//
+//			rtop.x += rtop.width;
+//			rbot.x += rbot.width;
+//
+//		}
+//		this.setBounds(0, 0, 800, 500);
+//		//s.setBounds(0, 0, 800, 500);
+//		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
+//		//clip = new Rectangle(10, 10, 800, 500);
 	}
 
 

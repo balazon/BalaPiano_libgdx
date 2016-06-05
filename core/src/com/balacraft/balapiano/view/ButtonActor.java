@@ -25,6 +25,8 @@ public class ButtonActor extends Group {
 
 	ClickListener clickListener;
 
+	public static boolean[] pointerPressed = new boolean[6];
+
 	//protected Rectangle[] rects;
 
 	public ButtonActor() {
@@ -42,16 +44,25 @@ public class ButtonActor extends Group {
 	private void initialize () {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
+			public float[] x1 = new float[6];
+			public float[] y1 = new float[6];
+			//public boolean[] pointerPressed = new boolean[6];
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				x1[pointer] = x;
+				y1[pointer] = y;
+				pointerPressed[pointer] = true;
 				if(contains(x, y) && !isPressed()) {
+
 					isPressed = true;
 					fire();
+					return true;
 				}
 				return false;
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				pointerPressed[pointer] = false;
 				if(contains(x, y)) {
 					isPressed = false;
 				}
@@ -59,9 +70,32 @@ public class ButtonActor extends Group {
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				float x1 = MyGdxPiano.instance.x1[pointer];
-				float y1 = MyGdxPiano.instance.y1[pointer];
-				draggedFromTo(x1, y1, x, y);
+				//pointerPressed[pointer] = true;
+				System.out.println("drag: " + ButtonActor.this.toString());
+				draggedFromTo(x1[pointer], y1[pointer], x, y);
+
+				x1[pointer] = x;
+				y1[pointer] = y;
+			}
+
+			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+				if(pointer < 0) {
+					return;
+				}
+				if(pointerPressed[pointer] && !isPressed()) {
+				//if(!isPressed()) {
+					isPressed = true;
+					fire();
+				}
+
+			}
+
+			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+				if(pointer < 0) {
+					return;
+				}
+				isPressed = false;
 			}
 		});
 
@@ -72,7 +106,7 @@ public class ButtonActor extends Group {
 		Actor h = super.hit(x, y, touchable);
 		boolean c = contains(x,y);
 
-		System.out.println(String.format("h == this : %b, c: %b, %.2f %.2f", h == this, c, x, y));
+		//System.out.println(String.format("h == this : %b, c: %b, %.2f %.2f", h == this, c, x, y));
 		if(h == this) {
 			c = contains(x,y);
 			//System.out.println(String.format("hit, c: %.2f %.2f, %b", x, y, c));
@@ -98,7 +132,7 @@ public class ButtonActor extends Group {
 		}
 	}
 
-	public void setSpriteTransform(Rectangle... tr) {
+	public void setSpriteLocalTransform(Rectangle... tr) {
 		Rectangle bounds = new Rectangle(tr[0]);
 		for(int i = 0; i < sprites_up.length; i++) {
 			Rectangle r = tr[i];

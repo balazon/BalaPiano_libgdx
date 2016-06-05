@@ -73,7 +73,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		kt = new KeyboardTable(ss, tex1, tex2);
 
-		//stage.addActor(kt);
+		stage.addActor(kt);
 
 		kt.init();
 		kt.resize(new Rectangle(0, 0, w, h), 0, 0);
@@ -90,17 +90,19 @@ public class MyGdxPiano extends ApplicationAdapter {
 		test.setSpritesDown(s, s);
 
 
-		test.setSpriteTransform(new Rectangle(0, 100, 100, 100), new Rectangle(100, 0, 100, 100));
+		test.setSpriteLocalTransform(new Rectangle(0, 100, 100, 100), new Rectangle(100, 0, 100, 100));
 
 
 		test.setBounds(100, 0, 200, 200);
-		test.setRotation(30.0f);
+		test.setPosition(100, 0);
+		test.setScale(0.4f, 0.4f);
+		test.setRotation(00.0f);
 
 
 
 
 		//test.setTransform(new Rectangle(100, 100, 100, 100));
-		stage.addActor(test);
+		//stage.addActor(test);
 
 
 

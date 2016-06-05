@@ -22,7 +22,7 @@ public class PianoKey extends ButtonActor{
 	public PianoKey(Note n,SoundSystem ss) {
 		int middle_c = ss.getSoundPlayer().getMiddleC();
         int octave = ss.getSoundPlayer().getDefaultOctave();
-        n.addMiddleCAndDefaultOctave(middle_c, octave);
+        //n.addMiddleCAndDefaultOctave(middle_c, octave);
 		this.note = n;
 		this.ss = ss;
 
