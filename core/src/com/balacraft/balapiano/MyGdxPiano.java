@@ -20,12 +20,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonActor;
 import com.balacraft.balapiano.view.ButtonContainer;
+import com.balacraft.balapiano.view.KeyboardNavigator;
 import com.balacraft.balapiano.view.KeyboardTable;
 import com.balacraft.balapiano.view.KeyboardView;
 
@@ -44,6 +46,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 
 	KeyboardTable kt;
+	KeyboardNavigator kn;
 
 	Actor a1, a2;
 
@@ -83,7 +86,13 @@ public class MyGdxPiano extends ApplicationAdapter {
 		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
 
 
-//		kt.resize(new Rectangle(), 0, 0);
+		kn = new KeyboardNavigator(kt , ss, tex1);
+		stage.addActor(kn);
+
+		kn.init();
+		kn.resize(0, 0, 800.0f, h * 0.15f);
+
+
 
 		Texture tex = new Texture(Gdx.files.internal("badlogic.jpg"));
 		Sprite s = new Sprite(tex);
@@ -186,6 +195,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//h * 0.7
 		centerX = 506.0f;
 		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
+
+		kn.resize(w * 0.45f - w * 0.35f, h * 0.85f, w * 0.7f, h * 0.15f);
+//		kn.resize(0, 0, 800.0f, h * 0.15f);
+
 		//camera.setToOrtho(true, w, h);
 
 		stage.getViewport().update(width, height, true);
