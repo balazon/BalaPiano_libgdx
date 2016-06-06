@@ -79,11 +79,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 		stage.addActor(kt);
 
 		kt.init();
-		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
-		float c = 1.0f;
 
-		centerX = 506.0f;
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
 
 
 		kn = new KeyboardNavigator(kt , ss, tex1);
@@ -91,7 +87,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		kn.init();
 		kn.resize(0, 0, 800.0f, h * 0.15f);
-
+		//kn.resizeKeyboardTable(w, h);
 
 
 		Texture tex = new Texture(Gdx.files.internal("badlogic.jpg"));
@@ -109,10 +105,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		test.setBounds(100, 0, 200, 200);
 		test.setPosition(100, 0);
-		test.setScale(0.4f, 0.4f);
+		test.setScale(1.4f, 1.4f);
 		test.setRotation(00.0f);
 
-
+		test.setDebug(true);
 
 
 		//test.setTransform(new Rectangle(100, 100, 100, 100));
@@ -182,22 +178,15 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//camera.
 
 	}
-	float centerX;
 	@Override
 	public void resize(int width, int height) {
 		w = width;
 		h = height;
-		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
-		float c = 1.0f;
-		c = 100 / (0.7f * h * conversionRateToMilliMeter);
 
-		//h * 0.7f * c = 100
-		//h * 0.7
-		centerX = 506.0f;
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
+		kn.resizeKeyboardTable(w, h);
 
 		kn.resize(w * 0.45f - w * 0.35f, h * 0.85f, w * 0.7f, h * 0.15f);
-//		kn.resize(0, 0, 800.0f, h * 0.15f);
+		//kn.resize(0, 0, 800.0f, h * 0.15f);
 
 		//camera.setToOrtho(true, w, h);
 

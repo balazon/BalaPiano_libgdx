@@ -42,6 +42,7 @@ public class ButtonActor extends Group {
 	}
 
 	private void initialize () {
+		setDebug(true);
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public float[] x1 = new float[6];
@@ -115,7 +116,7 @@ public class ButtonActor extends Group {
 			//System.out.println(String.format("hit, c: %.2f %.2f, %b", x, y, c));
 		}
 		if(h == this && contains(x, y)) {
-			System.out.println(String.format("%s, contains, hit: %.2f %.2f", toString(), x, y ));
+			//System.out.println(String.format("%s, contains, hit: %.2f %.2f", toString(), x, y ));
 			return this;
 		}
 		return null;

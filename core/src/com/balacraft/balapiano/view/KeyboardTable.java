@@ -194,7 +194,9 @@ public class KeyboardTable extends Table {
 
 	}
 
+
 	public void resize(float x, float y, float width, float height, float centerX, float keyboardWidth) {
+		setDebug(true);
 		//setBounds(0,0,1012, 100);
 		setBounds(x, y, width, height);
 		//setClip(true);
@@ -206,7 +208,7 @@ public class KeyboardTable extends Table {
 //		float maskW = 1012.0f - 23 - 28;
 //		float maskH = 100.0f;
 
-		float maskX = centerX - keyboardWidth * 0.5f;
+		float maskX = centerX * 1012.0f - keyboardWidth * 0.5f;
 		float maskY = 0;
 		float maskW = keyboardWidth;
 		float maskH = 100.0f;
