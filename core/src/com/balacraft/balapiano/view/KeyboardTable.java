@@ -2,6 +2,7 @@ package com.balacraft.balapiano.view;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -24,6 +25,7 @@ public class KeyboardTable extends Table {
 
 	Rectangle clip;
 
+	Table buttonParent;
 
 	SoundSystem ss;
 
@@ -44,6 +46,8 @@ public class KeyboardTable extends Table {
 		this.ss = ss;
 		this.tex_up = tex_up;
 		this.tex_down = tex_down;
+
+		setClip(true);
 	}
 
 	//TODO set textures for a button with a pitch
@@ -113,7 +117,9 @@ public class KeyboardTable extends Table {
 			bx += bw;
 		}
 
-
+		buttonParent = new Table();
+		buttonParent.setClip(true);
+		addActor(buttonParent);
 
 		int middle_c = sp.getMiddleC();
 		float kh = 100;
@@ -128,7 +134,7 @@ public class KeyboardTable extends Table {
 			setTex(i, pk);
 
 			buttons.add(pk);
-			this.addActor(pk);
+			buttonParent.addActor(pk);
 
 
 
@@ -173,58 +179,50 @@ public class KeyboardTable extends Table {
 
 		//s = new Sprite(tex_up, 0, 0, 820, 512);
 
-		//setClip(true);
+
 
 
 	}
 
 	public void setMaskBounds(Rectangle maskBounds) {
+		setBounds(0, 0, maskBounds.width, maskBounds.height);
+		buttonParent.setBounds(-maskBounds.x, -maskBounds.y, 1012,100);
+		//pad(0,5,0,0);
+		//pad(0, 23, 0, 0);
+		buttonParent.pad(100 - maskBounds.y - maskBounds.height, maskBounds.x, maskBounds.y, 1012 - maskBounds.x - maskBounds.width);
+
 
 	}
 
-	public void resize(Rectangle bounds, float xmin, float xmax) {
-		setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-//		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
-//		//pad(clip.x, clip.y, 0, 0);
-//		//setWidth(clip.width);
-//		//setHeight(clip.height);
-//
-//		//Gdx.graphics.getDensity()
-//		SoundPlayer sp = ss.getSoundPlayer();
-//		int middle_c = ss.getSoundPlayer().getMiddleC();
-//
-//		float unit = 820.0f / 164.0f;
-//
-//		float h = 600.0f;
-//		float p = 0.6f;
-//
-//		Rectangle rtop = new Rectangle(0, h * (1.0f - p), 0, h * p);
-//		Rectangle rbot = new Rectangle(0, 0, 0, h * (1.0f - p));
-//		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
-//			int relPitch = (i - middle_c) % 12;
-//			if(relPitch < 0) {
-//				relPitch += 12;
-//			}
-//			rtop.width = topSpaces[relPitch] * unit;
-//			rbot.width = botSpaces[relPitch] * unit;
-//
-//			ButtonActor b = buttons.get(i - sp.getRangeMin());
-//
-//			//b.setTransform(rtop, rbot);
-//
-//
-//			rtop.x += rtop.width;
-//			rbot.x += rbot.width;
-//
-//		}
-//		this.setBounds(0, 0, 800, 500);
-//		//s.setBounds(0, 0, 800, 500);
-//		clip = new Rectangle(0, 720 - 500 + 0, 800, 500);
-//		//clip = new Rectangle(10, 10, 800, 500);
+	public void resize(float x, float y, float width, float height, float centerX, float keyboardWidth) {
+		//setBounds(0,0,1012, 100);
+		setBounds(x, y, width, height);
+		//setClip(true);
+		setScale(width / keyboardWidth, height / 100.0f);
+
+
+//		float maskX = 23;
+//		float maskY = 0;
+//		float maskW = 1012.0f - 23 - 28;
+//		float maskH = 100.0f;
+
+		float maskX = centerX - keyboardWidth * 0.5f;
+		float maskY = 0;
+		float maskW = keyboardWidth;
+		float maskH = 100.0f;
+
+
+		buttonParent.setBounds(-maskX, -maskY, maskW + maskX,100);
+		buttonParent.pad(100 - maskY - maskH, maskX, maskY, 0);
+
 	}
 
 
 	Sprite s;
 
 
+
+	public void draw (Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
+	}
 }

@@ -63,6 +63,8 @@ public class PianoKey extends ButtonActor{
 	public void fire() {
 		note.setRelOct(relOct);
 		ss.addNote(note);
+
+		System.out.println(this.toString() + " fired");
 	}
 
 }

@@ -76,7 +76,12 @@ public class MyGdxPiano extends ApplicationAdapter {
 		stage.addActor(kt);
 
 		kt.init();
-		kt.resize(new Rectangle(0, 0, w, h), 0, 0);
+		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
+		float c = 1.0f;
+
+		centerX = 506.0f;
+		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
+
 
 //		kt.resize(new Rectangle(), 0, 0);
 
@@ -168,18 +173,24 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//camera.
 
 	}
-
+	float centerX;
 	@Override
 	public void resize(int width, int height) {
 		w = width;
 		h = height;
+		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
+		float c = 1.0f;
+		c = 100 / (0.7f * h * conversionRateToMilliMeter);
+
+		//h * 0.7f * c = 100
+		//h * 0.7
+		centerX = 506.0f;
+		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
 		//camera.setToOrtho(true, w, h);
 
 		stage.getViewport().update(width, height, true);
 
-		kt.resize(new Rectangle(0, 0, w, h), 0, 0);
-		//kv.resize(w, h);
-		//bc.setDimension(w, h);
+		//kt.setMaskBounds(new Rectangle(23, 20, 1012 - 23, 60));
 	}
 
 	@Override

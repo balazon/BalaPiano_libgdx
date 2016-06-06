@@ -52,7 +52,7 @@ public class ButtonActor extends Group {
 				x1[pointer] = x;
 				y1[pointer] = y;
 				pointerPressed[pointer] = true;
-				if(contains(x, y) && !isPressed()) {
+				if(contains(x, y) && !isPressed) {
 
 					isPressed = true;
 					fire();
@@ -71,7 +71,7 @@ public class ButtonActor extends Group {
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				//pointerPressed[pointer] = true;
-				System.out.println("drag: " + ButtonActor.this.toString());
+				//System.out.println("drag: " + ButtonActor.this.toString());
 				draggedFromTo(x1[pointer], y1[pointer], x, y);
 
 				x1[pointer] = x;
@@ -79,11 +79,13 @@ public class ButtonActor extends Group {
 			}
 
 			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-				System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+				//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
 				if(pointer < 0) {
 					return;
 				}
-				if(pointerPressed[pointer] && !isPressed()) {
+
+				if(pointerPressed[pointer] && !isPressed) {
+					//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
 				//if(!isPressed()) {
 					isPressed = true;
 					fire();
@@ -113,7 +115,7 @@ public class ButtonActor extends Group {
 			//System.out.println(String.format("hit, c: %.2f %.2f, %b", x, y, c));
 		}
 		if(h == this && contains(x, y)) {
-			//System.out.println(String.format("contains, hit: %.2f %.2f", x, y ));
+			System.out.println(String.format("%s, contains, hit: %.2f %.2f", toString(), x, y ));
 			return this;
 		}
 		return null;
@@ -183,7 +185,7 @@ public class ButtonActor extends Group {
 		if (isTransform()) applyTransform(batch, computeTransform());
 		//drawChildren(batch, parentAlpha);
 
-		Sprite[] sprites = isPressed() ? sprites_down : sprites_up;
+		Sprite[] sprites = isPressed ? sprites_down : sprites_up;
 		for(Sprite s : sprites) {
 			s.draw(batch);
 			//batch.draw(s, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
