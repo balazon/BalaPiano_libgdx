@@ -42,7 +42,7 @@ public class ButtonActor extends Group {
 	}
 
 	private void initialize () {
-		setDebug(true);
+		//setDebug(true);
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public float[] x1 = new float[6];

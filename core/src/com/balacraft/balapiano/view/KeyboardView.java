@@ -4,6 +4,7 @@ package com.balacraft.balapiano.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -21,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KeyboardView implements Drawable {//extends Group {
+public class KeyboardView extends Group {
 
 	List<Button> buttons;
 
@@ -161,44 +162,11 @@ public class KeyboardView implements Drawable {//extends Group {
 	Sprite s;
 
 	@Override
-	public void draw(SpriteBatch batch, Camera cam) {
-		//com.badlogic.gdx.scenes.scene2d.utils.Drawable
-		//DrawableSprite
-		//SpriteDrawable
-
-		//s.draw(batch);
-		com.badlogic.gdx.scenes.scene2d.ui.Button bb;
-
-		//bb.hit(0, 0, true);
-		Rectangle scissors = new Rectangle();
-		Actor a;
-
-		//Image
+	public void draw (Batch batch, float parentAlpha) {
+		if (isTransform()) applyTransform(batch, computeTransform());
 
 
-		ScissorStack.calculateScissors(cam, batch.getTransformMatrix(), clip, scissors);
-		ScissorStack.pushScissors(scissors);
-
-		Group g;
-		//g.
-
-		//batch.draw(...);
-		s.draw(batch);
-		batch.flush();
-		ScissorStack.popScissors();
-//
-//		Group g;
-//		Actor a;
-//		a.clipBegin()
-
-//		//TODO investigate this function
-//		g.clipBegin()
-//		s.
-//		//s.draw(batch);
-//		for(Button b : buttons) {
-//			//batch.draw();
-//			b.draw(batch);
-//		}
+		if (isTransform()) resetTransform(batch);
 
 	}
 }

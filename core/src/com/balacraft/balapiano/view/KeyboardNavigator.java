@@ -65,7 +65,7 @@ public class KeyboardNavigator extends Group {
 		});
 
 		rangeOffset = 0.0f;
-		rangeLength = 6.0f;
+		rangeLength = 6.0f + (28.0f / 164.0f);
 
 		setDebug(true);
 
@@ -92,9 +92,11 @@ public class KeyboardNavigator extends Group {
 		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
 		float c = 1.0f;
 		c = 100 / (0.7f * h * conversionRateToMilliMeter);
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 0.9f * c);
+		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
 
-		float mw = 1.0f / kt.getScaleX() * rangeLength * 820.0f;
+		float mw =  (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f * rangeLength * 820.0f;
+
+
 		maskArea.setBounds(rangeLength * centerX * 820.0f - mw * 0.5f, 0, mw, 512.0f);
 		maskArea.debug();
 
