@@ -184,14 +184,10 @@ public class ButtonActor extends Group {
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		if (isTransform()) applyTransform(batch, computeTransform());
-		//drawChildren(batch, parentAlpha);
 
 		Sprite[] sprites = isPressed ? sprites_down : sprites_up;
 		for(Sprite s : sprites) {
 			s.draw(batch);
-			//batch.draw(s, getX(), getY(), getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
-			//batch.draw(s, getX(), getY(), getOriginX(), getOriginY(), getWidth())
-			//batch.draw()
 
 		}
 		if (isTransform()) resetTransform(batch);

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -134,6 +135,8 @@ public class KeyboardView extends Group {
 
 		float h = 600.0f;
 		float p = 0.6f;
+
+		//NinePatch
 
 		Rectangle rtop = new Rectangle(0, h * (1.0f - p), 0, h * p);
 		Rectangle rbot = new Rectangle(0, 0, 0, h * (1.0f - p));

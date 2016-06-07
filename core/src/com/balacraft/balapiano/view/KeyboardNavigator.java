@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -36,6 +38,7 @@ public class KeyboardNavigator extends Group {
 		this.tex = tex;
 	}
 
+
 	public void init() {
 
 		octave = new Sprite(tex, 0, 0, 820, 512);
@@ -44,8 +47,7 @@ public class KeyboardNavigator extends Group {
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				//System.out.println("KN click!");
-				centerX = x / (rangeLength * 820);
+				centerX = MathUtils.clamp(x / (rangeLength * 820), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 				resizeKeyboardTable();
 				return true;
 			}
@@ -53,7 +55,7 @@ public class KeyboardNavigator extends Group {
 
 			}
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				centerX = x / (rangeLength * 820);
+				centerX = MathUtils.clamp(x / (rangeLength * 820), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 				resizeKeyboardTable();
 			}
 			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
@@ -69,7 +71,14 @@ public class KeyboardNavigator extends Group {
 
 		setDebug(true);
 
-		maskArea = new Actor();
+		maskArea = new Actor() {
+			Texture texture = new Texture(Gdx.files.internal("navigator.png"));
+			@Override
+			public void draw (Batch batch, float parentAlpha) {
+				batch.draw(texture, getX(), getY(), getWidth(), getHeight());
+			}
+		};
+		maskArea.setTouchable(Touchable.disabled);
 		maskArea.setDebug(true);
 		addActor(maskArea);
 
@@ -83,6 +92,7 @@ public class KeyboardNavigator extends Group {
 	}
 
 	int windowW, windowH;
+	float keyboardWidth;
 	public void resizeKeyboardTable() {
 		resizeKeyboardTable(windowW, windowH);
 	}
@@ -94,7 +104,11 @@ public class KeyboardNavigator extends Group {
 		c = 100 / (0.7f * h * conversionRateToMilliMeter);
 		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
 
-		float mw =  (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f * rangeLength * 820.0f;
+
+		keyboardWidth = 0.3f;
+		keyboardWidth = (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f;
+		float mw = rangeLength * 820.0f * keyboardWidth;
+		//float mw =  (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f * rangeLength * 820.0f;
 
 
 		maskArea.setBounds(rangeLength * centerX * 820.0f - mw * 0.5f, 0, mw, 512.0f);
@@ -105,6 +119,8 @@ public class KeyboardNavigator extends Group {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
+
+
 
 		if (isTransform()) applyTransform(batch, computeTransform());
 
@@ -126,6 +142,8 @@ public class KeyboardNavigator extends Group {
 
 
 		if (isTransform()) resetTransform(batch);
+
+		super.draw(batch, parentAlpha);
 	}
 
 
