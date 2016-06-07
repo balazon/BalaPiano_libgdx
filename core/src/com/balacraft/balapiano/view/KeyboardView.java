@@ -1,20 +1,11 @@
 package com.balacraft.balapiano.view;
 
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -51,7 +42,7 @@ public class KeyboardView extends Group {
 		this.tex_down = tex_down;
 	}
 
-	//TODO set textures for a button with a pitch
+
 	void setTex(int pitch, Button btn) {
 
 		int middle_c = ss.getSoundPlayer().getMiddleC();

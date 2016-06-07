@@ -1,17 +1,11 @@
 package com.balacraft.balapiano.view;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import org.w3c.dom.css.Rect;
-
-import java.util.ArrayList;
-import java.util.List;
-
-public class Button implements Drawable {
+public class Button {
 
 	//Rectangle[] transform;
 

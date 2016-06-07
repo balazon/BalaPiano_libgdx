@@ -1,20 +1,14 @@
 package com.balacraft.balapiano.view;
 
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.TimeUtils;
-import com.balacraft.balapiano.MyGdxPiano;
 
 public class ButtonActor extends Group {
 
@@ -27,11 +21,10 @@ public class ButtonActor extends Group {
 
 	public static boolean[] pointerPressed = new boolean[6];
 
-	//protected Rectangle[] rects;
+
 
 	public ButtonActor() {
 		initialize();
-		//this(null, null, null, null, null);
 	}
 
 	public ButtonActor(Sprite up, Sprite down) {
@@ -47,7 +40,6 @@ public class ButtonActor extends Group {
 		addListener(clickListener = new ClickListener() {
 			public float[] x1 = new float[6];
 			public float[] y1 = new float[6];
-			//public boolean[] pointerPressed = new boolean[6];
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				x1[pointer] = x;
@@ -71,8 +63,6 @@ public class ButtonActor extends Group {
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				//pointerPressed[pointer] = true;
-				//System.out.println("drag: " + ButtonActor.this.toString());
 				draggedFromTo(x1[pointer], y1[pointer], x, y);
 
 				x1[pointer] = x;
@@ -165,17 +155,6 @@ public class ButtonActor extends Group {
 	}
 
 
-//	public void pressed(int x, int y) {
-//		if(contains(x, y) && !isPressed()) {
-//			isPressed = true;
-//			fire();
-//		}
-//	}
-//	public void released(int x, int y) {
-//		if(contains(x, y)) {
-//			isPressed = false;
-//		}
-//	}
 	public void draggedFromTo(float x1, float y1, float x2, float y2) { }
 	public void fire() { }
 

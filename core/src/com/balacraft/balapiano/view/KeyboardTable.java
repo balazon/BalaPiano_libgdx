@@ -1,15 +1,10 @@
 package com.balacraft.balapiano.view;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -22,8 +17,6 @@ import java.util.List;
 public class KeyboardTable extends Table {
 
 	List<PianoKey> buttons;
-
-	Rectangle clip;
 
 	Table buttonParent;
 
@@ -50,7 +43,7 @@ public class KeyboardTable extends Table {
 		setClip(true);
 	}
 
-	//TODO set textures for a button with a pitch
+
 	void setTex(int pitch, ButtonActor btn) {
 
 		int middle_c = ss.getSoundPlayer().getMiddleC();
@@ -172,26 +165,8 @@ public class KeyboardTable extends Table {
 			rbot.x += rbot.width;
 		}
 
-
-
 		//setSpriteLocalTransform
-
-
 		//s = new Sprite(tex_up, 0, 0, 820, 512);
-
-
-
-
-	}
-
-	public void setMaskBounds(Rectangle maskBounds) {
-		setBounds(0, 0, maskBounds.width, maskBounds.height);
-		buttonParent.setBounds(-maskBounds.x, -maskBounds.y, 1012,100);
-		//pad(0,5,0,0);
-		//pad(0, 23, 0, 0);
-		buttonParent.pad(100 - maskBounds.y - maskBounds.height, maskBounds.x, maskBounds.y, 1012 - maskBounds.x - maskBounds.width);
-
-
 	}
 
 
@@ -199,7 +174,7 @@ public class KeyboardTable extends Table {
 		setDebug(true);
 		//setBounds(0,0,1012, 100);
 		setBounds(x, y, width, height);
-		//setClip(true);
+
 		setScale(width / keyboardWidth, height / 100.0f);
 
 

@@ -3,14 +3,9 @@ package com.balacraft.balapiano.soundengine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Disposable;
 
-import java.math.MathContext;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class SoundPlayer implements Disposable{
 

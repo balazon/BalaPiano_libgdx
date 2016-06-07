@@ -2,8 +2,6 @@ package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-import com.badlogic.gdx.math.Rectangle;
-
 public class ChordVariationButton  extends Button {
 	//maj, min, etc
 	private int chord_variation;

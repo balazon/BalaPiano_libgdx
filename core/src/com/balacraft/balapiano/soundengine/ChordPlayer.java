@@ -1,8 +1,5 @@
 package com.balacraft.balapiano.soundengine;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ChordPlayer {
 	boolean on = false;
 	SoundSystem ss;

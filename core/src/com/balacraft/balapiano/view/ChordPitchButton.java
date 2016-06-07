@@ -2,8 +2,6 @@ package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-import com.badlogic.gdx.math.Rectangle;
-
 public class ChordPitchButton extends Button{
 	private int pitch;
 	private char id;

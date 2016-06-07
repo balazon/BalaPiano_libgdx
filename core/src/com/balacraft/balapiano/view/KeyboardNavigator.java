@@ -6,12 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
@@ -58,12 +56,7 @@ public class KeyboardNavigator extends Group {
 				centerX = MathUtils.clamp(x / (rangeLength * 820), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 				resizeKeyboardTable();
 			}
-			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-				//System.out.println("KN enter");
-			}
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-				//System.out.println("KN exit");
-			}
+
 		});
 
 		rangeOffset = 0.0f;
@@ -119,9 +112,6 @@ public class KeyboardNavigator extends Group {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
-
-
-
 		if (isTransform()) applyTransform(batch, computeTransform());
 
 
