@@ -28,7 +28,7 @@ public class Algorithms {
 		if(rect.x<=x_i && x_i<= rect.x+rect.width) return true;
 		return false;
 	}
-	public static  short Code(float x_,float y_,Rectangle rect) {
+	private static short Code(float x_,float y_,Rectangle rect) {
 		short c1,c2,c3,c4;
 		c1 = (short) ((y_ > rect.y+rect.height)? 1: 0);
 		c2 = (short) ((x_> rect.x+rect.width)? 1: 0);

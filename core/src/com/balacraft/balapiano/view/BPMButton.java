@@ -2,7 +2,7 @@ package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-public class BPMButton extends Button{
+public class BPMButton extends ButtonActor{
 
 	protected SoundSystem ss;
 	protected boolean isPressed=false;
@@ -13,18 +13,11 @@ public class BPMButton extends Button{
 		this.relBPMfact = relBPMfact;
 	}
 	
-	public void pressed(int x, int y) {
-		if(contains(x,y) && !isPressed) {
-			isPressed=true;
-			play();
-		}
-	}
-	public void released(int x, int y) {
-		if(contains(x,y)) isPressed=false;
-	}
 
-	public void play() {
+	@Override
+	public void fire() {
 		ss.setChordBPM(relBPMfact);
 	}
-	public boolean isPressed() { return isPressed;}
+
+
 }

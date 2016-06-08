@@ -2,7 +2,7 @@ package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-public class ChordPitchButton extends Button{
+public class ChordPitchButton extends ButtonActor{
 	private int pitch;
 	private char id;
 	SoundSystem ss;
@@ -22,8 +22,9 @@ public class ChordPitchButton extends Button{
 	public boolean isPressed() {
 		return ss.isChordPitchPressed(pitch);
 	}
+
 	@Override
-	public void draggedFromTo(int x1, int y1, int x2, int y2) {
+	public void draggedFromTo(float x1, float y1, float x2, float y2) {
 
 	}
 

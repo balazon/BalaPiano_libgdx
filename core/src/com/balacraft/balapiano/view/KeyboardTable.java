@@ -1,10 +1,16 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
@@ -15,6 +21,7 @@ import java.util.List;
 
 
 public class KeyboardTable extends Table {
+	ClickListener clickListener;
 
 	List<PianoKey> buttons;
 
@@ -41,6 +48,7 @@ public class KeyboardTable extends Table {
 		this.tex_down = tex_down;
 
 		setClip(true);
+		//setTransform(true);
 	}
 
 
@@ -66,6 +74,63 @@ public class KeyboardTable extends Table {
 	}
 
 	public void init() {
+
+		setTouchable(Touchable.enabled);
+		addListener(clickListener = new ClickListener() {
+			Vector2 temp = new Vector2(0,0);
+			Vector2 temp2 = new Vector2(0,0);
+			public float[] x1 = new float[6];
+			public float[] y1 = new float[6];
+
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.printf("kt td: %.2f %.2f\n", x, y);
+				x1[pointer] = x;
+				y1[pointer] = y;
+				return true;
+				//return true;
+//				x1[pointer] = x;
+//				y1[pointer] = y;
+//				pointerPressed[pointer] = true;
+//				if(contains(x, y) && !isPressed) {
+//
+//					isPressed = true;
+//					fire();
+//					return true;
+//				}
+//				return false;
+			}
+
+			//TODO keys stay pressed after dragpress, investigate multitouch button holding/pressing
+//			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+////				pointerPressed[pointer] = false;
+////				if(contains(x, y)) {
+////					isPressed = false;
+////				}
+//
+//			}
+
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+
+				//System.out.println(String.format(" drag: %.2f %.2f", x, y));
+				if(!isOver(event.getListenerActor(), x, y)) {
+					return;
+				}
+				for(PianoKey p : buttons) {
+					buttonParent.parentToLocalCoordinates(temp.set(x1[pointer],y1[pointer]));
+					p.parentToLocalCoordinates(temp);
+					buttonParent.parentToLocalCoordinates(temp2.set(x, y));
+					p.parentToLocalCoordinates(temp2);
+					p.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y);
+				}
+				x1[pointer] = x;
+				y1[pointer] = y;
+//				draggedFromTo(x1[pointer], y1[pointer], x, y);
+//
+//				x1[pointer] = x;
+//				y1[pointer] = y;
+			}
+		});
+
 		buttons = new ArrayList<PianoKey>();
 
 		SoundPlayer sp = ss.getSoundPlayer();
@@ -111,7 +176,9 @@ public class KeyboardTable extends Table {
 		}
 
 		buttonParent = new Table();
-		buttonParent.setClip(true);
+		buttonParent.debug();
+		buttonParent.setTransform(true);
+
 		addActor(buttonParent);
 
 		int middle_c = sp.getMiddleC();
@@ -171,27 +238,13 @@ public class KeyboardTable extends Table {
 
 
 	public void resize(float x, float y, float width, float height, float centerX, float keyboardWidth) {
-		setDebug(true);
-		//setBounds(0,0,1012, 100);
+		debug();
+
 		setBounds(x, y, width, height);
-
-		setScale(width / keyboardWidth, height / 100.0f);
-
-
-//		float maskX = 23;
-//		float maskY = 0;
-//		float maskW = 1012.0f - 23 - 28;
-//		float maskH = 100.0f;
-
-		float maskX = centerX * 1012.0f - keyboardWidth * 0.5f;
-		float maskY = 0;
-		float maskW = keyboardWidth;
-		float maskH = 100.0f;
-
-
-		buttonParent.setBounds(-maskX, -maskY, maskW + maskX,100);
-		buttonParent.pad(100 - maskY - maskH, maskX, maskY, 0);
-
+		float scaleX = width / keyboardWidth;
+		float scaleY = scaleX;
+		buttonParent.setBounds(width * 0.5f - centerX * 1012 * scaleX, height * 0.5f - 50 * scaleY, 1012, 100);
+		buttonParent.setScale(scaleX, scaleX);
 	}
 
 

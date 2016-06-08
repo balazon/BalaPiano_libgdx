@@ -12,7 +12,9 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
@@ -70,6 +72,16 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//kn.resizeKeyboardTable(w, h);
 
 
+
+
+		Table tp = new Table();
+		tp.setClip(true);
+		tp.setBounds(0, 0, 500, 500);
+		tp.setScale(0.5f, 0.5f);
+		tp.setRotation(0.0f);
+		//stage.addActor(tp);
+		tp.debug();
+
 		Texture tex = new Texture(Gdx.files.internal("badlogic.jpg"));
 		Sprite s = new Sprite(tex);
 		//s.setBounds(0, 0, 100, 100);
@@ -83,16 +95,16 @@ public class MyGdxPiano extends ApplicationAdapter {
 		test.setSpriteLocalTransform(new Rectangle(0, 100, 100, 100), new Rectangle(100, 0, 100, 100));
 
 
-		test.setBounds(100, 0, 200, 200);
-		test.setPosition(100, 0);
+		test.setBounds(250, 0, 200, 200);
+
 		test.setScale(1.4f, 1.4f);
 		test.setRotation(00.0f);
 
-		test.setDebug(true);
+		test.debug();
 
 
 		//test.setTransform(new Rectangle(100, 100, 100, 100));
-		//stage.addActor(test);
+		tp.addActor(test);
 
 
 

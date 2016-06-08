@@ -2,7 +2,7 @@ package com.balacraft.balapiano.view;
 
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-public class ChordVariationButton  extends Button {
+public class ChordVariationButton  extends ButtonActor {
 	//maj, min, etc
 	private int chord_variation;
 	private SoundSystem ss;
@@ -23,7 +23,7 @@ public class ChordVariationButton  extends Button {
 	}
 
 	@Override
-	public void draggedFromTo(int x1, int y1, int x2, int y2) {
+	public void draggedFromTo(float x1, float y1, float x2, float y2) {
 
 	}
 

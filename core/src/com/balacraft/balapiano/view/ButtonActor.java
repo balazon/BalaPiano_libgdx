@@ -62,34 +62,34 @@ public class ButtonActor extends Group {
 
 			}
 
-			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				draggedFromTo(x1[pointer], y1[pointer], x, y);
-
-				x1[pointer] = x;
-				y1[pointer] = y;
-			}
-
-			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-				//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
-				if(pointer < 0) {
-					return;
-				}
-
-				if(pointerPressed[pointer] && !isPressed) {
-					//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
-				//if(!isPressed()) {
-					isPressed = true;
-					fire();
-				}
-
-			}
-
-			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-				if(pointer < 0) {
-					return;
-				}
-				isPressed = false;
-			}
+//			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+//				draggedFromTo(x1[pointer], y1[pointer], x, y);
+//
+//				x1[pointer] = x;
+//				y1[pointer] = y;
+//			}
+//
+//			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+////				//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+////				if(pointer < 0) {
+////					return;
+////				}
+////
+////				if(pointerPressed[pointer] && !isPressed) {
+////					//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+////				//if(!isPressed()) {
+////					isPressed = true;
+////					fire();
+////				}
+//
+//			}
+//
+//			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+////				if(pointer < 0) {
+////					return;
+////				}
+////				isPressed = false;
+//			}
 		});
 
 	}

@@ -72,7 +72,7 @@ public class KeyboardNavigator extends Group {
 			}
 		};
 		maskArea.setTouchable(Touchable.disabled);
-		maskArea.setDebug(true);
+		maskArea.debug();
 		addActor(maskArea);
 
 	}
@@ -95,13 +95,14 @@ public class KeyboardNavigator extends Group {
 		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
 		float c = 1.0f;
 		c = 100 / (0.7f * h * conversionRateToMilliMeter);
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
+		kt.resize(50, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
 
 
 		keyboardWidth = 0.3f;
 		keyboardWidth = (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f;
 		float mw = rangeLength * 820.0f * keyboardWidth;
-		//float mw =  (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f * rangeLength * 820.0f;
+		//mw = 506.0f;
+
 
 
 		maskArea.setBounds(rangeLength * centerX * 820.0f - mw * 0.5f, 0, mw, 512.0f);
