@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ButtonActor extends Group {
@@ -15,9 +16,10 @@ public class ButtonActor extends Group {
 	protected Sprite[] sprites_up;
 	protected Sprite[] sprites_down;
 
-	boolean isPressed = false;
+	protected boolean pressed = false;
 
 	ClickListener clickListener;
+
 
 	public static boolean[] pointerPressed = new boolean[6];
 
@@ -35,7 +37,6 @@ public class ButtonActor extends Group {
 	}
 
 	private void initialize () {
-		//setDebug(true);
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public float[] x1 = new float[6];
@@ -45,9 +46,9 @@ public class ButtonActor extends Group {
 				x1[pointer] = x;
 				y1[pointer] = y;
 				pointerPressed[pointer] = true;
-				if(contains(x, y) && !isPressed) {
+				if(contains(x, y) && !ButtonActor.this.isPressed()) {
 
-					isPressed = true;
+					pressed = true;
 					fire();
 					return true;
 				}
@@ -57,7 +58,7 @@ public class ButtonActor extends Group {
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				pointerPressed[pointer] = false;
 				if(contains(x, y)) {
-					isPressed = false;
+					pressed = false;
 				}
 
 			}
@@ -140,7 +141,7 @@ public class ButtonActor extends Group {
 
 
 	public boolean isPressed() {
-		return isPressed;
+		return pressed;
 	}
 
 
@@ -164,12 +165,11 @@ public class ButtonActor extends Group {
 	public void draw (Batch batch, float parentAlpha) {
 		if (isTransform()) applyTransform(batch, computeTransform());
 
-		Sprite[] sprites = isPressed ? sprites_down : sprites_up;
+		Sprite[] sprites = isPressed() ? sprites_down : sprites_up;
 		for(Sprite s : sprites) {
 			s.draw(batch);
-
 		}
-		if (isTransform()) resetTransform(batch);
 
+		if (isTransform()) resetTransform(batch);
 	}
 }

@@ -1,12 +1,10 @@
 package com.balacraft.balapiano.view;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -41,6 +39,24 @@ public class KeyboardTable extends Table {
 	float[] topSpaces = {14.0f, 14.0f, 14.0f, 14.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f};
 	//float[] botSpaces = {23.0f, 24.0f, 23.0f, 24.0f, 23.0f, 23.0f, 24.0f};
 	float[] botSpaces = {23.0f, 0.f, 24.0f, 0.f, 23.0f, 24.0f, 0.f, 23.0f, 0.f, 23.0f, 0.f, 24.0f};
+	float octaveLength = 164.0f;
+
+	//texture source width and height
+	float texW = 820;
+	float texH = 512;
+	float kh = 100;
+	float kw;
+
+	//unscaled, unclipped
+	public float getKeyboardWidth() {
+		return kw;
+	}
+	//unscaled, unclipped
+	public float getKeyboardHeight() {
+		return kh;
+	}
+
+	List<Integer> wholeTones = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
 
 	public KeyboardTable(SoundSystem ss, Texture tex_up, Texture tex_down) {
 		this.ss = ss;
@@ -59,7 +75,7 @@ public class KeyboardTable extends Table {
 		if(relPitch < 0) {
 			relPitch += 12;
 		}
-		List<Integer> wholeTones = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
+
 
 		if(wholeTones.contains(relPitch)) {
 			btn.setSpritesUp(topSpritesUp[relPitch], botSpritesUp[relPitch]);
@@ -136,16 +152,7 @@ public class KeyboardTable extends Table {
 		SoundPlayer sp = ss.getSoundPlayer();
 
 
-		List<Integer> wholeTones = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
-
-		//source height
-		float sh = 512.0f;
-		//ratio of sh for top rect
-		float p = 0.6f;
-
-		//source width
-		float sw = 820;
-		float unit = sw / 164.0f;
+		float unit = texW / 164.0f;
 
 		//top height, x, width
 		float th = 340.0f;
@@ -167,8 +174,8 @@ public class KeyboardTable extends Table {
 			topSpritesUp[i] = new Sprite(tex_up, (int)tx, 0, (int)tw, (int)th);
 			topSpritesDown[i] = new Sprite(tex_down, (int)tx, 0, (int)tw, (int)th);
 
-			botSpritesUp[i] = wholeTones.contains(i) ? new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(sh - th)) : null;
-			botSpritesDown[i] = wholeTones.contains(i) ? new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(sh - th)) : null;
+			botSpritesUp[i] = wholeTones.contains(i) ? new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(texH - th)) : null;
+			botSpritesDown[i] = wholeTones.contains(i) ? new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(texH - th)) : null;
 
 
 			tx += tw;
@@ -182,8 +189,6 @@ public class KeyboardTable extends Table {
 		addActor(buttonParent);
 
 		int middle_c = sp.getMiddleC();
-		float kh = 100;
-		float kw = 0;
 		float ph = 0.6f;
 		unit = 1.0f;
 		//absolute positions
@@ -232,8 +237,25 @@ public class KeyboardTable extends Table {
 			rbot.x += rbot.width;
 		}
 
-		//setSpriteLocalTransform
-		//s = new Sprite(tex_up, 0, 0, 820, 512);
+	}
+
+	//must be called after init
+	//1.0f meaning a whole octave :
+	// 0.5f offset and 4.2f range means the range starts at half an octave from C (display length): this is about F#'s left side
+	// and the whole displayable range is 4.2 octave's length
+	public Vector2 getOctaveOffsetAndRange() {
+		int min = ss.getSoundPlayer().getRangeMin();
+		int middle_c = ss.getSoundPlayer().getMiddleC();
+		//mod 12 and not negative
+		int minPitchOffset = ((min - middle_c) % 12 + 12) % 12;
+
+		float rangeOffset = 0;
+		for(int i = 0; i < minPitchOffset - 1; i++) {
+			rangeOffset += topSpaces[i];
+		}
+		rangeOffset /= octaveLength;
+		float range = (buttons.get(buttons.size() - 1).getRight() - buttons.get(0).getX()) / octaveLength;
+		return new Vector2(rangeOffset, range);
 	}
 
 
@@ -243,12 +265,10 @@ public class KeyboardTable extends Table {
 		setBounds(x, y, width, height);
 		float scaleX = width / keyboardWidth;
 		float scaleY = scaleX;
-		buttonParent.setBounds(width * 0.5f - centerX * 1012 * scaleX, height * 0.5f - 50 * scaleY, 1012, 100);
-		buttonParent.setScale(scaleX, scaleX);
+		buttonParent.setBounds(width * 0.5f - centerX * kw * scaleX, height * 0.5f - 50 * scaleY, kw, kh);
+		buttonParent.setScale(scaleX, scaleY);
 	}
 
-
-	Sprite s;
 
 
 

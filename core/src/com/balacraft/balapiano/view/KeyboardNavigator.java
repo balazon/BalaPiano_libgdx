@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -39,13 +40,13 @@ public class KeyboardNavigator extends Group {
 
 	public void init() {
 
-		octave = new Sprite(tex, 0, 0, 820, 512);
+		octave = new Sprite(tex, 0, 0, texW, texH);
 
 
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				centerX = MathUtils.clamp(x / (rangeLength * 820), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
+				centerX = MathUtils.clamp(x / (rangeLength * texW), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 				resizeKeyboardTable();
 				return true;
 			}
@@ -53,16 +54,17 @@ public class KeyboardNavigator extends Group {
 
 			}
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				centerX = MathUtils.clamp(x / (rangeLength * 820), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
+				centerX = MathUtils.clamp(x / (rangeLength * texW), keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 				resizeKeyboardTable();
 			}
 
 		});
 
-		rangeOffset = 0.0f;
-		rangeLength = 6.0f + (28.0f / 164.0f);
+		Vector2 offsetAndRange = kt.getOctaveOffsetAndRange();
+		rangeOffset = offsetAndRange.x;
+		rangeLength = offsetAndRange.y;
 
-		setDebug(true);
+		debug();
 
 		maskArea = new Actor() {
 			Texture texture = new Texture(Gdx.files.internal("navigator.png"));
@@ -77,11 +79,13 @@ public class KeyboardNavigator extends Group {
 
 	}
 
+	//which part of the whole range should be shown on the KeyboardTable
+	// this is in the range of 0-1 as a proportion of the whole range available
 	float centerX = 0.5f;
 
 	public void resize(float x, float y, float width, float height) {
-		setBounds(x, y, rangeLength * 820, 512);
-		setScale(width / (820.0f * rangeLength), height / 512.0f);
+		setBounds(x, y, rangeLength * texW, texH);
+		setScale(width / (texW * rangeLength), height / texH);
 	}
 
 	int windowW, windowH;
@@ -90,22 +94,27 @@ public class KeyboardNavigator extends Group {
 		resizeKeyboardTable(windowW, windowH);
 	}
 	public void resizeKeyboardTable(int w, int h) {
+
 		windowW = w;
 		windowH = h;
 		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
 		float c = 1.0f;
-		c = 100 / (0.7f * h * conversionRateToMilliMeter);
+		c = kt.getKeyboardHeight() / (0.7f * h * conversionRateToMilliMeter);
+
+		keyboardWidth = 0.3f;
+		keyboardWidth = (w * conversionRateToMilliMeter * 1.0f * c) / kt.getKeyboardWidth();
+
+		centerX = MathUtils.clamp(centerX, keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
+
 		kt.resize(50, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
 
 
-		keyboardWidth = 0.3f;
-		keyboardWidth = (w * conversionRateToMilliMeter * 1.0f * c) / 1012.0f;
-		float mw = rangeLength * 820.0f * keyboardWidth;
+		float mw = rangeLength * texW * keyboardWidth;
 		//mw = 506.0f;
 
 
 
-		maskArea.setBounds(rangeLength * centerX * 820.0f - mw * 0.5f, 0, mw, 512.0f);
+		maskArea.setBounds(rangeLength * centerX * texW - mw * 0.5f, 0, mw, texH);
 		maskArea.debug();
 
 	}
@@ -118,18 +127,18 @@ public class KeyboardNavigator extends Group {
 
 		int wholeOffset = 0;
 		if(rangeOffset > 0.0f) {
-			wholeOffset = (int)((1.0f - rangeOffset) * 820);
-			batch.draw(octave.getTexture(), 0, 0, (int)(rangeOffset * 820), 0, wholeOffset * 820, 512);
+			wholeOffset = (int)((1.0f - rangeOffset) * texW);
+			batch.draw(octave.getTexture(), 0, 0, (int)(rangeOffset * texW), 0, wholeOffset * texW, texH);
 		}
 
 		int whole = (int) (rangeLength - rangeOffset);
 		for(int i = 0; i < whole; i++) {
-			batch.draw(octave, wholeOffset + i * 820.0f, 0);
+			batch.draw(octave, wholeOffset + i * texW, 0);
 		}
 		float lastLength = rangeLength - rangeOffset - whole;
-		float lastX = (rangeOffset + whole) * 820.0f;
+		float lastX = (rangeOffset + whole) * texW;
 
-		batch.draw(octave.getTexture(), lastX, 0, 0, 0, (int)(lastLength * 820), 512);
+		batch.draw(octave.getTexture(), lastX, 0, 0, 0, (int)(lastLength * texW), texH);
 
 
 		if (isTransform()) resetTransform(batch);
