@@ -56,6 +56,7 @@ public class ButtonActor extends Group {
 			}
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.println(ButtonActor.this.toString() + " up: " + pointer);
 				pointerPressed[pointer] = false;
 				if(contains(x, y)) {
 					pressed = false;
@@ -70,27 +71,27 @@ public class ButtonActor extends Group {
 //				y1[pointer] = y;
 //			}
 //
-//			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-////				//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
-////				if(pointer < 0) {
-////					return;
-////				}
-////
-////				if(pointerPressed[pointer] && !isPressed) {
-////					//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
-////				//if(!isPressed()) {
-////					isPressed = true;
-////					fire();
-////				}
+			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
+				//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+				if(pointer < 0) {
+					return;
+				}
+
+				if(pointerPressed[pointer] && !ButtonActor.this.isPressed()) {
+					//System.out.println(ButtonActor.this.toString() + " enter: " + pointer);
+				//if(!isPressed()) {
+					pressed = true;
+					fire();
+				}
+
+			}
 //
-//			}
-//
-//			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-////				if(pointer < 0) {
-////					return;
-////				}
-////				isPressed = false;
-//			}
+			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
+				if(pointer < 0) {
+					return;
+				}
+				pressed = false;
+			}
 		});
 
 	}
@@ -156,7 +157,27 @@ public class ButtonActor extends Group {
 	}
 
 
-	public void draggedFromTo(float x1, float y1, float x2, float y2) { }
+	public void draggedFromTo(float x1, float y1, float x2, float y2, InputEvent event, int pointer) {
+		if(isPressed()) {
+			if(contains(x1,y1) && !contains(x2,y2)) {
+				clickListener.exit(event, x2, y2,pointer, null);
+			}
+		}
+		else if(contains(x2,y2)) {
+			pressed = true;
+			System.out.println("drag fire " + this.toString());
+			clickListener.enter(event, x2, y2, pointer, null);
+		}else {
+			for(Sprite s : sprites_up) {
+				Rectangle rect = s.getBoundingRectangle();
+				if( Algorithms.lineSegmentIntersectsRect(rect, x1,y1,x2,y2)) {
+					fire();
+					break;
+				}
+			}
+		}
+	}
+
 	public void fire() { }
 
 

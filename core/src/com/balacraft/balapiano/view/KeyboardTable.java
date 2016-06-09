@@ -136,7 +136,7 @@ public class KeyboardTable extends Table {
 					p.parentToLocalCoordinates(temp);
 					buttonParent.parentToLocalCoordinates(temp2.set(x, y));
 					p.parentToLocalCoordinates(temp2);
-					p.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y);
+					p.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y, event, pointer);
 				}
 				x1[pointer] = x;
 				y1[pointer] = y;

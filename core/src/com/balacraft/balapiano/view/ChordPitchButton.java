@@ -1,5 +1,6 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 public class ChordPitchButton extends ButtonActor{
@@ -24,7 +25,7 @@ public class ChordPitchButton extends ButtonActor{
 	}
 
 	@Override
-	public void draggedFromTo(float x1, float y1, float x2, float y2) {
+	public void draggedFromTo(float x1, float y1, float x2, float y2, InputEvent event, int pointer) {
 
 	}
 

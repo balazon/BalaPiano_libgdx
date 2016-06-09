@@ -36,24 +36,24 @@ public class PianoKey extends ButtonActor{
 	}
 
 
-	public void draggedFromTo(float x1, float y1, float x2, float y2) {
-		//System.out.println(String.format("%s (%.2f %.2f)->(%.2f %.2f)", toString(), x1, y1, x2, y2));
-		if(isPressed()) {
-			if(contains(x1,y1) && !contains(x2,y2)) pressed =false;
-		}
-		else if(contains(x2,y2)) {
-			pressed = true;
-			fire();
-		}else {
-			for(Sprite s : sprites_up) {
-			Rectangle rect = s.getBoundingRectangle();
-				if( Algorithms.lineSegmentIntersectsRect(rect, x1,y1,x2,y2)) {
-					fire();
-					break;
-				}
-			}
-		}
-	}
+//	public void draggedFromTo(float x1, float y1, float x2, float y2) {
+//		//System.out.println(String.format("%s (%.2f %.2f)->(%.2f %.2f)", toString(), x1, y1, x2, y2));
+//		if(isPressed()) {
+//			if(contains(x1,y1) && !contains(x2,y2)) pressed =false;
+//		}
+//		else if(contains(x2,y2)) {
+//			pressed = true;
+//			fire();
+//		}else {
+//			for(Sprite s : sprites_up) {
+//			Rectangle rect = s.getBoundingRectangle();
+//				if( Algorithms.lineSegmentIntersectsRect(rect, x1,y1,x2,y2)) {
+//					fire();
+//					break;
+//				}
+//			}
+//		}
+//	}
 
 	@Override
 	public void fire() {
