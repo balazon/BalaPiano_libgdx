@@ -99,34 +99,42 @@ public class KeyboardTable extends Table {
 			public float[] y1 = new float[6];
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.printf("kt td: %.2f %.2f\n", x, y);
+				System.out.printf("KT td: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 				x1[pointer] = x;
 				y1[pointer] = y;
+
+				for(PianoKey p : buttons) {
+					buttonParent.parentToLocalCoordinates(temp.set(x, y));
+					p.parentToLocalCoordinates(temp);
+					if(p.contains(temp.x, temp.y)) {
+						System.out.printf("%s enter (%.2f %.2f) %d\n", p.toString(), temp.x, temp.y, pointer);
+						p.enter();
+						break;
+					}
+				}
+
 				return true;
-				//return true;
-//				x1[pointer] = x;
-//				y1[pointer] = y;
-//				pointerPressed[pointer] = true;
-//				if(contains(x, y) && !isPressed) {
-//
-//					isPressed = true;
-//					fire();
-//					return true;
-//				}
-//				return false;
 			}
 
 			//TODO keys stay pressed after dragpress, investigate multitouch button holding/pressing
-//			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-////				pointerPressed[pointer] = false;
-////				if(contains(x, y)) {
-////					isPressed = false;
-////				}
-//
-//			}
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
+				for(PianoKey p : buttons) {
+					buttonParent.parentToLocalCoordinates(temp.set(x, y));
+					p.parentToLocalCoordinates(temp);
+					if(p.contains(temp.x, temp.y)) {
+						System.out.printf("%s exit (%.2f %.2f) %d\n", p.toString(), temp.x, temp.y, pointer);
+						p.exit();
+						break;
+					}
+				}
+
+
+
+			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-
+				System.out.printf("KT drag: (%.2f %.2f) -> (%.2f %.2f)) %d\n", x1[pointer], y1[pointer], x, y, pointer);
 				//System.out.println(String.format(" drag: %.2f %.2f", x, y));
 				if(!isOver(event.getListenerActor(), x, y)) {
 					return;
@@ -152,7 +160,7 @@ public class KeyboardTable extends Table {
 		SoundPlayer sp = ss.getSoundPlayer();
 
 
-		float unit = texW / 164.0f;
+		float unit = texW / octaveLength;
 
 		//top height, x, width
 		float th = 340.0f;

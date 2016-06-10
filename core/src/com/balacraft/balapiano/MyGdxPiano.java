@@ -136,9 +136,11 @@ public class MyGdxPiano extends ApplicationAdapter {
 		Time.update();
 		ss.process();
 
+		stage.act(Time.delta());
+
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Time.delta());
+
 		stage.draw();
 	}
 	@Override
