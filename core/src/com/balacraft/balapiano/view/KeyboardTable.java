@@ -136,9 +136,12 @@ public class KeyboardTable extends Table {
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				System.out.printf("KT drag: (%.2f %.2f) -> (%.2f %.2f)) %d\n", x1[pointer], y1[pointer], x, y, pointer);
 				//System.out.println(String.format(" drag: %.2f %.2f", x, y));
-				if(!isOver(event.getListenerActor(), x, y)) {
-					return;
-				}
+
+
+				//TODO these lines make the stuck keys go away, but they introduce another thing: you can slide (and play) on keys outside the rectangle region
+//				if(!isOver(event.getListenerActor(), x, y)) {
+//					return;
+//				}
 				for(PianoKey p : buttons) {
 					buttonParent.parentToLocalCoordinates(temp.set(x1[pointer],y1[pointer]));
 					p.parentToLocalCoordinates(temp);
