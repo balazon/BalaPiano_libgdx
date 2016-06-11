@@ -15,7 +15,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonActor;
@@ -37,8 +39,18 @@ public class MyGdxPiano extends ApplicationAdapter {
 	KeyboardTable kt;
 	KeyboardNavigator kn;
 
+	SoundPlayer sp;
+
+	Logger logger;
+
+	public MyGdxPiano(SoundPlayer sp) {
+		this.sp = sp;
+	}
+
 	@Override
 	public void create() {
+		logger = new Logger("GDX_CORE");
+
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
@@ -53,8 +65,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		stage = new Stage(new ScreenViewport());
 
-		ss = new SoundSystem();
-		ss.initSoundPlayer();
+
+		logger.error("GDX_CORE INIT");
+		sp.init();
+		ss = new SoundSystem(sp);
 
 		kt = new KeyboardTable(ss, tex1, tex2);
 
@@ -122,8 +136,10 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void dispose() {
+		logger.error("GDX_CORE DISPOSE");
 		//batch.dispose();
 		ss.dispose();
+		sp.dispose();
 
 		stage.dispose();
 
@@ -159,11 +175,13 @@ public class MyGdxPiano extends ApplicationAdapter {
 	@Override
 	public void pause() {
 		Time.paused(true);
+		logger.error("GDX_CORE PAUSE");
 	}
 
 	@Override
 	public void resume() {
 		Time.paused(false);
+		logger.error("GDX_CORE RESUME");
 	}
 
 

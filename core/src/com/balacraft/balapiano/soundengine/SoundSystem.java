@@ -17,13 +17,11 @@ public class SoundSystem implements Disposable{
 	ChordPlayer cp;
 	LinkedList<Note> queue = new LinkedList<Note>();
 
-	public SoundSystem() {
+	public SoundSystem(SoundPlayer sp) {
 		cp = new ChordPlayer(this);
+		this.sp = sp;
     }
-	public void initSoundPlayer() {
-		sp = new SoundPlayer();
-		sp.loadSounds();
-	}
+
 
     public SoundPlayer getSoundPlayer() {
         return sp;
@@ -95,7 +93,7 @@ public class SoundSystem implements Disposable{
 
 	@Override
 	public void dispose() {
-		sp.dispose();
+		//sp.dispose();
 	}
 	
 	

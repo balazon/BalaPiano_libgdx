@@ -7,7 +7,7 @@ public class Note {
 	private static Comparator<Note> startComparator = new NoteStartComparator();
 	private static Comparator<Note> endComparator = new NoteEndComparator();
 
-	int[] absolutePitches;
+	public int[] absolutePitches;
 	long start;
 	long dur;
 	boolean loop;
