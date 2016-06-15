@@ -54,7 +54,7 @@ public class ChordPlayer {
 		}
         timer -= Time.delta();
         if(timer < 0) {
-            ss.addNote(new Note(pitches, 0, interval, false));
+            //ss.addNote(new Note(pitches, 0, interval, false));
             timer = interval;
         }
 
@@ -68,7 +68,10 @@ public class ChordPlayer {
 //	public void chordMode(boolean on) {
 //		this.on = on;
 //	}
-	public void setBPM(int rel_bpm_factor) {
+	public void setBPM(int bpm) {
+		interval = 60 * 1000 / bpm;
+	}
+	public void setBPMRelative(int rel_bpm_factor) {
 		if(k < 20 && rel_bpm_factor > 0 || k > -20 && rel_bpm_factor < 0) {
 			k+=rel_bpm_factor;
 			int bpm = (int) (60.0f*Math.pow(1.05, k));
@@ -125,17 +128,17 @@ public class ChordPlayer {
 	}
 	
 	
-	public void modPressed(boolean sharp) {
-		if(!this.sharp && !flat || this.sharp && !sharp || this.flat && sharp) {
-			this.sharp = sharp ;
-			flat = !sharp;
-		}
-		else {
-			this.sharp = false;
-			flat = false;
-		}
-		updateChord();
-	}
+//	public void modPressed(boolean sharp) {
+//		if(!this.sharp && !flat || this.sharp && !sharp || this.flat && sharp) {
+//			this.sharp = sharp ;
+//			flat = !sharp;
+//		}
+//		else {
+//			this.sharp = false;
+//			flat = false;
+//		}
+//		updateChord();
+//	}
 	public boolean isChordVariationPressed(int chord_id){
 		if (chord_mode == chord_id) return true;
 		else return false;

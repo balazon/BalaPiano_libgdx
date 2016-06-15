@@ -15,12 +15,12 @@ public class ChordVariationButton  extends ButtonActor {
 
 	@Override
 	public void fire() {
-		ss.setChordVariation(chord_variation);
+		ss.getChordPlayer().setChordVariation(chord_variation);
 	}
 
 	@Override
 	public boolean isPressed() {
-		return ss.isChordVariationPressed(chord_variation);
+		return ss.getChordPlayer().isChordVariationPressed(chord_variation);
 	}
 
 	@Override

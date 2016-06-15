@@ -11,6 +11,6 @@ public class DesktopLauncher {
         config.title = "balazon's piano";
         config.width = 1280;
         config.height = 720;
-		new LwjglApplication(new MyGdxPiano(new RealSoundPlayer()), config);
+		new LwjglApplication(new MyGdxPiano(new DesktopMidiPlayer()), config);
 	}
 }

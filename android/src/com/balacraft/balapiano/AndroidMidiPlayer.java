@@ -2,16 +2,13 @@ package com.balacraft.balapiano;
 
 import android.util.Log;
 
-import com.balacraft.balapiano.soundengine.Note;
+import com.balacraft.balapiano.soundengine.NoteEvent;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 
 import org.billthefarmer.mididriver.GeneralMidiConstants;
 import org.billthefarmer.mididriver.MidiConstants;
 import org.billthefarmer.mididriver.MidiDriver;
 
-/**
- * Created by valentin on 2016.06.12..
- */
 
 public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartListener{
 
@@ -20,6 +17,8 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 	}
 
 	MidiDriver midi;
+
+	int noteOnVelocity = 127;
 
 	AndroidMidiPlayer() {
 
@@ -83,34 +82,42 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 	}
 
 	@Override
-	public void playNote(Note n) {
-		int velocity = 127;
-		int channel = 1;
-		int[] pitches = n.absolutePitches;
-		byte[] msg = new byte[pitches.length * 3];
-		for(int i = 0; i < pitches.length; i++) {
-			msg[i * 3] = (byte) (MidiConstants.NOTE_ON + (channel - 1));
-			msg[i * 3 + 1] = (byte) pitches[i];
-			msg[i * 3 + 2] = (byte) velocity;
-		}
-
+	public void processNoteEvent(NoteEvent ne) {
+		byte[] msg = new byte[3];
+		writeNoteEventToArray(msg, 0, ne);
 		midi.write(msg);
 	}
 
 	@Override
-	public void stopNote(Note n) {
-		int velocity = 0;
-		int channel = 1;
-		int[] pitches = n.absolutePitches;
-		byte[] msg = new byte[pitches.length * 3];
-		for(int i = 0; i < pitches.length; i++) {
-			msg[i * 3] = (byte) (MidiConstants.NOTE_OFF + (channel - 1));
-			msg[i * 3 + 1] = (byte) pitches[i];
-			msg[i * 3 + 2] = (byte) velocity;
+	public void processNoteEvents(NoteEvent[] noteEvents) {
+		byte[] msg = new byte[noteEvents.length * 3];
+		for(int i = 0; i < noteEvents.length; i++) {
+			writeNoteEventToArray(msg, i * 3, noteEvents[i]);
 		}
-
 		midi.write(msg);
 	}
+
+	protected void writeNoteEventToArray(byte[] msg, int offset, NoteEvent ne) {
+		switch(ne.type) {
+			case NOTE_ON:
+				writeNoteOnEventToArray(msg, offset, ne);
+				break;
+			case NOTE_OFF:
+				writeNoteOffEventToArray(msg, offset, ne);
+				break;
+		}
+	}
+	protected void writeNoteOnEventToArray(byte[] msg, int offset, NoteEvent ne) {
+		msg[offset] = (byte) (MidiConstants.NOTE_ON + ne.channel);
+		msg[offset + 1] = (byte) ne.pitch;
+		msg[offset + 2] = (byte) noteOnVelocity;
+	}
+	protected void writeNoteOffEventToArray(byte[] msg, int offset, NoteEvent ne) {
+		msg[offset] = (byte) (MidiConstants.NOTE_OFF + ne.channel);
+		msg[offset + 1] = (byte) ne.pitch;
+		msg[offset + 2] = (byte) 0;
+	}
+
 
 	@Override
 	public int getDefaultOctave() {
@@ -122,11 +129,11 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 	}
 	@Override
 	public int getRangeMin() {
-		return 0;
+		return 21;
 	}
 	@Override
 	public int getRangeMax() {
-		return 127;
+		return 97;
 	}
 
 	@Override

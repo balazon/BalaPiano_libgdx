@@ -16,12 +16,12 @@ public class ChordPitchButton extends ButtonActor{
 
 	@Override
 	public void fire() {
-		ss.setChordPitch(pitch);
+		ss.getChordPlayer().setPitch(pitch);
 	}
 
 	@Override
 	public boolean isPressed() {
-		return ss.isChordPitchPressed(pitch);
+		return ss.getChordPlayer().isChordPitchPressed(pitch);
 	}
 
 	@Override

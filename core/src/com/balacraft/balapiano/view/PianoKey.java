@@ -1,24 +1,24 @@
 package com.balacraft.balapiano.view;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
-import com.balacraft.balapiano.soundengine.Note;
+import com.balacraft.balapiano.soundengine.NoteEvent;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 
-
-
 public class PianoKey extends ButtonActor{
-	protected Note note;
+	protected NoteEvent noteEventOn;
+	protected NoteEvent noteEventOff;
 	protected static SoundSystem ss;
+
+
 
 
 	private static int relOct = 0;
 
 	
-	public PianoKey(Note n,SoundSystem ss) {
-		this.note = n;
+	public PianoKey(int pitch, int channel,SoundSystem ss) {
+		noteEventOn = new NoteEvent(NoteEvent.Type.NOTE_ON, pitch, channel);
+		noteEventOff = new NoteEvent(NoteEvent.Type.NOTE_OFF, pitch, channel);
 		this.ss = ss;
 
 
@@ -57,10 +57,14 @@ public class PianoKey extends ButtonActor{
 
 	@Override
 	public void fire() {
-		note.setRelOct(relOct);
-		ss.addNote(note);
+		ss.getSoundPlayer().processNoteEvent(noteEventOn);
 
 		System.out.println(this.toString() + " fired");
+	}
+
+	@Override
+	public void release() {
+		ss.getSoundPlayer().processNoteEvent(noteEventOff);
 	}
 
 }

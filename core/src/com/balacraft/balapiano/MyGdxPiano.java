@@ -150,7 +150,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 	@Override
 	public void render() {
 		Time.update();
-		ss.process();
+
+		ss.getChordPlayer().process();
 
 		stage.act(Time.delta());
 

@@ -16,7 +16,7 @@ public class BPMButton extends ButtonActor{
 
 	@Override
 	public void fire() {
-		ss.setChordBPM(relBPMfact);
+		ss.getChordPlayer().setBPMRelative(relBPMfact);
 	}
 
 

@@ -9,7 +9,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.balacraft.balapiano.soundengine.Note;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
@@ -26,6 +25,8 @@ public class KeyboardTable extends Table {
 	Table buttonParent;
 
 	SoundSystem ss;
+
+	int channel = 0;
 
 	Texture tex_up;
 	Texture tex_down;
@@ -116,7 +117,7 @@ public class KeyboardTable extends Table {
 				return true;
 			}
 
-			//TODO keys stay pressed after dragpress, investigate multitouch button holding/pressing
+
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 				for(PianoKey p : buttons) {
@@ -138,7 +139,7 @@ public class KeyboardTable extends Table {
 				//System.out.println(String.format(" drag: %.2f %.2f", x, y));
 
 
-				//TODO these lines make the stuck keys go away, but they introduce another thing: you can slide (and play) on keys outside the rectangle region
+				//TODO commenting these lines make the stuck keys go away, but they introduce another thing: you can slide (and play) on keys outside the rectangle region
 //				if(!isOver(event.getListenerActor(), x, y)) {
 //					return;
 //				}
@@ -206,7 +207,7 @@ public class KeyboardTable extends Table {
 		Rectangle rtop = new Rectangle(0, kh * (1.0f - ph), 0, kh * ph);
 		Rectangle rbot = new Rectangle(0, 0, 0, kh * (1.0f - ph));
 		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
-			PianoKey pk = new PianoKey(new Note(i, 0, 1000, false), ss);
+			PianoKey pk = new PianoKey(i, channel, ss);
 			setTex(i, pk);
 
 			buttons.add(pk);

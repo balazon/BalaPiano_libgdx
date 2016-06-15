@@ -3,7 +3,6 @@ package com.balacraft.balapiano.soundengine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.utils.Disposable;
 
 import java.util.TreeMap;
 
@@ -168,29 +167,59 @@ public class RealSoundPlayer implements SoundPlayer {
 
     }
 
-	public void playNote(Note n) {
-        long[] sound_instance_id = new long[n.count()];
-
-        for(int i = 0; i < sound_instance_id.length; i++) {
-            TransformedSound ts = getSound(n.absolutePitches[i] + 12 * n.relOct);
-            Sound s = ts.sound;
-            int p = ts.pitchTransform;
-            if(p == 0) {
-                sound_instance_id[i] = s.play();
-            } else {
-                sound_instance_id[i] = s.play(1.0f, ts.pitchVal, 0);
-            }
-        }
-        n.ids=sound_instance_id;
-        n.start = System.currentTimeMillis();
-
-	}
-	public void stopNote(Note n ){
-		for(int i=0; i< n.ids.length; i++){
-            TransformedSound tf = getSound(n.absolutePitches[i]);
-            tf.sound.stop(n.ids[i]);
+	public void processNoteEvent(NoteEvent ne) {
+		switch (ne.type) {
+			case NOTE_ON:
+				noteOn(ne);
+				break;
+			case NOTE_OFF:
+				Sound s;
+                //do nothing - stopping a real sound abruptly sounds bad, alternatively gradually decreasing volume could be used
+				break;
 		}
 	}
+
+	public void processNoteEvents(NoteEvent[] noteEvents) {
+		for(NoteEvent ne : noteEvents) {
+			processNoteEvent(ne);
+		}
+	}
+
+	private void noteOn(NoteEvent ne) {
+		long id = -1;
+		TransformedSound ts = getSound(ne.pitch);
+		Sound s = ts.sound;
+		int p = ts.pitchTransform;
+		if(p == 0) {
+			id = s.play();
+		} else {
+			id = s.play(1.0f, ts.pitchVal, 0);
+		}
+	}
+
+//	public void playNote(Note n) {
+//        long[] sound_instance_id = new long[n.count()];
+//
+//        for(int i = 0; i < sound_instance_id.length; i++) {
+//            TransformedSound ts = getSound(n.absolutePitches[i] + 12 * n.relOct);
+//            Sound s = ts.sound;
+//            int p = ts.pitchTransform;
+//            if(p == 0) {
+//                sound_instance_id[i] = s.play();
+//            } else {
+//                sound_instance_id[i] = s.play(1.0f, ts.pitchVal, 0);
+//            }
+//        }
+//        n.ids=sound_instance_id;
+//        n.start = System.currentTimeMillis();
+//
+//	}
+//	public void stopNote(Note n ){
+//		for(int i=0; i< n.ids.length; i++){
+//            TransformedSound tf = getSound(n.absolutePitches[i]);
+//            tf.sound.stop(n.ids[i]);
+//		}
+//	}
 	@Override
 	public void dispose() {
         for(Sound s : actualSounds.values()) {
