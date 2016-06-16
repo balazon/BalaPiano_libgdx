@@ -219,6 +219,19 @@ public class ButtonActor extends Group {
 		//setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
+	public void setSpriteGlobalTransform(Rectangle... tr) {
+		Rectangle bounds = new Rectangle(tr[0]);
+		for(int i = 0; i < sprites_up.length; i++) {
+			bounds.merge(tr[i]);
+		}
+		for(int i = 0; i < sprites_up.length; i++) {
+			Rectangle r = tr[i];
+			sprites_up[i].setBounds(r.x - bounds.x, r.y - bounds.y, r.width, r.height);
+			sprites_down[i].setBounds(r.x - bounds.x, r.y - bounds.y, r.width, r.height);
+		}
+		setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+	}
+
 
 
 	public boolean isPressed() {

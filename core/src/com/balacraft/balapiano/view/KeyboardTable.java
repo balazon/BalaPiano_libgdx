@@ -1,5 +1,7 @@
 package com.balacraft.balapiano.view;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,15 +11,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.balacraft.balapiano.soundengine.SoundPlayer;
+import com.badlogic.gdx.utils.Disposable;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
-public class KeyboardTable extends Table {
+public class KeyboardTable extends Table implements Disposable{
 	ClickListener clickListener;
 
 	List<PianoKey> buttons;
@@ -26,89 +29,29 @@ public class KeyboardTable extends Table {
 
 	SoundSystem ss;
 
-	int channel = 0;
+	int channel;
 
 	Texture tex_up;
 	Texture tex_down;
 
-
-	Sprite[] topSpritesUp;
-	Sprite[] topSpritesDown;
-	Sprite[] botSpritesUp;
-	Sprite[] botSpritesDown;
-
-	Sprite topSpriteLowAUp;
-	Sprite topSpriteLowADown;
-	Sprite botSpriteLowAUp;
-	Sprite botSpriteLowADown;
-	Sprite spriteHighCUp;
-	Sprite spriteHighCDown;
-
-
-	float[] topSpaces = {14.0f, 14.0f, 14.0f, 14.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f};
-	//float[] botSpaces = {23.0f, 24.0f, 23.0f, 24.0f, 23.0f, 23.0f, 24.0f};
-	float[] botSpaces = {23.0f, 0.f, 24.0f, 0.f, 23.0f, 24.0f, 0.f, 23.0f, 0.f, 23.0f, 0.f, 24.0f};
-	float octaveLength = 164.0f;
-
-	//texture source width and height
-	float texW = 820;
-	float texH = 512;
-	float kh = 100;
-	float kw;
-
 	//unscaled, unclipped
 	public float getKeyboardWidth() {
-		return kw;
+		return buttons.get(buttons.size() - 1).getRight();
 	}
 	//unscaled, unclipped
 	public float getKeyboardHeight() {
-		return kh;
+		return buttons.get(0).getHeight();
 	}
 
-	List<Integer> wholeTones = Arrays.asList(0, 2, 4, 5, 7, 9, 11);
-
-	public KeyboardTable(SoundSystem ss, Texture tex_up, Texture tex_down) {
+	public KeyboardTable(int channel, SoundSystem ss) {
+		this.channel = channel;
 		this.ss = ss;
-		this.tex_up = tex_up;
-		this.tex_down = tex_down;
 
 		setClip(true);
 		//setTransform(true);
 	}
 
-
-	void setTex(int pitch, ButtonActor btn) {
-
-
-		int middle_c = ss.getSoundPlayer().getMiddleC();
-		int relPitch = ((pitch - middle_c) % 12 + 12) % 12;
-
-		if(relPitch == 9 && pitch == ss.getSoundPlayer().getRangeMin()) {
-			btn.setSpritesUp(topSpriteLowAUp, botSpriteLowAUp);
-			btn.setSpritesDown(topSpriteLowADown, botSpriteLowADown);
-			return;
-		}
-		if(relPitch == 0 && pitch == ss.getSoundPlayer().getRangeMax()) {
-			btn.setSpritesUp(spriteHighCUp);
-			btn.setSpritesDown(spriteHighCDown);
-			return;
-		}
-
-
-		if(wholeTones.contains(relPitch)) {
-			btn.setSpritesUp(topSpritesUp[relPitch], botSpritesUp[relPitch]);
-			btn.setSpritesDown(topSpritesDown[relPitch], botSpritesDown[relPitch]);
-		} else {
-			btn.setSpritesUp(topSpritesUp[relPitch]);
-			btn.setSpritesDown(topSpritesDown[relPitch]);
-		}
-
-
-
-	}
-
 	public void init() {
-
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
 			Vector2 temp = new Vector2(0,0);
@@ -146,15 +89,10 @@ public class KeyboardTable extends Table {
 						break;
 					}
 				}
-
-
-
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
 				System.out.printf("KT drag: (%.2f %.2f) -> (%.2f %.2f)) %d\n", x1[pointer], y1[pointer], x, y, pointer);
-				//System.out.println(String.format(" drag: %.2f %.2f", x, y));
-
 
 				//TODO commenting these lines make the stuck keys go away, but they introduce another thing: you can slide (and play) on keys outside the rectangle region
 //				if(!isOver(event.getListenerActor(), x, y)) {
@@ -169,130 +107,132 @@ public class KeyboardTable extends Table {
 				}
 				x1[pointer] = x;
 				y1[pointer] = y;
-//				draggedFromTo(x1[pointer], y1[pointer], x, y);
-//
-//				x1[pointer] = x;
-//				y1[pointer] = y;
 			}
 		});
 
 		buttons = new ArrayList<PianoKey>();
 
-		SoundPlayer sp = ss.getSoundPlayer();
-
-
-		float unit = texW / octaveLength;
-
-		//top height, x, width
-		float th = 340.0f;
-		float tx = 0;
-		float tw = 0;
-
-		//bottom x, width
-		float bx = 0;
-		float bw = 0;
-
-		topSpritesUp = new Sprite[12];
-		topSpritesDown = new Sprite[12];
-		botSpritesUp = new Sprite[12];
-		botSpritesDown = new Sprite[12];
-
-		for(int i = 0; i < 12; i++) {
-			tw = topSpaces[i] * unit;
-			bw = botSpaces[i] * unit;
-			topSpritesUp[i] = new Sprite(tex_up, (int)tx, 0, (int)tw, (int)th);
-			topSpritesDown[i] = new Sprite(tex_down, (int)tx, 0, (int)tw, (int)th);
-
-			botSpritesUp[i] = wholeTones.contains(i) ? new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(texH - th)) : null;
-			botSpritesDown[i] = wholeTones.contains(i) ? new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(texH - th)) : null;
-
-
-			tx += tw;
-			bx += bw;
-		}
-
-		tw = 20.0f * unit;
-		bw = botSpaces[9] * unit;
-		topSpriteLowAUp = new Sprite(tex_up, (int)tx, 0, (int)tw, (int)th);
-		topSpriteLowADown = new Sprite(tex_down, (int)tx, 0, (int)tw, (int)th);
-		botSpriteLowAUp =  new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(texH - th));
-		botSpriteLowADown = new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(texH - th));
-		tx += bw;
-		bw = botSpaces[0] * unit;
-		spriteHighCUp = new Sprite(tex_up, (int) tx, 0, (int) bw, (int) texH);
-		spriteHighCDown = new Sprite(tex_down, (int) tx, 0, (int) bw, (int) texH);
-
 		buttonParent = new Table();
 		buttonParent.debug();
 		buttonParent.setTransform(true);
 
+		loadPianoButtons();
+
 		addActor(buttonParent);
+	}
 
-		int middle_c = sp.getMiddleC();
-		float ph = 0.6f;
-		unit = 1.0f;
-		//absolute positions
-		Rectangle rtop = new Rectangle(0, kh * (1.0f - ph), 0, kh * ph);
-		Rectangle rbot = new Rectangle(0, 0, 0, kh * (1.0f - ph));
-		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
-			PianoKey pk = new PianoKey(i, channel, ss);
-			pk.setName("PianoKey " + i);
-			setTex(i, pk);
+	protected void loadPianoButtons() {
+		Map<String, Sprite> spritesUp = new HashMap<String, Sprite>(20);
+		Map<String, Sprite> spritesDown = new HashMap<String, Sprite>(20);
 
-			buttons.add(pk);
-			buttonParent.addActor(pk);
-
-
-
-			int relPitch = (i - middle_c) % 12;
-			if(relPitch < 0) {
-				relPitch += 12;
-			}
-
-			rtop.width = topSpaces[relPitch] * unit;
-			rbot.width = botSpaces[relPitch] * unit;
-
-			if(i == sp.getRangeMin()) {
-				float xtop = 0;
-				float xbot = 0;
-				for(int j = 0; j < relPitch; j++) {
-					xtop += topSpaces[j] * unit;
-					xbot += botSpaces[j] * unit;
-				}
-				rtop.width += xtop - xbot;
-			}
-			if(i == sp.getRangeMax()) {
-
-				rtop.width += rbot.x + rbot.width - rtop.x - rtop.width;
-			}
-
-			Rectangle bounds = new Rectangle(rtop);
-			if(wholeTones.contains(relPitch)) {
-				bounds.merge(rbot);
-			}
-
-			rtop.x -= bounds.x;
-			rtop.y -= bounds.y;
-			rbot.x -= bounds.x;
-			rbot.y -= bounds.y;
-
-			if(wholeTones.contains(relPitch)) {
-				pk.setSpriteLocalTransform(rtop, rbot);
-			} else {
-				pk.setSpriteLocalTransform(rtop);
-			}
-
-			pk.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
-
-			rtop.x += bounds.x;
-			rtop.y += bounds.y;
-			rbot.x += bounds.x;
-			rbot.y += bounds.y;
-			kw = bounds.x + bounds.width;
-			rtop.x += rtop.width;
-			rbot.x += rbot.width;
+		FileHandle file = Gdx.files.internal("pianobuttons.txt");
+		if(!file.exists() || file.isDirectory()) {
+			System.err.printf("Error : %s not found\n", file.name());
+			return;
 		}
+		String fileString = file.readString();
+		String[] rows = fileString.split("\\r?\\n");
+		final int STATE_DEFAULT = 0;
+		final int STATE_BUTTON = 1;
+		int state = STATE_DEFAULT;
 
+		PianoKey pk = null;
+		List<String> tempSpriteNames = new ArrayList<String>(2);
+		List<Rectangle> tempTransforms = new ArrayList<Rectangle>(2);
+
+		float xoff = 0.0f;
+		int pitchoff = 0;
+
+		boolean firstNote = false;
+		float firstOff = 0.0f;
+		for(String row : rows) {
+			if(row.equals("") && state == STATE_BUTTON) {
+				if(firstNote) {
+					firstNote = false;
+					Rectangle b = new Rectangle(tempTransforms.get(0));
+					for(int i = 1; i < tempTransforms.size(); i++) {
+						b.merge(tempTransforms.get(i));
+					}
+					firstOff = -b.x;
+					for(int i = 0; i < tempTransforms.size(); i++) {
+						tempTransforms.get(i).x += firstOff;
+					}
+				}
+				Sprite[] up = new Sprite[tempSpriteNames.size()];
+				Sprite[] down = new Sprite[tempSpriteNames.size()];
+
+				Rectangle[] rects = new Rectangle[tempTransforms.size()];
+				tempTransforms.toArray(rects);
+				for(int i = 0; i < tempSpriteNames.size(); i++) {
+					up[i] = spritesUp.get(tempSpriteNames.get(i));
+					down[i] = spritesDown.get(tempSpriteNames.get(i));
+				}
+				pk.setSpritesUp(up);
+				pk.setSpritesDown(down);
+				pk.setSpriteGlobalTransform(rects);
+
+				buttons.add(pk);
+				buttonParent.addActor(pk);
+
+				state = STATE_DEFAULT;
+				continue;
+			}
+			if(row.startsWith("//") || row.equals("")) {
+				continue;
+			}
+			if(row.matches("tex_up\\s*:.*")) {
+				String path = row.split("\\s*:\\s*")[1];
+				tex_up = new Texture(Gdx.files.internal(path));
+				continue;
+			}
+			if(row.matches("tex_down\\s*:.*")) {
+				String path = row.split("\\s*:\\s*")[1];
+				tex_down = new Texture(Gdx.files.internal(path));
+				continue;
+			}
+
+			if(row.matches("s\\s*:.*")) {
+				String[] spriteData = row.split(":\\s*|\\s*-\\s*|\\s*,\\s*");
+
+				Sprite s_up = new Sprite(tex_up, Integer.parseInt(spriteData[2]), Integer.parseInt(spriteData[3]), Integer.parseInt(spriteData[4]), Integer.parseInt(spriteData[5]));
+				Sprite s_down = new Sprite(tex_down, Integer.parseInt(spriteData[2]), Integer.parseInt(spriteData[3]), Integer.parseInt(spriteData[4]), Integer.parseInt(spriteData[5]));
+				spritesUp.put(spriteData[1], s_up);
+				spritesDown.put(spriteData[1], s_down);
+				continue;
+			}
+			if(row.matches("[0-9]+\\s*:")) {
+				int pitch = Integer.parseInt(row.split("\\s*:")[0]) + pitchoff;
+				if(pitch < ss.getSoundPlayer().getRangeMin() || pitch > ss.getSoundPlayer().getRangeMax()) {
+					continue;
+				}
+				firstNote = (pitch == ss.getSoundPlayer().getRangeMin());
+				state = STATE_BUTTON;
+				pk = new PianoKey(pitch, channel, ss);
+				tempSpriteNames.clear();
+				tempTransforms.clear();
+				continue;
+			}
+			if(state == STATE_BUTTON && row.matches(".*,.*,.*,.*,.*")) {
+				String[] buttonData = row.split("\\s*,\\s*");
+				tempSpriteNames.add(buttonData[0]);
+				float x = Float.parseFloat(buttonData[1]) + xoff + firstOff;
+				float y = Float.parseFloat(buttonData[2]);
+				float w = Float.parseFloat(buttonData[3]);
+				float h = Float.parseFloat(buttonData[4]);
+
+				tempTransforms.add(new Rectangle(x, y, w, h));
+				continue;
+			}
+			if(row.matches("xoff\\s*:.*")) {
+				xoff = Float.parseFloat(row.split("\\s*:\\s*")[1]);
+				continue;
+			}
+			if(row.matches("pitchoff\\s*:.*")) {
+				pitchoff = Integer.parseInt(row.split("\\s*:\\s*")[1]);
+				continue;
+			}
+
+		}
 	}
 
 	//must be called after init
@@ -300,6 +240,7 @@ public class KeyboardTable extends Table {
 	// 0.5f offset and 4.2f range means the range starts at half an octave from C (display length): this is about F#'s left side
 	// and the whole displayable range is 4.2 octave's length
 	public Vector2 getOctaveOffsetAndRange() {
+		float octaveLength = 164.0f;
 		int min = ss.getSoundPlayer().getRangeMin();
 		int middle_c = ss.getSoundPlayer().getMiddleC();
 		//mod 12 and not negative
@@ -322,14 +263,18 @@ public class KeyboardTable extends Table {
 		setBounds(x, y, width, height);
 		float scaleX = width / keyboardWidth;
 		float scaleY = scaleX;
-		buttonParent.setBounds(width * 0.5f - centerX * kw * scaleX, height * 0.5f - 50 * scaleY, kw, kh);
+		buttonParent.setBounds(width * 0.5f - centerX * getKeyboardWidth() * scaleX, height * 0.5f - 50 * scaleY, getKeyboardWidth(), getKeyboardHeight());
 		buttonParent.setScale(scaleX, scaleY);
 	}
 
-
-
-
 	public void draw (Batch batch, float parentAlpha) {
 		super.draw(batch, parentAlpha);
+	}
+
+
+	@Override
+	public void dispose() {
+		tex_up.dispose();
+		tex_down.dispose();
 	}
 }

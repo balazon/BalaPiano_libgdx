@@ -47,9 +47,9 @@ public class RealSoundPlayer implements SoundPlayer {
 	@Override
 	public void init() {
         actualSounds = new TreeMap<Integer, Sound>();
-        FileHandle confFile = Gdx.files.internal("config.txt");
+        FileHandle confFile = Gdx.files.internal("realsoundplayerconfig.txt");
         if(!confFile.exists() || confFile.isDirectory()) {
-            System.out.println("Error : config.txt not found");
+            System.err.printf("Error : %s not found\n", confFile.name());
             return;
         }
         String config = confFile.readString();

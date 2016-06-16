@@ -20,7 +20,7 @@ public class PianoKey extends ButtonActor{
 		noteEventOn = new NoteEvent(NoteEvent.Type.NOTE_ON, pitch, channel);
 		noteEventOff = new NoteEvent(NoteEvent.Type.NOTE_OFF, pitch, channel);
 		this.ss = ss;
-
+		setName("PianoKey " + pitch);
 
     }
 

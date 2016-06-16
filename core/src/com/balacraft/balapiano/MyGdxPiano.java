@@ -70,7 +70,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 		sp.init();
 		ss = new SoundSystem(sp);
 
-		kt = new KeyboardTable(ss, tex1, tex2);
+		kt = new KeyboardTable(0, ss);
 
 		stage.addActor(kt);
 
@@ -140,6 +140,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//batch.dispose();
 		ss.dispose();
 		sp.dispose();
+
+		kt.dispose();
 
 		stage.dispose();
 
