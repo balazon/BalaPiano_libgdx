@@ -15,7 +15,7 @@ public class DesktopMidiPlayer implements SoundPlayer {
 	Synthesizer syn;
 	MidiChannel[] mc;
 
-	int noteOnVelocity = 127;
+	int noteOnVelocity = 64;
 
 	@Override
 	public void init() {
@@ -65,12 +65,12 @@ public class DesktopMidiPlayer implements SoundPlayer {
 
 	@Override
 	public int getRangeMin() {
-		return 28;
+		return 21;
 	}
 
 	@Override
 	public int getRangeMax() {
-		return 97;
+		return 108;
 	}
 
 

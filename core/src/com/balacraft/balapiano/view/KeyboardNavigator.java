@@ -126,17 +126,18 @@ public class KeyboardNavigator extends Group {
 
 
 		int wholeOffset = 0;
-		if(rangeOffset > 0.0f) {
-			wholeOffset = (int)((1.0f - rangeOffset) * texW);
-			batch.draw(octave.getTexture(), 0, 0, (int)(rangeOffset * texW), 0, wholeOffset * texW, texH);
-		}
+//		if(rangeOffset > 0.0f) {
+//
+//		}
+		wholeOffset = (int)((1.0f - rangeOffset) * texW);
+		batch.draw(octave.getTexture(), 0, 0, (int)(rangeOffset * texW), 0, wholeOffset * texW, texH);
 
-		int whole = (int) (rangeLength - rangeOffset);
+		int whole = (int) (rangeLength - (1.0f - rangeOffset));
 		for(int i = 0; i < whole; i++) {
 			batch.draw(octave, wholeOffset + i * texW, 0);
 		}
-		float lastLength = rangeLength - rangeOffset - whole;
-		float lastX = (rangeOffset + whole) * texW;
+		float lastLength = rangeLength - (1.0f - rangeOffset) - whole;
+		float lastX = ((1.0f - rangeOffset) + whole) * texW;
 
 		batch.draw(octave.getTexture(), lastX, 0, 0, 0, (int)(lastLength * texW), texH);
 

@@ -18,7 +18,8 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 
 	MidiDriver midi;
 
-	int noteOnVelocity = 127;
+	int noteOnVelocity = 64;
+	int noteOffVelocity = 64;
 
 	AndroidMidiPlayer() {
 
@@ -115,7 +116,7 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 	protected void writeNoteOffEventToArray(byte[] msg, int offset, NoteEvent ne) {
 		msg[offset] = (byte) (MidiConstants.NOTE_OFF + ne.channel);
 		msg[offset + 1] = (byte) ne.pitch;
-		msg[offset + 2] = (byte) 0;
+		msg[offset + 2] = (byte) noteOffVelocity;
 	}
 
 
@@ -133,7 +134,7 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 	}
 	@Override
 	public int getRangeMax() {
-		return 97;
+		return 108;
 	}
 
 	@Override

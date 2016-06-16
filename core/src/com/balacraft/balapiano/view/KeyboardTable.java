@@ -37,6 +37,14 @@ public class KeyboardTable extends Table {
 	Sprite[] botSpritesUp;
 	Sprite[] botSpritesDown;
 
+	Sprite topSpriteLowAUp;
+	Sprite topSpriteLowADown;
+	Sprite botSpriteLowAUp;
+	Sprite botSpriteLowADown;
+	Sprite spriteHighCUp;
+	Sprite spriteHighCDown;
+
+
 	float[] topSpaces = {14.0f, 14.0f, 14.0f, 14.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f, 14.0f, 13.0f};
 	//float[] botSpaces = {23.0f, 24.0f, 23.0f, 24.0f, 23.0f, 23.0f, 24.0f};
 	float[] botSpaces = {23.0f, 0.f, 24.0f, 0.f, 23.0f, 24.0f, 0.f, 23.0f, 0.f, 23.0f, 0.f, 24.0f};
@@ -71,10 +79,19 @@ public class KeyboardTable extends Table {
 
 	void setTex(int pitch, ButtonActor btn) {
 
+
 		int middle_c = ss.getSoundPlayer().getMiddleC();
-		int relPitch = (pitch - middle_c) % 12;
-		if(relPitch < 0) {
-			relPitch += 12;
+		int relPitch = ((pitch - middle_c) % 12 + 12) % 12;
+
+		if(relPitch == 9 && pitch == ss.getSoundPlayer().getRangeMin()) {
+			btn.setSpritesUp(topSpriteLowAUp, botSpriteLowAUp);
+			btn.setSpritesDown(topSpriteLowADown, botSpriteLowADown);
+			return;
+		}
+		if(relPitch == 0 && pitch == ss.getSoundPlayer().getRangeMax()) {
+			btn.setSpritesUp(spriteHighCUp);
+			btn.setSpritesDown(spriteHighCDown);
+			return;
 		}
 
 
@@ -194,6 +211,17 @@ public class KeyboardTable extends Table {
 			bx += bw;
 		}
 
+		tw = 20.0f * unit;
+		bw = botSpaces[9] * unit;
+		topSpriteLowAUp = new Sprite(tex_up, (int)tx, 0, (int)tw, (int)th);
+		topSpriteLowADown = new Sprite(tex_down, (int)tx, 0, (int)tw, (int)th);
+		botSpriteLowAUp =  new Sprite(tex_up, (int) bx, (int) th, (int) bw, (int)(texH - th));
+		botSpriteLowADown = new Sprite(tex_down, (int) bx, (int) th, (int) bw, (int)(texH - th));
+		tx += bw;
+		bw = botSpaces[0] * unit;
+		spriteHighCUp = new Sprite(tex_up, (int) tx, 0, (int) bw, (int) texH);
+		spriteHighCDown = new Sprite(tex_down, (int) tx, 0, (int) bw, (int) texH);
+
 		buttonParent = new Table();
 		buttonParent.debug();
 		buttonParent.setTransform(true);
@@ -208,6 +236,7 @@ public class KeyboardTable extends Table {
 		Rectangle rbot = new Rectangle(0, 0, 0, kh * (1.0f - ph));
 		for(int i = sp.getRangeMin(); i <= sp.getRangeMax(); i++) {
 			PianoKey pk = new PianoKey(i, channel, ss);
+			pk.setName("PianoKey " + i);
 			setTex(i, pk);
 
 			buttons.add(pk);
@@ -219,14 +248,29 @@ public class KeyboardTable extends Table {
 			if(relPitch < 0) {
 				relPitch += 12;
 			}
-			pk.setName("PianoKey " + i);
+
 			rtop.width = topSpaces[relPitch] * unit;
 			rbot.width = botSpaces[relPitch] * unit;
+
+			if(i == sp.getRangeMin()) {
+				float xtop = 0;
+				float xbot = 0;
+				for(int j = 0; j < relPitch; j++) {
+					xtop += topSpaces[j] * unit;
+					xbot += botSpaces[j] * unit;
+				}
+				rtop.width += xtop - xbot;
+			}
+			if(i == sp.getRangeMax()) {
+
+				rtop.width += rbot.x + rbot.width - rtop.x - rtop.width;
+			}
 
 			Rectangle bounds = new Rectangle(rtop);
 			if(wholeTones.contains(relPitch)) {
 				bounds.merge(rbot);
 			}
+
 			rtop.x -= bounds.x;
 			rtop.y -= bounds.y;
 			rbot.x -= bounds.x;
@@ -262,9 +306,10 @@ public class KeyboardTable extends Table {
 		int minPitchOffset = ((min - middle_c) % 12 + 12) % 12;
 
 		float rangeOffset = 0;
-		for(int i = 0; i < minPitchOffset - 1; i++) {
-			rangeOffset += topSpaces[i];
+		if(min % 12 != 0) {
+			rangeOffset = octaveLength - buttons.get((11 - minPitchOffset) % 12).getRight();
 		}
+
 		rangeOffset /= octaveLength;
 		float range = (buttons.get(buttons.size() - 1).getRight() - buttons.get(0).getX()) / octaveLength;
 		return new Vector2(rangeOffset, range);
