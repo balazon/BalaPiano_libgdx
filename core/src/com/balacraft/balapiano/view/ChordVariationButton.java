@@ -5,22 +5,23 @@ import com.balacraft.balapiano.soundengine.SoundSystem;
 
 public class ChordVariationButton  extends ButtonActor {
 	//maj, min, etc
-	private int chord_variation;
+	//private int chord_variation;
 	private SoundSystem ss;
 	
 	public ChordVariationButton(int chord_variation,SoundSystem ss) {
 		this.ss = ss;
-		this.chord_variation=chord_variation;
+		//this.chord_variation=chord_variation;
 	}
 
 	@Override
 	public void fire() {
-		ss.getChordPlayer().setChordVariation(chord_variation);
+		//ss.getChordPlayer().setChordVariation(chord_variation);
 	}
 
 	@Override
 	public boolean isPressed() {
-		return ss.getChordPlayer().isChordVariationPressed(chord_variation);
+		return false;
+		//return ss.getChordPlayer().isChordVariationPressed(chord_variation);
 	}
 
 	@Override

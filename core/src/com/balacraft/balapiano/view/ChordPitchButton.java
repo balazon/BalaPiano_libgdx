@@ -5,12 +5,10 @@ import com.balacraft.balapiano.soundengine.SoundSystem;
 
 public class ChordPitchButton extends ButtonActor{
 	private int pitch;
-	private char id;
 	SoundSystem ss;
 
-	public ChordPitchButton(char id,int pitch,SoundSystem ss) {
+	public ChordPitchButton(int pitch,SoundSystem ss) {
 		this.ss = ss;
-		this.id=id;
 		this.pitch = pitch;
 	}
 

@@ -21,129 +21,45 @@ public class ButtonActor extends Group {
 	ClickListener clickListener;
 
 
-	public static boolean[] pointerPressed = new boolean[6];
 
-
-
+	boolean autoTouchSupport;
 	public ButtonActor() {
+		this(true);
+	}
+	public ButtonActor(boolean autoTouchSupport) {
+		this.autoTouchSupport = autoTouchSupport;
 		initialize();
 	}
 
-	public ButtonActor(Sprite up, Sprite down) {
+	public ButtonActor(boolean autoTouchSupport, Sprite up, Sprite down) {
+		this.autoTouchSupport = autoTouchSupport;
 		initialize();
 
 		setSpritesUp(up);
 		setSpritesDown(down);
 	}
 
-	private void initialize () {
+	protected void initialize () {
 		setTouchable(Touchable.enabled);
 
+		if(!autoTouchSupport) {
+			return;
+		}
 		clickListener = new ClickListener() {
-//			public float[] x1 = new float[6];
-//			public float[] y1 = new float[6];
-//
-//			int downCount = 0;
-//			boolean incDownCount() {
-//				downCount++;
-//				System.out.printf("downcount: %d\n", downCount);
-//				if(downCount == 1) {
-//					pressed = true;
-//					fire();
-//					return true;
-//				}
-//				return false;
-//			}
-//			void decDownCount() {
-//				downCount--;
-//				System.out.printf("downcount: %d\n", downCount);
-//				if(downCount == 0) {
-//					pressed = false;
-//					release();
-//				}
-//			}
-////			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-////				x1[pointer] = x;
-////				y1[pointer] = y;
-////				pointerPressed[pointer] = true;
-////				if(contains(x, y)) {
-////					System.out.printf("%s down (%.2f %.2f) %d %d\n", ButtonActor.this.toString(), x, y, pointer, button);
-////					return incDownCount();
-////				}
-////
-//////				if(contains(x, y) && !ButtonActor.this.isPressed()) {
-//////					System.out.printf("%s down (%.2f %.2f) %d %d\n", ButtonActor.this.toString(), x, y, pointer, button);
-//////
-//////
-//////
-//////					pressed = true;
-//////					fire();
-//////					super.touchDown(event, x, y, pointer, button);
-//////					return true;
-//////				}
-////				//super.touchDown(event, x, y, pointer, button);
-////				return false;
-////			}
-////
-////			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-////				pointerPressed[pointer] = false;
-////
-////				//pressed = false;
-////				if(contains(x, y)) {
-////					System.out.printf("%s up (%.2f %.2f) %d %d\n", ButtonActor.this.toString(), x, y, pointer, button);
-////					decDownCount();
-////					//pressed = false;
-////				} else {
-////					System.out.printf("NOCONTAIN %s up (%.2f %.2f) %d %d\n", ButtonActor.this.toString(), x, y, pointer, button);
-////				}
-////
-////				super.touchUp(event, x, y, pointer, button);
-////
-////			}
-//
-////			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-////				draggedFromTo(x1[pointer], y1[pointer], x, y);
-////
-////				x1[pointer] = x;
-////				y1[pointer] = y;
-////			}
-////
-//			public void enter (InputEvent event, float x, float y, int pointer, Actor fromActor) {
-//				System.out.printf("%s enter (%.2f %.2f) %d\n", ButtonActor.this.toString(), x, y, pointer);
-//
-//				if(pointer < 0) {
-//					//super.touchUp(event, x, y, pointer, button);
-//					return;
-//				}
-//
-//				if(contains(x, y)) {
-//					incDownCount();
-//				}
-//
-//
-////				if(pointerPressed[pointer] && !ButtonActor.this.isPressed()) {
-////					System.out.printf("%s enter (%.2f %.2f) %d\n", ButtonActor.this.toString(), x, y, pointer);
-////					pressed = true;
-////					fire();
-////				}
-//
-//			}
-////
-//			public void exit (InputEvent event, float x, float y, int pointer, Actor toActor) {
-//				System.out.printf("%s exit (%.2f %.2f) %d\n", ButtonActor.this.toString(), x, y, pointer);
-//				if(pointer < 0) {
-//					return;
-//				}
-//				decDownCount();
-//				//System.out.printf("%s exit (%.2f %.2f) %d\n", ButtonActor.this.toString(), x, y, pointer);
-////				if(ButtonActor.this.isPressed()) {
-////					System.out.printf("%s exit (%.2f %.2f) %d\n", ButtonActor.this.toString(), x, y, pointer);
-////					pressed = false;
-////				}
-//
-//			}
+			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+				ButtonActor.this.enter();
+				return true;
+			}
+
+			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+				ButtonActor.this.exit();
+			}
+
+			public void touchDragged (InputEvent event, float x, float y, int pointer) {
+
+			}
 		};
-		//addListener(clickListener);
+		addListener(clickListener);
 
 	}
 	int downCount = 0;

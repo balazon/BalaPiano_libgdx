@@ -23,7 +23,7 @@ import java.util.Map;
 public class KeyboardTable extends Table implements Disposable{
 	ClickListener clickListener;
 
-	List<PianoKey> buttons;
+	List<ButtonActor> buttons;
 
 	Table buttonParent;
 
@@ -52,24 +52,31 @@ public class KeyboardTable extends Table implements Disposable{
 	}
 
 	public void init() {
-		setTouchable(Touchable.enabled);
-		addListener(clickListener = new ClickListener() {
-			Vector2 temp = new Vector2(0,0);
-			Vector2 temp2 = new Vector2(0,0);
+
+		buttonParent = new Table();
+		buttonParent.debug();
+		buttonParent.setTransform(true);
+		addActor(buttonParent);
+
+		buttonParent.setTouchable(Touchable.enabled);
+		buttonParent.addListener(clickListener = new ClickListener() {
 			public float[] x1 = new float[6];
 			public float[] y1 = new float[6];
+
+			Vector2 temp = new Vector2(0,0);
+			Vector2 temp2 = new Vector2(0,0);
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.printf("KT td: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 				x1[pointer] = x;
 				y1[pointer] = y;
 
-				for(PianoKey p : buttons) {
-					buttonParent.parentToLocalCoordinates(temp.set(x, y));
-					p.parentToLocalCoordinates(temp);
-					if(p.contains(temp.x, temp.y)) {
-						System.out.printf("%s enter (%.2f %.2f) %d\n", p.toString(), temp.x, temp.y, pointer);
-						p.enter();
+				for(ButtonActor b : buttons) {
+					//buttonParent.parentToLocalCoordinates(temp.set(x, y));
+					b.parentToLocalCoordinates(temp.set(x, y));
+					if(b.contains(temp.x, temp.y)) {
+						System.out.printf("%s enter (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
+						b.enter();
 						break;
 					}
 				}
@@ -80,12 +87,13 @@ public class KeyboardTable extends Table implements Disposable{
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
-				for(PianoKey p : buttons) {
-					buttonParent.parentToLocalCoordinates(temp.set(x, y));
-					p.parentToLocalCoordinates(temp);
-					if(p.contains(temp.x, temp.y)) {
-						System.out.printf("%s exit (%.2f %.2f) %d\n", p.toString(), temp.x, temp.y, pointer);
-						p.exit();
+
+				for(ButtonActor b : buttons) {
+					//buttonParent.parentToLocalCoordinates(temp.set(x, y));
+					b.parentToLocalCoordinates(temp.set(x, y));
+					if(b.contains(temp.x, temp.y)) {
+						System.out.printf("%s exit (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
+						b.exit();
 						break;
 					}
 				}
@@ -98,27 +106,21 @@ public class KeyboardTable extends Table implements Disposable{
 //				if(!isOver(event.getListenerActor(), x, y)) {
 //					return;
 //				}
-				for(PianoKey p : buttons) {
-					buttonParent.parentToLocalCoordinates(temp.set(x1[pointer],y1[pointer]));
-					p.parentToLocalCoordinates(temp);
-					buttonParent.parentToLocalCoordinates(temp2.set(x, y));
-					p.parentToLocalCoordinates(temp2);
-					p.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y, event, pointer);
+				for(ButtonActor b : buttons) {
+					//buttonParent.parentToLocalCoordinates(temp.set(x1[pointer],y1[pointer]));
+					b.parentToLocalCoordinates(temp.set(x1[pointer], y1[pointer]));
+					//buttonParent.parentToLocalCoordinates(temp2.set(x, y));
+					b.parentToLocalCoordinates(temp2.set(x, y));
+					b.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y, event, pointer);
 				}
 				x1[pointer] = x;
 				y1[pointer] = y;
 			}
 		});
 
-		buttons = new ArrayList<PianoKey>();
-
-		buttonParent = new Table();
-		buttonParent.debug();
-		buttonParent.setTransform(true);
+		buttons = new ArrayList<ButtonActor>();
 
 		loadPianoButtons();
-
-		addActor(buttonParent);
 	}
 
 	protected void loadPianoButtons() {
@@ -278,3 +280,4 @@ public class KeyboardTable extends Table implements Disposable{
 		tex_down.dispose();
 	}
 }
+

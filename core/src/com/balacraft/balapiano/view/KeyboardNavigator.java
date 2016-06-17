@@ -106,7 +106,7 @@ public class KeyboardNavigator extends Group {
 
 		centerX = MathUtils.clamp(centerX, keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 
-		kt.resize(50, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
+		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
 
 
 		float mw = rangeLength * texW * keyboardWidth;

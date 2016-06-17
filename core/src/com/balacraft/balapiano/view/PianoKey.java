@@ -17,6 +17,7 @@ public class PianoKey extends ButtonActor{
 
 	
 	public PianoKey(int pitch, int channel,SoundSystem ss) {
+		super(false);
 		noteEventOn = new NoteEvent(NoteEvent.Type.NOTE_ON, pitch, channel);
 		noteEventOff = new NoteEvent(NoteEvent.Type.NOTE_OFF, pitch, channel);
 		this.ss = ss;

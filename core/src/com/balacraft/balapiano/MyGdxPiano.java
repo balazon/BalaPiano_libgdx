@@ -7,13 +7,16 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -21,6 +24,7 @@ import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonActor;
+import com.balacraft.balapiano.view.ChordPitchButton;
 import com.balacraft.balapiano.view.KeyboardNavigator;
 import com.balacraft.balapiano.view.KeyboardTable;
 
@@ -38,6 +42,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	KeyboardTable kt;
 	KeyboardNavigator kn;
+	Group chordParent;
 
 	SoundPlayer sp;
 
@@ -88,6 +93,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 
 
+
 		Table tp = new Table();
 		tp.setClip(true);
 		tp.setBounds(0, 0, 500, 500);
@@ -120,7 +126,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 		//test.setTransform(new Rectangle(100, 100, 100, 100));
 		tp.addActor(test);
 
-
+		loadHud();
 
 		InputMultiplexer impx = new InputMultiplexer();
 		impx.addProcessor(new GestureDetector(new MyGestureListener()));
@@ -131,6 +137,53 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 
 		//instance = this;
+
+	}
+
+	void loadHud() {
+		Texture texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
+		Texture texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
+		Sprite bpmSprite = new Sprite(texmod_up, 0, 128, 200, 64);
+		Sprite rangeSprite = new Sprite(texmod_up, 200, 128, 200, 64);
+		Sprite rowsSprite = new Sprite(texmod_up, 400, 128, 200, 64);
+
+		Image bpmLabel = new Image(bpmSprite);
+		Image rangeLabel = new Image(rangeSprite);
+		Image rowsLabel = new Image(rowsSprite);
+
+		Sprite bpmminus_up = new Sprite(texmod_up, 0, 192, 100, 64);
+		Sprite bpmminus_down = new Sprite(texmod_down, 0, 192, 100, 64);
+		Sprite bpmplus_up = new Sprite(texmod_up, 100, 192, 100, 64);
+		Sprite bpmplus_down = new Sprite(texmod_down, 100, 192, 100, 64);
+		Sprite rowsminus_up = new Sprite(texmod_up, 400, 192, 100, 64);
+		Sprite rowsminus_down = new Sprite(texmod_down, 400, 192, 100, 64);
+		Sprite rowsplus_up = new Sprite(texmod_up, 500, 192, 100, 64);
+		Sprite rowsplus_down = new Sprite(texmod_down, 500, 192, 100, 64);
+
+		chordParent = new Group();
+		chordParent.setBounds(0, 0, 1680.0f, 200.0f);
+		chordParent.setScale(w * 0.9f / 1680.0f, h * 0.15f / 200.0f);
+		stage.addActor(chordParent);
+
+		chordParent.debug();
+		Texture texchord_up = new Texture(Gdx.files.internal("data/chordbuttons_unpressed.png"));
+		Texture texchord_down = new Texture(Gdx.files.internal("data/chordbuttons_pressed.png"));
+		for(int i = 0; i < 12; i++) {
+			ChordPitchButton cpb = new ChordPitchButton(i, ss);
+			//cpb.debug();
+
+			Sprite up = new Sprite(texchord_up, i * 140, 0, 140, 200);
+			Sprite down = new Sprite(texchord_down, i * 140, 0, 140, 200);
+
+			cpb.setSpritesUp(up);
+			cpb.setSpritesDown(down);
+
+			Rectangle pos = new Rectangle(i * 140.0f, 0, 140.0f, 200.0f);
+			cpb.setSpriteGlobalTransform(pos);
+
+			chordParent.addActor(cpb);
+		}
+
 
 	}
 
@@ -171,6 +224,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		kn.resize(w * 0.45f - w * 0.35f, h * 0.85f, w * 0.7f, h * 0.15f);
 		//kn.resize(0, 0, 800.0f, h * 0.15f);
+
+		chordParent.setScale(w * 0.9f / 1680.0f, h * 0.15f / 200.0f);
 
 		stage.getViewport().update(width, height, true);
 	}
