@@ -21,20 +21,7 @@ public class NoteEvent {
 	public enum Type {
 		NOTE_ON,
 		NOTE_OFF
-	};
+	}
 
-//	private static Comparator<NoteEvent> comp = new NoteEvent.NoteEventStartComparator();
-//
-//	public static Comparator<NoteEvent> comparator() {
-//		return comp;
-//	}
-//
-//	private static class NoteEventStartComparator implements Comparator<NoteEvent> {
-//
-//		@Override
-//		public int compare(NoteEvent o1, NoteEvent o2) {
-//			return Long.valueOf(o1.start).compareTo(Long.valueOf(o2.start));
-//		}
-//	}
 }
 

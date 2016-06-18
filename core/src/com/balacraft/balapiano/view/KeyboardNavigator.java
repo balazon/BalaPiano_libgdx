@@ -31,6 +31,8 @@ public class KeyboardNavigator extends Group {
 
 	Actor maskArea;
 
+
+
 	public KeyboardNavigator(KeyboardTable kt, SoundSystem ss, Texture tex) {
 		this.kt = kt;
 		this.ss = ss;
@@ -79,6 +81,8 @@ public class KeyboardNavigator extends Group {
 
 	}
 
+
+
 	//which part of the whole range should be shown on the KeyboardTable
 	// this is in the range of 0-1 as a proportion of the whole range available
 	float centerX = 0.5f;
@@ -89,30 +93,19 @@ public class KeyboardNavigator extends Group {
 	}
 
 	int windowW, windowH;
-	float keyboardWidth;
+	float keyboardWidth = 0.2f;
 	public void resizeKeyboardTable() {
 		resizeKeyboardTable(windowW, windowH);
 	}
 	public void resizeKeyboardTable(int w, int h) {
-
 		windowW = w;
 		windowH = h;
-		float conversionRateToMilliMeter = 25.4f / (160.0f * Gdx.graphics.getDensity());
-		float c = 1.0f;
-		c = kt.getKeyboardHeight() / (0.7f * h * conversionRateToMilliMeter);
-
-		keyboardWidth = 0.3f;
-		keyboardWidth = (w * conversionRateToMilliMeter * 1.0f * c) / kt.getKeyboardWidth();
 
 		centerX = MathUtils.clamp(centerX, keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, w * conversionRateToMilliMeter * 1.0f * c);
-
+		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, keyboardWidth * kt.getKeyboardWidth());
 
 		float mw = rangeLength * texW * keyboardWidth;
-		//mw = 506.0f;
-
-
 
 		maskArea.setBounds(rangeLength * centerX * texW - mw * 0.5f, 0, mw, texH);
 		maskArea.debug();

@@ -1,6 +1,10 @@
 package com.balacraft.balapiano.soundengine;
 
-import static com.balacraft.balapiano.soundengine.ChordPlayer.ChordVariationType.MAJOR;
+
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 public class ChordPlayer {
 	boolean on = false;
@@ -10,46 +14,90 @@ public class ChordPlayer {
 
 	int channel = 1;
 	
-	private int[] pitches=new int[10];
 
-	private int mod;
-	private int interval=1000;
+	private int interval = 1000;
 
-	enum ChordVariationType {
-		DEFAULT,
-		MAJOR,
-		MINOR,
-		MAJOR7,
-		MINOR7
+	public enum ChordVariationType {
+		POW,
+		MAJ,
+		MIN,
+		DIM,
+		AUG,
+		SUS2,
+		SUS4,
+		DOM7,
+		MAJ7,
+		MIN7
 	}
 
+	Map<ChordVariationType, int[]> pitchFromType;
 
-	protected ChordVariationType chord_mode = ChordVariationType.DEFAULT;
+	protected ChordVariationType chord_mode = ChordVariationType.POW;
 
-	
-	private static final int[] MAJOR_PITCH={0,4,7};
-	private static final int[] MAJOR7_PITCH={0,4,7,10};
-	private static final int[] MINOR_PITCH={0,3,7};
-	private static final int[] MINOR7_PITCH={0,3,7,10};
-	
-	NoteEvent[] major_notes_on;
+	protected static final int[] POW_PITCH = {0,7,12};
+	protected static final int[] MAJ_PITCH = {0,4,7};
+	protected static final int[] MIN_PITCH = {0,3,7};
+	protected static final int[] DIM_PITCH = {0,3,6};
+	protected static final int[] AUG_PITCH = {0,4,8};
+	protected static final int[] SUS2_PITCH = {0,2,7};
+	protected static final int[] SUS4_PITCH = {0,5,7};
+	protected static final int[] DOM7_PITCH = {0,4,7,10};
+	protected static final int[] MAJ7_PITCH = {0,4,7,11};
+	protected static final int[] MIN7_PITCH = {0,3,7,10};
+
+
+
+
+	NoteEvent[] actualChord;
+
+	NoteEvent[] actualChordOff;
+	NoteEvent[] lastChordOff;
+
 
     //k for how many times the bpm faster button was pressed
 	private int k = 0;
 
-
-
-
     long timer;
 
-	boolean quit;
 
-    //boolean paused;
 
 	public ChordPlayer(SoundSystem ss) {
 		this.ss = ss;
-		quit = false;
         timer = 0;
+		init();
+	}
+
+	protected void init() {
+		lastChordOff = null;
+		pitchFromType = new HashMap<ChordVariationType, int[]>(20);
+		pitchFromType.put(ChordVariationType.POW, POW_PITCH);
+		pitchFromType.put(ChordVariationType.MAJ, MAJ_PITCH);
+		pitchFromType.put(ChordVariationType.MIN, MIN_PITCH);
+		pitchFromType.put(ChordVariationType.DIM, DIM_PITCH);
+		pitchFromType.put(ChordVariationType.AUG, AUG_PITCH);
+		pitchFromType.put(ChordVariationType.SUS2, SUS2_PITCH);
+		pitchFromType.put(ChordVariationType.SUS4, SUS4_PITCH);
+		pitchFromType.put(ChordVariationType.DOM7, DOM7_PITCH);
+		pitchFromType.put(ChordVariationType.MAJ7, MAJ7_PITCH);
+		pitchFromType.put(ChordVariationType.MIN7, MIN7_PITCH);
+	}
+
+	NoteEvent[] getEventsForPitchVariationType(int pitch, ChordVariationType variation, NoteEvent.Type type) {
+		int middleC = ss.getSoundPlayer().getMiddleC();
+		int[] pitches = pitchFromType.get(variation);
+		NoteEvent[] events = new NoteEvent[pitches.length];
+		for(int i = 0; i < pitches.length; i++) {
+			int p = pitches[i] + 12 * octave + middleC + pitch;
+			NoteEvent ne = new NoteEvent(type, p, channel);
+			events[i] = ne;
+		}
+		return events;
+	}
+
+	void takeHandsOffLastChord() {
+		if(lastChordOff != null) {
+			ss.getSoundPlayer().processNoteEvents(lastChordOff);
+		}
 	}
 
 	public void process() {
@@ -58,7 +106,9 @@ public class ChordPlayer {
 		}
         timer -= Time.delta();
         if(timer < 0) {
-            //ss.addNote(new Note(pitches, 0, interval, false));
+	        takeHandsOffLastChord();
+            ss.getSoundPlayer().processNoteEvents(actualChord);
+	        lastChordOff = actualChordOff;
             timer = interval;
         }
 
@@ -90,18 +140,19 @@ public class ChordPlayer {
 		}
 		else if(this.pitch == pitch) {
 			on = false;
+			takeHandsOffLastChord();
+			timer = 0;
 		}
-        timer = 0;
+
+        //timer = 0;
 		this.pitch = pitch;
 		updateChord();
 
 	}
 
 	public void updateChord() {
-		if(chord_mode == ChordVariationType.DEFAULT) chord_mode = ChordVariationType.MAJOR;
-
-//		pitches = new int[pitches_tmp.length];
-//		for(int i=0;i<pitches_tmp.length;i++) pitches[i]=pitch+pitches_tmp[i]+ ss.getSoundPlayer().getMiddleC() +  12 * (octave + ss.getSoundPlayer().getDefaultOctave());
+		actualChord = getEventsForPitchVariationType(pitch, chord_mode, NoteEvent.Type.NOTE_ON);
+		actualChordOff = getEventsForPitchVariationType(pitch, chord_mode, NoteEvent.Type.NOTE_OFF);
 	}
 
 	public void addOctave(int relOct) {
@@ -110,32 +161,14 @@ public class ChordPlayer {
 	}
 	public void setChordVariation(ChordVariationType variation) {
 		chord_mode = variation;
-		switch(chord_mode) {
-		case MAJOR:
-
-			break;
-		case MINOR:
-
-			break;
-		case MAJOR7:
-
-			break;
-		case MINOR7:
-
-			break;
-		default:
-			System.err.println("undefined chord value");
-		}
 		updateChord();
 	}
 
 	public boolean isChordVariationPressed(ChordVariationType variation){
-		if (chord_mode == variation) return true;
-		else return false;
+		return chord_mode == variation;
 	}
 	public boolean isChordPitchPressed(int pitch) {
-		if(this.pitch == pitch && on) return true;
-		else return false;
+		return this.pitch == pitch && on;
 	}
 	
 	

@@ -65,7 +65,7 @@ public class ButtonActor extends Group {
 	int downCount = 0;
 	boolean incDownCount() {
 		downCount++;
-		System.out.printf("downcount: %d\n", downCount);
+		//System.out.printf("downcount: %d\n", downCount);
 		if(downCount == 1) {
 			pressed = true;
 			fire();
@@ -75,7 +75,7 @@ public class ButtonActor extends Group {
 	}
 	void decDownCount() {
 		downCount--;
-		System.out.printf("downcount: %d\n", downCount);
+		//System.out.printf("downcount: %d\n", downCount);
 		if(downCount == 0) {
 			pressed = false;
 			release();

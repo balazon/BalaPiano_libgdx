@@ -4,8 +4,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 public class ChordPitchButton extends ButtonActor{
-	private int pitch;
-	SoundSystem ss;
+	protected int pitch;
+	protected SoundSystem ss;
 
 	public ChordPitchButton(int pitch,SoundSystem ss) {
 		this.ss = ss;

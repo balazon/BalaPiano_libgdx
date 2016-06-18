@@ -20,13 +20,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.balacraft.balapiano.soundengine.ChordPlayer;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
 import com.balacraft.balapiano.view.ButtonActor;
 import com.balacraft.balapiano.view.ChordPitchButton;
+import com.balacraft.balapiano.view.ChordVariationButton;
 import com.balacraft.balapiano.view.KeyboardNavigator;
 import com.balacraft.balapiano.view.KeyboardTable;
+import com.balacraft.balapiano.view.RangeControl;
 
 
 public class MyGdxPiano extends ApplicationAdapter {
@@ -43,6 +46,14 @@ public class MyGdxPiano extends ApplicationAdapter {
 	KeyboardTable kt;
 	KeyboardNavigator kn;
 	Group chordParent;
+	Group variationParent;
+
+
+	RangeControl rangeControl;
+	Group bpmParent;
+
+	Group rowsParent;
+
 
 	SoundPlayer sp;
 
@@ -54,7 +65,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		logger = new Logger("GDX_CORE");
+		logger = new Logger("GDX_PIANO");
 
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
@@ -144,12 +155,23 @@ public class MyGdxPiano extends ApplicationAdapter {
 		Texture texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
 		Texture texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
 		Sprite bpmSprite = new Sprite(texmod_up, 0, 128, 200, 64);
-		Sprite rangeSprite = new Sprite(texmod_up, 200, 128, 200, 64);
-		Sprite rowsSprite = new Sprite(texmod_up, 400, 128, 200, 64);
 
-		Image bpmLabel = new Image(bpmSprite);
-		Image rangeLabel = new Image(rangeSprite);
+
+		rangeControl = new RangeControl(kn);
+		stage.addActor(rangeControl);
+		rangeControl.init();
+		rangeControl.setPosition(w * 0.8f, h * 0.85f);
+		rangeControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
+
+
+		Sprite rowsSprite = new Sprite(texmod_up, 400, 128, 200, 64);
 		Image rowsLabel = new Image(rowsSprite);
+
+
+		rowsLabel.setBounds(w * 0.9f, h * 0.925f, 200, 64);
+		rowsLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
+
+//		stage.addActor(rowsLabel);
 
 		Sprite bpmminus_up = new Sprite(texmod_up, 0, 192, 100, 64);
 		Sprite bpmminus_down = new Sprite(texmod_down, 0, 192, 100, 64);
@@ -159,6 +181,69 @@ public class MyGdxPiano extends ApplicationAdapter {
 		Sprite rowsminus_down = new Sprite(texmod_down, 400, 192, 100, 64);
 		Sprite rowsplus_up = new Sprite(texmod_up, 500, 192, 100, 64);
 		Sprite rowsplus_down = new Sprite(texmod_down, 500, 192, 100, 64);
+
+		bpmParent = new Group();
+		bpmParent.setBounds(w * 0.9f, 0, 200.0f, 128.0f);
+		bpmParent.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
+		stage.addActor(bpmParent);
+
+		Image bpmLabel = new Image(bpmSprite);
+		bpmLabel.setBounds(0, 64.0f, 200.0f, 64.0f);
+
+		ButtonActor bpmminus = new ButtonActor() {
+			@Override
+			public void fire() {
+				ss.getChordPlayer().setBPMRelative(-1);
+			}
+		};
+		bpmminus.setSpritesUp(bpmminus_up);
+		bpmminus.setSpritesDown(bpmminus_down);
+		bpmminus.setSpriteGlobalTransform(new Rectangle(0, 0, 100, 64));
+
+		ButtonActor bpmplus = new ButtonActor() {
+			@Override
+			public void fire() {
+				ss.getChordPlayer().setBPMRelative(1);
+			}
+		};
+		bpmplus.setSpritesUp(bpmplus_up);
+		bpmplus.setSpritesDown(bpmplus_down);
+		bpmplus.setSpriteGlobalTransform(new Rectangle(100, 0, 100, 64));
+
+
+		bpmParent.addActor(bpmLabel);
+		bpmParent.addActor(bpmminus);
+		bpmParent.addActor(bpmplus);
+
+
+
+
+//		Group rowsParent;
+
+		variationParent = new Group();
+
+		stage.addActor(variationParent);
+		ChordPlayer.ChordVariationType[] chordvarTypes = ChordPlayer.ChordVariationType.values();
+		for(int i = 0; i < chordvarTypes.length; i++) {
+			ChordVariationButton cvb = new ChordVariationButton(chordvarTypes[i], ss);
+			//cvb.debug();
+
+			Sprite var_up = new Sprite(texmod_up, i * 200, 0, 200, 128);
+			Sprite var_down = new Sprite(texmod_down, i * 200, 0, 200, 128);
+
+			cvb.setSpritesUp(var_up);
+			cvb.setSpritesDown(var_down);
+
+			Rectangle pos = new Rectangle(0, (chordvarTypes.length - i - 1) * 128.0f, 200.0f, 128.0f);
+			cvb.setSpriteGlobalTransform(pos);
+
+			variationParent.addActor(cvb);
+
+		}
+
+		variationParent.setBounds(w * 0.9f, h * 0.15f, 200.0f, ChordPlayer.ChordVariationType.values().length * 128.0f);
+		variationParent.setScale(w * 0.1f / 200.0f, h * 0.7f / (ChordPlayer.ChordVariationType.values().length * 128.0f));
+		variationParent.debug();
 
 		chordParent = new Group();
 		chordParent.setBounds(0, 0, 1680.0f, 200.0f);
@@ -225,7 +310,24 @@ public class MyGdxPiano extends ApplicationAdapter {
 		kn.resize(w * 0.45f - w * 0.35f, h * 0.85f, w * 0.7f, h * 0.15f);
 		//kn.resize(0, 0, 800.0f, h * 0.15f);
 
+
 		chordParent.setScale(w * 0.9f / 1680.0f, h * 0.15f / 200.0f);
+
+		bpmParent.setPosition(w * 0.9f, 0);
+		bpmParent.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
+
+		rangeControl.setPosition(w * 0.8f, h * 0.85f);
+		rangeControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
+
+//		bpmLabel.setBounds(w * 0.9f, h * 0.075f, 200, 64);
+//		bpmLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
+
+//		rowsLabel.setBounds(w * 0.9f, h * 0.925f, 200, 64);
+//		rowsLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
+
+		variationParent.setPosition(w * 0.9f, h * 0.15f);
+		variationParent.setScale(w * 0.1f / 200.0f, h * 0.7f / (ChordPlayer.ChordVariationType.values().length * 128.0f));
+		//variationParent.debug();
 
 		stage.getViewport().update(width, height, true);
 	}
