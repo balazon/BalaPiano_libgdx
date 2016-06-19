@@ -124,15 +124,11 @@ public class ButtonActor extends Group {
 	}
 
 	public void setSpriteLocalTransform(Rectangle... tr) {
-		Rectangle bounds = new Rectangle(tr[0]);
 		for(int i = 0; i < sprites_up.length; i++) {
 			Rectangle r = tr[i];
 			sprites_up[i].setBounds(r.x, r.y, r.width, r.height);
 			sprites_down[i].setBounds(r.x, r.y, r.width, r.height);
-
-			bounds.merge(r);
 		}
-		//setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 	}
 
 	public void setSpriteGlobalTransform(Rectangle... tr) {

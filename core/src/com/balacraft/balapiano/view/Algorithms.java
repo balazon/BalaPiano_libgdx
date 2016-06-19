@@ -1,7 +1,5 @@
 package com.balacraft.balapiano.view;
 
-import com.badlogic.gdx.math.Rectangle;
-
 public class Algorithms {
 
 	static final short INSIDE = 0; // 0000

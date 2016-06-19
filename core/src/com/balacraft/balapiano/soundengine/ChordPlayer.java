@@ -12,7 +12,7 @@ public class ChordPlayer {
 	int pitch = 0;
 	int octave = -1;
 
-	int channel = 1;
+	int channel = 5;
 	
 
 	private int interval = 1000;
@@ -115,13 +115,6 @@ public class ChordPlayer {
 
 	}
 
-//    public void setPaused(boolean paused) {
-//        this.paused = paused;
-//        if(paused)
-//    }
-//	public void chordMode(boolean on) {
-//		this.on = on;
-//	}
 	public void setBPM(int bpm) {
 		interval = 60 * 1000 / bpm;
 	}
@@ -144,7 +137,7 @@ public class ChordPlayer {
 			timer = 0;
 		}
 
-        //timer = 0;
+
 		this.pitch = pitch;
 		updateChord();
 

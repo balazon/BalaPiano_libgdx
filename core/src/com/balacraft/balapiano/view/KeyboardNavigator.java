@@ -92,18 +92,20 @@ public class KeyboardNavigator extends Group {
 		setScale(width / (texW * rangeLength), height / texH);
 	}
 
-	int windowW, windowH;
+	float ktX, ktY, ktW, ktH;
 	float keyboardWidth = 0.2f;
 	public void resizeKeyboardTable() {
-		resizeKeyboardTable(windowW, windowH);
+		resizeKeyboardTable(ktX, ktY, ktW, ktH);
 	}
-	public void resizeKeyboardTable(int w, int h) {
-		windowW = w;
-		windowH = h;
+	public void resizeKeyboardTable(float x, float y, float w, float h) {
+		ktX = x;
+		ktY = y;
+		ktW = w;
+		ktH = h;
 
 		centerX = MathUtils.clamp(centerX, keyboardWidth * 0.5f, 1.0f - keyboardWidth * 0.5f);
 
-		kt.resize(0, h * 0.15f, w * 0.9f, h * 0.7f, centerX, keyboardWidth * kt.getKeyboardWidth());
+		kt.resize(x, y, w, h, centerX, keyboardWidth * kt.getKeyboardWidth());
 
 		float mw = rangeLength * texW * keyboardWidth;
 

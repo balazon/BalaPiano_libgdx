@@ -121,10 +121,6 @@ public class AndroidMidiPlayer implements SoundPlayer, MidiDriver.OnMidiStartLis
 
 
 	@Override
-	public int getDefaultOctave() {
-		return 0;
-	}
-	@Override
 	public int getMiddleC() {
 		return 60;
 	}

@@ -72,7 +72,6 @@ public class KeyboardTable extends Table implements Disposable{
 				y1[pointer] = y;
 
 				for(ButtonActor b : buttons) {
-					//buttonParent.parentToLocalCoordinates(temp.set(x, y));
 					b.parentToLocalCoordinates(temp.set(x, y));
 					if(b.contains(temp.x, temp.y)) {
 						System.out.printf("%s enter (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
@@ -89,7 +88,6 @@ public class KeyboardTable extends Table implements Disposable{
 				System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 
 				for(ButtonActor b : buttons) {
-					//buttonParent.parentToLocalCoordinates(temp.set(x, y));
 					b.parentToLocalCoordinates(temp.set(x, y));
 					if(b.contains(temp.x, temp.y)) {
 						System.out.printf("%s exit (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
@@ -107,9 +105,7 @@ public class KeyboardTable extends Table implements Disposable{
 //					return;
 //				}
 				for(ButtonActor b : buttons) {
-					//buttonParent.parentToLocalCoordinates(temp.set(x1[pointer],y1[pointer]));
 					b.parentToLocalCoordinates(temp.set(x1[pointer], y1[pointer]));
-					//buttonParent.parentToLocalCoordinates(temp2.set(x, y));
 					b.parentToLocalCoordinates(temp2.set(x, y));
 					b.draggedFromTo(temp.x, temp.y, temp2.x, temp2.y, event, pointer);
 				}
@@ -264,8 +260,8 @@ public class KeyboardTable extends Table implements Disposable{
 
 		setBounds(x, y, width, height);
 		float scaleX = width / keyboardWidth;
-		float scaleY = scaleX;
-		buttonParent.setBounds(width * 0.5f - centerX * getKeyboardWidth() * scaleX, height * 0.5f - 50 * scaleY, getKeyboardWidth(), getKeyboardHeight());
+		float scaleY = height / getKeyboardHeight();
+		buttonParent.setBounds(width * 0.5f - centerX * getKeyboardWidth() * scaleX, height * 0.5f - getKeyboardHeight() * 0.5f * scaleY, getKeyboardWidth(), getKeyboardHeight());
 		buttonParent.setScale(scaleX, scaleY);
 	}
 

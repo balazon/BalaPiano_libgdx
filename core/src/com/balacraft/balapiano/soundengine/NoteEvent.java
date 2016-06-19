@@ -1,8 +1,6 @@
 package com.balacraft.balapiano.soundengine;
 
 
-import java.util.Comparator;
-
 public class NoteEvent {
 
 	public Type type;

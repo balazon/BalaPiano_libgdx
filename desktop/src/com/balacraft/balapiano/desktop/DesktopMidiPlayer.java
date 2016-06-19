@@ -53,10 +53,6 @@ public class DesktopMidiPlayer implements SoundPlayer {
 		}
 	}
 
-	@Override
-	public int getDefaultOctave() {
-		return 0;
-	}
 
 	@Override
 	public int getMiddleC() {

@@ -11,11 +11,11 @@ public interface SoundPlayer extends Disposable {
 
 	void processNoteEvents(NoteEvent[] noteEvents);
 
-	int getDefaultOctave();
+
 	int getMiddleC();
 	int getRangeMin();
 	int getRangeMax();
 
 
-	//void stop();
+
 }

@@ -3,33 +3,23 @@ package com.balacraft.balapiano;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Logger;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.balacraft.balapiano.soundengine.ChordPlayer;
 import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 import com.balacraft.balapiano.soundengine.Time;
-import com.balacraft.balapiano.view.ButtonActor;
 import com.balacraft.balapiano.view.ChordPitchButton;
 import com.balacraft.balapiano.view.ChordVariationButton;
-import com.balacraft.balapiano.view.KeyboardNavigator;
-import com.balacraft.balapiano.view.KeyboardTable;
-import com.balacraft.balapiano.view.RangeControl;
+import com.balacraft.balapiano.view.KeyboardRow;
+import com.balacraft.balapiano.view.PlusMinusControl;
 
 
 public class MyGdxPiano extends ApplicationAdapter {
@@ -43,17 +33,17 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	private Stage stage;
 
-	KeyboardTable kt;
-	KeyboardNavigator kn;
+
 	Group chordParent;
 	Group variationParent;
 
+	PlusMinusControl bpmControl;
+	PlusMinusControl rowsControl;
 
-	RangeControl rangeControl;
-	Group bpmParent;
-
+	int minRowCount = 1;
+	int maxRowCount = 3;
+	int defaultRowCount = 1;
 	Group rowsParent;
-
 
 	SoundPlayer sp;
 
@@ -70,155 +60,97 @@ public class MyGdxPiano extends ApplicationAdapter {
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
-		//camera = new OrthographicCamera(1, h / w);
-
 		tex1 = new Texture(Gdx.files.internal("data/tex_unpressed.png"));
 		tex2 = new Texture(Gdx.files.internal("data/tex_pressed.png"));
 		tex1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		tex2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-
-
 		stage = new Stage(new ScreenViewport());
-
 
 		logger.error("GDX_CORE INIT");
 		sp.init();
 		ss = new SoundSystem(sp);
 
-		kt = new KeyboardTable(0, ss);
+		rowsParent = new Group();
 
-		stage.addActor(kt);
-
-		kt.init();
-
-
-
-		kn = new KeyboardNavigator(kt , ss, tex1);
-		stage.addActor(kn);
-
-		kn.init();
-		kn.resize(0, 0, 800.0f, h * 0.15f);
-		//kn.resizeKeyboardTable(w, h);
+		stage.addActor(rowsParent);
+		rowsParent.setSize(1000.0f, 0.0f);
+		for(int i = 0; i < defaultRowCount; i++) {
+			addKeyboardRow();
+		}
+		//rowsParent.setSize(1000.0f, 400.0f * defaultRowCount);
 
 
-
-
-
-		Table tp = new Table();
-		tp.setClip(true);
-		tp.setBounds(0, 0, 500, 500);
-		tp.setScale(0.5f, 0.5f);
-		tp.setRotation(0.0f);
-		//stage.addActor(tp);
-		tp.debug();
-
-		Texture tex = new Texture(Gdx.files.internal("badlogic.jpg"));
-		Sprite s = new Sprite(tex);
-		//s.setBounds(0, 0, 100, 100);
-		//s.setBounds(100,100,100,100);
-		ButtonActor test = new ButtonActor();
-
-		test.setSpritesUp(s, s);
-		test.setSpritesDown(s, s);
-
-
-		test.setSpriteLocalTransform(new Rectangle(0, 100, 100, 100), new Rectangle(100, 0, 100, 100));
-
-
-		test.setBounds(250, 0, 200, 200);
-
-		test.setScale(1.4f, 1.4f);
-		test.setRotation(00.0f);
-
-		test.debug();
-
-
-		//test.setTransform(new Rectangle(100, 100, 100, 100));
-		tp.addActor(test);
 
 		loadHud();
 
 		InputMultiplexer impx = new InputMultiplexer();
-		impx.addProcessor(new GestureDetector(new MyGestureListener()));
 		impx.addProcessor(stage);
-		impx.addProcessor(new MyInputProcessor());
-
 		Gdx.input.setInputProcessor(impx);
+	}
 
+	void addKeyboardRow() {
+		int count = rowsParent.getChildren().size;
+		if(count == maxRowCount) {
+			return;
+		}
+		int channel = count;
+		KeyboardRow kr = new KeyboardRow(channel, ss);
+		kr.setPosition(0, channel * 400.0f);
+		rowsParent.addActor(kr);
+		rowsParent.sizeBy(0, 400);
+		kr.init();
 
-		//instance = this;
+		rowsParent.setPosition(0, h * 0.15f);
+		rowsParent.setScale(w * 0.9f / 1000.0f, h * 0.85f / (400.0f * rowsParent.getChildren().size));
+	}
 
+	void removeKeyboardRow() {
+		int count = rowsParent.getChildren().size;
+		if(count == minRowCount) {
+			return;
+		}
+		KeyboardRow kr = (KeyboardRow) rowsParent.getChildren().get(count - 1);
+		kr.clear();
+		kr.remove();
+		rowsParent.sizeBy(0, -400);
+
+		rowsParent.setPosition(0, h * 0.15f);
+		rowsParent.setScale(w * 0.9f / 1000.0f, h * 0.85f / (400.0f * rowsParent.getChildren().size));
 	}
 
 	void loadHud() {
 		Texture texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
 		Texture texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
-		Sprite bpmSprite = new Sprite(texmod_up, 0, 128, 200, 64);
 
-
-		rangeControl = new RangeControl(kn);
-		stage.addActor(rangeControl);
-		rangeControl.init();
-		rangeControl.setPosition(w * 0.8f, h * 0.85f);
-		rangeControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
-
-
-		Sprite rowsSprite = new Sprite(texmod_up, 400, 128, 200, 64);
-		Image rowsLabel = new Image(rowsSprite);
-
-
-		rowsLabel.setBounds(w * 0.9f, h * 0.925f, 200, 64);
-		rowsLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
-
-//		stage.addActor(rowsLabel);
-
-		Sprite bpmminus_up = new Sprite(texmod_up, 0, 192, 100, 64);
-		Sprite bpmminus_down = new Sprite(texmod_down, 0, 192, 100, 64);
-		Sprite bpmplus_up = new Sprite(texmod_up, 100, 192, 100, 64);
-		Sprite bpmplus_down = new Sprite(texmod_down, 100, 192, 100, 64);
-		Sprite rowsminus_up = new Sprite(texmod_up, 400, 192, 100, 64);
-		Sprite rowsminus_down = new Sprite(texmod_down, 400, 192, 100, 64);
-		Sprite rowsplus_up = new Sprite(texmod_up, 500, 192, 100, 64);
-		Sprite rowsplus_down = new Sprite(texmod_down, 500, 192, 100, 64);
-
-		bpmParent = new Group();
-		bpmParent.setBounds(w * 0.9f, 0, 200.0f, 128.0f);
-		bpmParent.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
-		stage.addActor(bpmParent);
-
-		Image bpmLabel = new Image(bpmSprite);
-		bpmLabel.setBounds(0, 64.0f, 200.0f, 64.0f);
-
-		ButtonActor bpmminus = new ButtonActor() {
+		bpmControl = new PlusMinusControl(texmod_up, texmod_down, 0, 128, 200, 128) {
 			@Override
-			public void fire() {
+			public void minusFire() {
 				ss.getChordPlayer().setBPMRelative(-1);
 			}
-		};
-		bpmminus.setSpritesUp(bpmminus_up);
-		bpmminus.setSpritesDown(bpmminus_down);
-		bpmminus.setSpriteGlobalTransform(new Rectangle(0, 0, 100, 64));
 
-		ButtonActor bpmplus = new ButtonActor() {
 			@Override
-			public void fire() {
+			public void plusFire() {
 				ss.getChordPlayer().setBPMRelative(1);
 			}
 		};
-		bpmplus.setSpritesUp(bpmplus_up);
-		bpmplus.setSpritesDown(bpmplus_down);
-		bpmplus.setSpriteGlobalTransform(new Rectangle(100, 0, 100, 64));
 
+		stage.addActor(bpmControl);
+		bpmControl.init();
 
-		bpmParent.addActor(bpmLabel);
-		bpmParent.addActor(bpmminus);
-		bpmParent.addActor(bpmplus);
+		rowsControl = new PlusMinusControl(texmod_up, texmod_down, 400, 128, 200, 128) {
+			@Override
+			public void minusFire() {
+				removeKeyboardRow();
+			}
 
-
-
-
-//		Group rowsParent;
+			@Override
+			public void plusFire() {
+				addKeyboardRow();
+			}
+		};
+		stage.addActor(rowsControl);
+		rowsControl.init();
 
 		variationParent = new Group();
 
@@ -275,11 +207,8 @@ public class MyGdxPiano extends ApplicationAdapter {
 	@Override
 	public void dispose() {
 		logger.error("GDX_CORE DISPOSE");
-		//batch.dispose();
-		ss.dispose();
-		sp.dispose();
 
-		kt.dispose();
+		sp.dispose();
 
 		stage.dispose();
 
@@ -305,25 +234,22 @@ public class MyGdxPiano extends ApplicationAdapter {
 		w = width;
 		h = height;
 
-		kn.resizeKeyboardTable(w, h);
 
-		kn.resize(w * 0.45f - w * 0.35f, h * 0.85f, w * 0.7f, h * 0.15f);
-		//kn.resize(0, 0, 800.0f, h * 0.15f);
 
+		rowsParent.setPosition(0, h * 0.15f);
+		rowsParent.setScale(w * 0.9f / 1000.0f, h * 0.85f / (400.0f * rowsParent.getChildren().size));
+//		for(int i = 0; i < keyboardRows.size(); i++) {
+//			KeyboardRow row = keyboardRows.get(i);
+//			row.resize(0, h * 0.15f + i / (float)keyboardRows.size() * h * 0.85f , w * 0.9f, h * 0.85f / (float) keyboardRows.size());
+//		}
 
 		chordParent.setScale(w * 0.9f / 1680.0f, h * 0.15f / 200.0f);
 
-		bpmParent.setPosition(w * 0.9f, 0);
-		bpmParent.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
+		bpmControl.setPosition(w * 0.9f, 0);
+		bpmControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
 
-		rangeControl.setPosition(w * 0.8f, h * 0.85f);
-		rangeControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
-
-//		bpmLabel.setBounds(w * 0.9f, h * 0.075f, 200, 64);
-//		bpmLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
-
-//		rowsLabel.setBounds(w * 0.9f, h * 0.925f, 200, 64);
-//		rowsLabel.setScale(w * 0.1f / 200.0f, h * 0.075f / 64.0f);
+		rowsControl.setPosition(w * 0.9f, h * 0.85f);
+		rowsControl.setScale(w * 0.1f / 200.0f, h * 0.15f / 128.0f);
 
 		variationParent.setPosition(w * 0.9f, h * 0.15f);
 		variationParent.setScale(w * 0.1f / 200.0f, h * 0.7f / (ChordPlayer.ChordVariationType.values().length * 128.0f));
@@ -342,112 +268,5 @@ public class MyGdxPiano extends ApplicationAdapter {
 	public void resume() {
 		Time.paused(false);
 		logger.error("GDX_CORE RESUME");
-	}
-
-
-	public int[] x1 = new int[6];
-	public int[] y1 = new int[6];
-
-
-
-	private class MyInputProcessor implements InputProcessor {
-
-
-		@Override
-		public boolean keyDown(int keycode) {
-			return false;
-		}
-
-		@Override
-		public boolean keyUp(int keycode) {
-			return false;
-		}
-
-		@Override
-		public boolean keyTyped(char character) {
-			return false;
-		}
-
-		@Override
-		public boolean touchDown(int x, int y, int pointer, int button) {
-			System.out.println("click at thread  " + Thread.currentThread().getId());
-
-			int x2 = x;
-			int y2 = h - y;
-            //System.out.println("press");
-
-			x1[pointer] = x2;
-			y1[pointer] = y2;
-			return false;
-		}
-
-		@Override
-		public boolean touchUp(int x, int y, int pointer, int button) {
-			return false;
-		}
-
-		@Override
-		public boolean touchDragged(int x, int y, int pointer) {
-			int x2 = x;
-			int y2 = h - y;
-
-			x1[pointer] = x2;
-			y1[pointer] = y2;
-			return false;
-		}
-
-		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
-			return false;
-		}
-
-		@Override
-		public boolean scrolled(int amount) {
-			return false;
-		}
-	}
-
-	private class MyGestureListener implements GestureListener {
-
-
-		@Override
-		public boolean touchDown(float x, float y, int pointer, int button) {
-			return false;
-		}
-
-		@Override
-		public boolean tap(float x, float y, int count, int button) {
-			return false;
-		}
-
-		@Override
-		public boolean longPress(float x, float y) {
-			return false;
-		}
-
-		@Override
-		public boolean fling(float velocityX, float velocityY, int button) {
-			return false;
-		}
-
-		@Override
-		public boolean pan(float x, float y, float deltaX, float deltaY) {
-			return false;
-		}
-
-		@Override
-		public boolean panStop(float x, float y, int pointer, int button) {
-			return false;
-		}
-
-		@Override
-		public boolean zoom(float initialDistance, float distance) {
-			return false;
-		}
-
-		@Override
-		public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-			return false;
-		}
 	}
 }

@@ -197,38 +197,13 @@ public class RealSoundPlayer implements SoundPlayer {
 		}
 	}
 
-//	public void playNote(Note n) {
-//        long[] sound_instance_id = new long[n.count()];
-//
-//        for(int i = 0; i < sound_instance_id.length; i++) {
-//            TransformedSound ts = getSound(n.absolutePitches[i] + 12 * n.relOct);
-//            Sound s = ts.sound;
-//            int p = ts.pitchTransform;
-//            if(p == 0) {
-//                sound_instance_id[i] = s.play();
-//            } else {
-//                sound_instance_id[i] = s.play(1.0f, ts.pitchVal, 0);
-//            }
-//        }
-//        n.ids=sound_instance_id;
-//        n.start = System.currentTimeMillis();
-//
-//	}
-//	public void stopNote(Note n ){
-//		for(int i=0; i< n.ids.length; i++){
-//            TransformedSound tf = getSound(n.absolutePitches[i]);
-//            tf.sound.stop(n.ids[i]);
-//		}
-//	}
 	@Override
 	public void dispose() {
         for(Sound s : actualSounds.values()) {
             s.dispose();
         }
 	}
-//	public void stop() {
-//
-//	}
+
 
     private class TransformedSound {
         Sound sound;
