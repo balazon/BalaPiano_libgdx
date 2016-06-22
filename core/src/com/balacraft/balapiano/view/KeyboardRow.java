@@ -1,7 +1,6 @@
 package com.balacraft.balapiano.view;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -19,27 +18,35 @@ public class KeyboardRow extends Group {
 	float contentWidth;
 	float contentHeight;
 
-	public KeyboardRow(int keyboardChannel, SoundSystem ss) {
+	Texture texkeys_up;
+	Texture texkeys_down;
+	Texture texmod_up;
+	Texture texmod_down;
+	Texture tex_navigator;
+
+	public KeyboardRow(int keyboardChannel, SoundSystem ss, Texture texkeys_up, Texture texkeys_down, Texture texmod_up, Texture texmod_down, Texture tex_navigator) {
 		this.keyboardChannel = keyboardChannel;
 		this.ss = ss;
+		this.texkeys_up = texkeys_up;
+		this.texkeys_down = texkeys_down;
+		this.texmod_up = texmod_up;
+		this.texmod_down = texmod_down;
+		this.tex_navigator = tex_navigator;
 	}
 
 	public void init() {
 
-		keyboardTable = new KeyboardTable(keyboardChannel, ss);
+		keyboardTable = new KeyboardTable(keyboardChannel, ss, texkeys_up, texkeys_down);
 		addActor(keyboardTable);
 		keyboardTable.init();
 
-		Texture tex1 = new Texture(Gdx.files.internal("data/tex_unpressed.png"));
-		keyboardNavigator = new KeyboardNavigator(keyboardTable , ss, tex1);
+
+		keyboardNavigator = new KeyboardNavigator(keyboardTable , ss, texkeys_up, tex_navigator);
 		addActor(keyboardNavigator);
 		keyboardNavigator.init();
 
 
-		Texture texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
-		Texture texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
-
-		rangeControl = new PlusMinusControl(texmod_up, texmod_down, 200, 128, 200, 128) {
+		rangeControl = new PlusMinusControl(texmod_up, texmod_down, 200, 128, 200, 128, false) {
 			@Override
 			public void minusFire() {
 				keyboardNavigator.keyboardWidth = MathUtils.clamp(keyboardNavigator.keyboardWidth - 0.146341f / keyboardNavigator.rangeLength, 0.15f, 0.4f);
@@ -57,7 +64,6 @@ public class KeyboardRow extends Group {
 		rangeControl.init();
 
 
-
 		contentWidth = 1000.0f;
 		contentHeight = 400.0f;
 
@@ -67,7 +73,7 @@ public class KeyboardRow extends Group {
 		keyboardNavigator.resizeKeyboardTable(0, 0, contentWidth, contentHeight * 0.9f);
 
 		rangeControl.setPosition(contentWidth * 0.9f, contentHeight * 0.9f);
-		rangeControl.setScale(contentWidth * 0.1f / 200.0f, contentHeight * 0.1f / 128.0f);
+		rangeControl.setScale(contentWidth * 0.1f / 200.0f, contentHeight * 0.1f / 64.0f);
 	}
 
 	public void resize(float x, float y, float width, float height) {

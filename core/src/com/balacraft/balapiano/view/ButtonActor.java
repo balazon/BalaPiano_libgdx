@@ -165,20 +165,20 @@ public class ButtonActor extends Group {
 	public void draggedFromTo(float x1, float y1, float x2, float y2, InputEvent event, int pointer) {
 		if(isPressed()) {
 			if(contains(x1,y1) && !contains(x2,y2)) {
-				System.out.printf("%s drag exit (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
+				//System.out.printf("%s drag exit (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
 				//clickListener.exit(event, x2, y2,pointer, null);
 				exit();
 			}
 		}
 		else if(contains(x2,y2)) {
-			System.out.printf("%s drag enter (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
+			//System.out.printf("%s drag enter (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
 			//clickListener.enter(event, x2, y2, pointer, null);
 			enter();
 		}else {
 			for(Sprite s : sprites_up) {
 				Rectangle rect = s.getBoundingRectangle();
 				if( Algorithms.lineSegmentIntersectsRect(x1,y1,x2,y2, rect.x, rect.y, rect.x + rect.width, rect.y + rect.height)) {
-					System.out.printf("%s drag fire (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
+					//System.out.printf("%s drag fire (%.2f %.2f) (%.2f %.2f) %d\n", this.toString(),x1,y1,x2,y2,pointer);
 					through();
 //					clickListener.enter(event, s.getX() + s.getWidth() * 0.5f, s.getY() + s.getHeight() * 0.5f, pointer, null);
 //					clickListener.exit(event, s.getX() + s.getWidth() * 0.5f, s.getY() + s.getHeight() * 0.5f, pointer, null);

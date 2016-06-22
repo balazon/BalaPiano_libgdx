@@ -1,7 +1,6 @@
 package com.balacraft.balapiano.view;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,7 +15,8 @@ import com.balacraft.balapiano.soundengine.SoundSystem;
 
 public class KeyboardNavigator extends Group {
 	KeyboardTable kt;
-	Texture tex;
+	Texture tex_keys;
+	Texture tex_navigator;
 	SoundSystem ss;
 
 	ClickListener clickListener;
@@ -33,17 +33,16 @@ public class KeyboardNavigator extends Group {
 
 
 
-	public KeyboardNavigator(KeyboardTable kt, SoundSystem ss, Texture tex) {
+	public KeyboardNavigator(KeyboardTable kt, SoundSystem ss, Texture tex_keys, Texture tex_navigator) {
 		this.kt = kt;
 		this.ss = ss;
-		this.tex = tex;
+		this.tex_keys = tex_keys;
+		this.tex_navigator = tex_navigator;
 	}
 
 
 	public void init() {
-
-		octave = new Sprite(tex, 0, 0, texW, texH);
-
+		octave = new Sprite(tex_keys, 0, 0, texW, texH);
 
 		setTouchable(Touchable.enabled);
 		addListener(clickListener = new ClickListener() {
@@ -66,19 +65,21 @@ public class KeyboardNavigator extends Group {
 		rangeOffset = offsetAndRange.x;
 		rangeLength = offsetAndRange.y;
 
-		debug();
+
 
 		maskArea = new Actor() {
-			Texture texture = new Texture(Gdx.files.internal("navigator.png"));
+			Texture texture = tex_navigator;
 			@Override
 			public void draw (Batch batch, float parentAlpha) {
 				batch.draw(texture, getX(), getY(), getWidth(), getHeight());
 			}
 		};
 		maskArea.setTouchable(Touchable.disabled);
-		maskArea.debug();
+
 		addActor(maskArea);
 
+		//debug();
+		//maskArea.debug();
 	}
 
 
@@ -110,7 +111,7 @@ public class KeyboardNavigator extends Group {
 		float mw = rangeLength * texW * keyboardWidth;
 
 		maskArea.setBounds(rangeLength * centerX * texW - mw * 0.5f, 0, mw, texH);
-		maskArea.debug();
+		//maskArea.debug();
 
 	}
 
@@ -141,6 +142,5 @@ public class KeyboardNavigator extends Group {
 
 		super.draw(batch, parentAlpha);
 	}
-
 
 }

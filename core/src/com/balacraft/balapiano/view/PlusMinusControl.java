@@ -14,8 +14,9 @@ public abstract class PlusMinusControl extends Group {
 
 	int halfWidth, halfHeight;
 
+	boolean useLabel;
 
-	public PlusMinusControl(Texture up, Texture down, int srcX, int srcY, int srcW, int srcH) {
+	public PlusMinusControl(Texture up, Texture down, int srcX, int srcY, int srcW, int srcH, boolean useLabel) {
 		this.up = up;
 		this.down = down;
 		this.srcX = srcX;
@@ -24,11 +25,16 @@ public abstract class PlusMinusControl extends Group {
 		this.srcH = srcH;
 		halfWidth = (int)(srcW * 0.50001f);
 		halfHeight = (int)(srcH * 0.50001f);
+		this.useLabel = useLabel;
 	}
 
 	public void init() {
-		debug();
-		setSize(srcW, srcH);
+		//debug();
+		if(useLabel) {
+			setSize(srcW, srcH);
+		} else {
+			setSize(srcW, halfHeight);
+		}
 
 
 		Sprite labelSprite = new Sprite(up, srcX, srcY, srcW, halfHeight);
@@ -60,7 +66,9 @@ public abstract class PlusMinusControl extends Group {
 		plusButton.setSpritesUp(plus_up);
 		plusButton.setSpritesDown(plus_down);
 		plusButton.setSpriteGlobalTransform(new Rectangle(halfWidth, 0, halfWidth, halfHeight));
-		addActor(label);
+		if(useLabel) {
+			addActor(label);
+		}
 		addActor(minusButton);
 		addActor(plusButton);
 	}

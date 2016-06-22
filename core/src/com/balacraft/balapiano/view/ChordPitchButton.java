@@ -3,7 +3,7 @@ package com.balacraft.balapiano.view;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
-public class ChordPitchButton extends ButtonActor{
+public class ChordPitchButton extends ButtonActor {
 	protected int pitch;
 	protected SoundSystem ss;
 

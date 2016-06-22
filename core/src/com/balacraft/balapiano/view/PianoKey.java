@@ -5,7 +5,7 @@ import com.balacraft.balapiano.soundengine.SoundPlayer;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 
-public class PianoKey extends ButtonActor{
+public class PianoKey extends ButtonActor {
 	protected NoteEvent noteEventOn;
 	protected NoteEvent noteEventOff;
 	protected static SoundSystem ss;
@@ -39,7 +39,7 @@ public class PianoKey extends ButtonActor{
 	public void fire() {
 		ss.getSoundPlayer().processNoteEvent(noteEventOn);
 
-		System.out.println(this.toString() + " fired");
+		//System.out.println(this.toString() + " fired");
 	}
 
 	@Override

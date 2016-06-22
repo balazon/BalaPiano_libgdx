@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Disposable;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class KeyboardTable extends Table implements Disposable{
+public class KeyboardTable extends Table {
 	ClickListener clickListener;
 
 	List<ButtonActor> buttons;
@@ -43,9 +42,11 @@ public class KeyboardTable extends Table implements Disposable{
 		return buttons.get(0).getHeight();
 	}
 
-	public KeyboardTable(int channel, SoundSystem ss) {
+	public KeyboardTable(int channel, SoundSystem ss, Texture tex_up, Texture tex_down) {
 		this.channel = channel;
 		this.ss = ss;
+		this.tex_up = tex_up;
+		this.tex_down = tex_down;
 
 		setClip(true);
 		//setTransform(true);
@@ -54,7 +55,6 @@ public class KeyboardTable extends Table implements Disposable{
 	public void init() {
 
 		buttonParent = new Table();
-		buttonParent.debug();
 		buttonParent.setTransform(true);
 		addActor(buttonParent);
 
@@ -67,14 +67,14 @@ public class KeyboardTable extends Table implements Disposable{
 			Vector2 temp2 = new Vector2(0,0);
 
 			public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.printf("KT td: (%.2f %.2f) %d %d\n", x, y, pointer, button);
+				//System.out.printf("KT td: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 				x1[pointer] = x;
 				y1[pointer] = y;
 
 				for(ButtonActor b : buttons) {
 					b.parentToLocalCoordinates(temp.set(x, y));
 					if(b.contains(temp.x, temp.y)) {
-						System.out.printf("%s enter (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
+						//System.out.printf("%s enter (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
 						b.enter();
 						break;
 					}
@@ -85,12 +85,12 @@ public class KeyboardTable extends Table implements Disposable{
 
 
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
+				//System.out.printf("KT tu: (%.2f %.2f) %d %d\n", x, y, pointer, button);
 
 				for(ButtonActor b : buttons) {
 					b.parentToLocalCoordinates(temp.set(x, y));
 					if(b.contains(temp.x, temp.y)) {
-						System.out.printf("%s exit (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
+						//System.out.printf("%s exit (%.2f %.2f) %d\n", b.toString(), temp.x, temp.y, pointer);
 						b.exit();
 						break;
 					}
@@ -98,7 +98,7 @@ public class KeyboardTable extends Table implements Disposable{
 			}
 
 			public void touchDragged (InputEvent event, float x, float y, int pointer) {
-				System.out.printf("KT drag: (%.2f %.2f) -> (%.2f %.2f)) %d\n", x1[pointer], y1[pointer], x, y, pointer);
+				//System.out.printf("KT drag: (%.2f %.2f) -> (%.2f %.2f)) %d\n", x1[pointer], y1[pointer], x, y, pointer);
 
 				//TODO commenting these lines make the stuck keys go away, but they introduce another thing: you can slide (and play) on keys outside the rectangle region
 //				if(!isOver(event.getListenerActor(), x, y)) {
@@ -117,6 +117,9 @@ public class KeyboardTable extends Table implements Disposable{
 		buttons = new ArrayList<ButtonActor>();
 
 		loadPianoButtons();
+
+		//debug();
+		//buttonParent.debug();
 	}
 
 	protected void loadPianoButtons() {
@@ -178,17 +181,6 @@ public class KeyboardTable extends Table implements Disposable{
 			if(row.startsWith("//") || row.equals("")) {
 				continue;
 			}
-			if(row.matches("tex_up\\s*:.*")) {
-				String path = row.split("\\s*:\\s*")[1];
-				tex_up = new Texture(Gdx.files.internal(path));
-				continue;
-			}
-			if(row.matches("tex_down\\s*:.*")) {
-				String path = row.split("\\s*:\\s*")[1];
-				tex_down = new Texture(Gdx.files.internal(path));
-				continue;
-			}
-
 			if(row.matches("s\\s*:.*")) {
 				String[] spriteData = row.split(":\\s*|\\s*-\\s*|\\s*,\\s*");
 
@@ -256,8 +248,6 @@ public class KeyboardTable extends Table implements Disposable{
 
 
 	public void resize(float x, float y, float width, float height, float centerX, float keyboardWidth) {
-		debug();
-
 		setBounds(x, y, width, height);
 		float scaleX = width / keyboardWidth;
 		float scaleY = height / getKeyboardHeight();
@@ -269,11 +259,5 @@ public class KeyboardTable extends Table implements Disposable{
 		super.draw(batch, parentAlpha);
 	}
 
-
-	@Override
-	public void dispose() {
-		tex_up.dispose();
-		tex_down.dispose();
-	}
 }
 

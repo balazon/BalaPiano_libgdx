@@ -1,8 +1,6 @@
 //UI button config
 //xoff: offset for x coords
 //pitchoff: offset for piano button pitches
-tex_up: data/tex_unpressed.png
-tex_down: data/tex_pressed.png
 
 //sprites: name - srcX, srcY, w, h
 // 0,0 is top left corner, x going right, y down

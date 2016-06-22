@@ -20,7 +20,7 @@ public class AndroidLauncher extends AndroidApplication {
 		config.useAccelerometer = false;
 		config.useCompass = false;
 		midiPlayer = new AndroidMidiPlayer();
-		Log.e("GDX_ANDROID", "CREATE");
+		//Log.e("GDX_ANDROID", "CREATE");
 		initialize(new MyGdxPiano(midiPlayer), config);
 
 	}
@@ -31,14 +31,14 @@ public class AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		Log.e("GDX_ANDROID", "START");
+		//Log.e("GDX_ANDROID", "START");
 		//midiPlayer.start();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		Log.e("GDX_ANDROID", "STOP");
+		//Log.e("GDX_ANDROID", "STOP");
 		//midiPlayer.stop();
 	}
 

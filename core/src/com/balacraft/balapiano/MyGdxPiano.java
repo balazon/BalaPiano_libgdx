@@ -28,8 +28,17 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	int w;
 	int h;
-	private Texture tex1;
-	private Texture tex2;
+
+	Texture texkeys_up;
+	Texture texkeys_down;
+
+	Texture texmod_up;
+	Texture texmod_down;
+
+	Texture tex_navigator;
+
+	Texture texchord_up;
+	Texture texchord_down;
 
 	private Stage stage;
 
@@ -55,19 +64,29 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 	@Override
 	public void create() {
-		logger = new Logger("GDX_PIANO");
+		logger = new Logger("BALA_PIANO");
 
 		w = Gdx.graphics.getWidth();
 		h = Gdx.graphics.getHeight();
 
-		tex1 = new Texture(Gdx.files.internal("data/tex_unpressed.png"));
-		tex2 = new Texture(Gdx.files.internal("data/tex_pressed.png"));
-		tex1.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		tex2.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		texkeys_up = new Texture(Gdx.files.internal("data/tex_unpressed.png"));
+		texkeys_down = new Texture(Gdx.files.internal("data/tex_pressed.png"));
+
+		texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
+		texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
+		texmod_up.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		texmod_down.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		tex_navigator = new Texture(Gdx.files.internal("navigator.png"));
+
+		texchord_up = new Texture(Gdx.files.internal("data/chordbuttons_unpressed.png"));
+		texchord_down = new Texture(Gdx.files.internal("data/chordbuttons_pressed.png"));
+
+
 
 		stage = new Stage(new ScreenViewport());
 
-		logger.error("GDX_CORE INIT");
+		//logger.error("GDX_CORE INIT");
 		sp.init();
 		ss = new SoundSystem(sp);
 
@@ -95,7 +114,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 			return;
 		}
 		int channel = count;
-		KeyboardRow kr = new KeyboardRow(channel, ss);
+		KeyboardRow kr = new KeyboardRow(channel, ss, texkeys_up, texkeys_down, texmod_up, texmod_down, tex_navigator);
 		kr.setPosition(0, channel * 400.0f);
 		rowsParent.addActor(kr);
 		rowsParent.sizeBy(0, 400);
@@ -120,10 +139,9 @@ public class MyGdxPiano extends ApplicationAdapter {
 	}
 
 	void loadHud() {
-		Texture texmod_up = new Texture(Gdx.files.internal("data/modifiers_unpressed.png"));
-		Texture texmod_down = new Texture(Gdx.files.internal("data/modifiers_pressed.png"));
 
-		bpmControl = new PlusMinusControl(texmod_up, texmod_down, 0, 128, 200, 128) {
+
+		bpmControl = new PlusMinusControl(texmod_up, texmod_down, 0, 128, 200, 128, true) {
 			@Override
 			public void minusFire() {
 				ss.getChordPlayer().setBPMRelative(-1);
@@ -138,7 +156,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 		stage.addActor(bpmControl);
 		bpmControl.init();
 
-		rowsControl = new PlusMinusControl(texmod_up, texmod_down, 400, 128, 200, 128) {
+		rowsControl = new PlusMinusControl(texmod_up, texmod_down, 400, 128, 200, 128, true) {
 			@Override
 			public void minusFire() {
 				removeKeyboardRow();
@@ -175,16 +193,14 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		variationParent.setBounds(w * 0.9f, h * 0.15f, 200.0f, ChordPlayer.ChordVariationType.values().length * 128.0f);
 		variationParent.setScale(w * 0.1f / 200.0f, h * 0.7f / (ChordPlayer.ChordVariationType.values().length * 128.0f));
-		variationParent.debug();
+		//variationParent.debug();
 
 		chordParent = new Group();
 		chordParent.setBounds(0, 0, 1680.0f, 200.0f);
 		chordParent.setScale(w * 0.9f / 1680.0f, h * 0.15f / 200.0f);
 		stage.addActor(chordParent);
 
-		chordParent.debug();
-		Texture texchord_up = new Texture(Gdx.files.internal("data/chordbuttons_unpressed.png"));
-		Texture texchord_down = new Texture(Gdx.files.internal("data/chordbuttons_pressed.png"));
+		//chordParent.debug();
 		for(int i = 0; i < 12; i++) {
 			ChordPitchButton cpb = new ChordPitchButton(i, ss);
 			//cpb.debug();
@@ -205,18 +221,6 @@ public class MyGdxPiano extends ApplicationAdapter {
 	}
 
 	@Override
-	public void dispose() {
-		logger.error("GDX_CORE DISPOSE");
-
-		sp.dispose();
-
-		stage.dispose();
-
-		tex1.dispose();
-		tex2.dispose();
-	}
-
-	@Override
 	public void render() {
 		Time.update();
 
@@ -229,6 +233,7 @@ public class MyGdxPiano extends ApplicationAdapter {
 
 		stage.draw();
 	}
+
 	@Override
 	public void resize(int width, int height) {
 		w = width;
@@ -261,12 +266,32 @@ public class MyGdxPiano extends ApplicationAdapter {
 	@Override
 	public void pause() {
 		Time.paused(true);
-		logger.error("GDX_CORE PAUSE");
+		//logger.error("GDX_CORE PAUSE");
 	}
 
 	@Override
 	public void resume() {
 		Time.paused(false);
-		logger.error("GDX_CORE RESUME");
+		//logger.error("GDX_CORE RESUME");
+	}
+
+	@Override
+	public void dispose() {
+		//logger.error("GDX_CORE DISPOSE");
+
+		sp.dispose();
+
+		stage.dispose();
+
+		texkeys_up.dispose();
+		texkeys_down.dispose();
+
+		texmod_up.dispose();
+		texmod_down.dispose();
+
+		tex_navigator.dispose();
+
+		texchord_up.dispose();
+		texchord_down.dispose();
 	}
 }
