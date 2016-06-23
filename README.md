@@ -6,6 +6,8 @@ This app can be deployed for desktop, android, html5, and possibly other platfor
 The app was made using the Libgdx game development framework:
 https://libgdx.badlogicgames.com/
 
+Midi sounds on android can be credited to billthefarmer's midi driver project at https://github.com/billthefarmer/mididriver
+
 Snapshot about the app on android:
 ![alt tag](https://cloud.githubusercontent.com/assets/3685997/16310050/47778dc2-396b-11e6-9383-317d7f4e29a7.png)
 
