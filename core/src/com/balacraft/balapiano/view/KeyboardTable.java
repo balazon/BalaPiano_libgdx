@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Logger;
 import com.balacraft.balapiano.soundengine.SoundSystem;
 
 import java.util.ArrayList;
@@ -128,7 +129,9 @@ public class KeyboardTable extends Table {
 
 		FileHandle file = Gdx.files.internal("pianobuttons.txt");
 		if(!file.exists() || file.isDirectory()) {
-			System.err.printf("Error : %s not found\n", file.name());
+
+			System.err.println("Error : " + file.name() + " not found");
+			//TODO change this to logger.error
 			return;
 		}
 		String fileString = file.readString();
