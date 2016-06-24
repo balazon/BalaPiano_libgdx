@@ -9,6 +9,6 @@ https://libgdx.badlogicgames.com/
 Midi sounds on android can be credited to billthefarmer's midi driver project at https://github.com/billthefarmer/mididriver
 
 Snapshot about the app on android:
-![alt tag](https://cloud.githubusercontent.com/assets/3685997/16310050/47778dc2-396b-11e6-9383-317d7f4e29a7.png)
+![alt tag](https://cloud.githubusercontent.com/assets/3685997/16343194/0e56444a-3a36-11e6-8904-118d18204fcd.png)
 
 First version made at 2012, major update at 2016
